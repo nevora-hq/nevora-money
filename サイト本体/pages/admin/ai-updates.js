@@ -5,19 +5,19 @@ const DUMMY_HISTORY = [
   {
     date: "2026-07-17",
     action: "記事公開",
-    detail: "ダイエット中の食事管理で意識したい5つのポイント",
+    detail: "固定費見直しで意識したい5つのポイント",
     agent: "publisher",
   },
   {
     date: "2026-07-16",
     action: "記事公開",
-    detail: "初心者向け基礎化粧品の選び方完全ガイド",
+    detail: "初心者向け家計簿アプリの選び方完全ガイド",
     agent: "publisher",
   },
   {
     date: "2026-07-16",
     action: "トレンド調査",
-    detail: "美容健康トレンド調査を実施",
+    detail: "お金・家計トレンド調査を実施",
     agent: "keyword-researcher",
   },
 ];

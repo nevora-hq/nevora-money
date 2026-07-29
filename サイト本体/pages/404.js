@@ -11,7 +11,7 @@ export async function getStaticProps() {
 export default function NotFound({ categories = [], popularPosts = [] }) {
   return (
     <Layout
-      title="ページが見つかりません | 美容の総合ガイド｜NEVORA"
+      title="ページが見つかりません | お金・家計の総合ガイド｜NEVORA"
       description="お探しのページが見つかりませんでした。トップページやカテゴリ一覧、記事検索から目的のページをお探しください。"
       noindex
       panel

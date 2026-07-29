@@ -51,7 +51,7 @@ export default function CategoryPage({ posts, category, description }) {
 
   return (
     <Layout
-      title={`${category}の記事一覧 | 美容の総合ガイド｜NEVORA`}
+      title={`${category}の記事一覧 | お金・家計の総合ガイド｜NEVORA`}
       description={description}
       canonicalPath={`/category/${encodeURIComponent(category)}`}
       jsonLd={buildCategoryJsonLd(category, posts, siteUrl)}

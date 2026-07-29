@@ -70,8 +70,8 @@ export default function SearchPage({ posts }) {
 
   return (
     <Layout
-      title="記事検索 | 美容の総合ガイド｜NEVORA"
-      description="美容の総合ガイド｜NEVORAの記事をキーワードで検索できます。"
+      title="記事検索 | お金・家計の総合ガイド｜NEVORA"
+      description="お金・家計の総合ガイド｜NEVORAの記事をキーワードで検索できます。"
       canonicalPath="/search"
       panel
     >

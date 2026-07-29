@@ -2,7 +2,7 @@ import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const SITE_NAME = "美容の総合ガイド｜NEVORA";
+const SITE_NAME = "お金・家計の総合ガイド｜NEVORA";
 
 // サイト全体で常に出す構造化データ(WebSite: サイト内検索をSearchActionとして
 // 申告することで、検索結果にサイトリンク検索ボックスが表示される可能性がある)。
@@ -25,7 +25,7 @@ function buildWebsiteJsonLd(siteUrl) {
 export default function Layout({
   children,
   title = SITE_NAME,
-  description = "スキンケア・コスメ・メイクなど信頼できる美容情報をわかりやすく解説します。",
+  description = "家計管理・節約・ポイ活など信頼できるお金の情報をわかりやすく解説します。",
   ogImage = "",
   categories = [],
   hero = null,

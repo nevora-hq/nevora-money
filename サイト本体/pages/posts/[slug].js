@@ -30,7 +30,7 @@ export async function getStaticProps({ params }) {
   return { props: { post, related, nextPost } };
 }
 
-const SITE_NAME = "美容の総合ガイド｜NEVORA";
+const SITE_NAME = "お金・家計の総合ガイド｜NEVORA";
 
 // 記事ページ固有の構造化データ(Article + パンくずリスト)を組み立てる。
 // NEXT_PUBLIC_SITE_URL未設定時は絶対URLが組み立てられないため、その場合は

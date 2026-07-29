@@ -11,8 +11,8 @@ export async function getStaticProps() {
 export default function RankingPage({ posts }) {
   return (
     <Layout
-      title="人気記事ランキング | 美容の総合ガイド｜NEVORA"
-      description="美容の総合ガイド｜NEVORAのおすすめ記事ランキングです。"
+      title="人気記事ランキング | お金・家計の総合ガイド｜NEVORA"
+      description="お金・家計の総合ガイド｜NEVORAのおすすめ記事ランキングです。"
       canonicalPath="/ranking"
       panel
     >
