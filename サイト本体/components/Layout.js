@@ -49,6 +49,7 @@ export default function Layout({
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {noindex && <meta name="robots" content="noindex, nofollow" />}
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
         <meta property="og:site_name" content={SITE_NAME} />

@@ -18,6 +18,31 @@ export default function Footer() {
           <Link href="/terms">免責事項・利用規約</Link>
           <Link href="/contact">お問い合わせ</Link>
         </nav>
+        <div className="footer-sites">
+          <p className="footer-sites-title">運営サイト一覧</p>
+          <ul className="footer-sites-list">
+            <li>
+              <a href="https://nevora-beauty.vercel.app/" target="_blank" rel="noopener noreferrer">
+                美容の総合ガイド｜NEVORA
+              </a>
+            </li>
+            <li>
+              <a href="https://nevora-ai.vercel.app/" target="_blank" rel="noopener noreferrer">
+                AI活用の総合ガイド｜NEVORA
+              </a>
+            </li>
+            <li>
+              <a href="https://nevora-job.vercel.app/" target="_blank" rel="noopener noreferrer">
+                副業・在宅ワークの総合ガイド｜NEVORA
+              </a>
+            </li>
+            <li>
+              <a href="https://nevora-lifestyle.vercel.app/" target="_blank" rel="noopener noreferrer">
+                生活を豊かにする総合ガイド｜NEVORA
+              </a>
+            </li>
+          </ul>
+        </div>
         <p>&copy; {new Date().getFullYear()} お金の総合ガイド｜NEVORA</p>
       </div>
     </footer>
