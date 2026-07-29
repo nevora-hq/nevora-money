@@ -1,23 +1,22 @@
 // カテゴリ別のマスコットキャラクター設定。
 // 現状はジャンル(対象分野はプロジェクト直下のCLAUDE.mdが唯一の情報源)全体で
-// 美容ブランチ(スキンケア/メイク/美容)のみ「ツヤミンちゃん」を割り当てている。
-// ダイエットや将来追加するジャンルは、専用マスコットができ次第ここに追記する
+// お金・家計ブランチのみ「ゼニまるくん」を割り当てている。
+// 実際のカテゴリ名はキーワード調査・記事制作が進み次第確定するため、
+// カテゴリページ設計時にCATEGORY_MASCOTSのキーを実際のカテゴリ名に合わせて追記・修正すること
 // (未登録カテゴリはnullを返し、マスコットは非表示になる)。
-const TSUYAMIN = {
-  name: "ツヤミンちゃん",
-  normalImage: "/images/mascot/tsuyamin-normal.svg",
-  researchImage: "/images/mascot/tsuyamin-research.svg",
+const ZENIMARU = {
+  name: "ゼニまるくん",
+  normalImage: "/images/mascot/zenimaru-normal.svg",
+  researchImage: "/images/mascot/zenimaru-research.svg",
   comments: [
-    "肌にあうかどうかは人それぞれ。まずは少量から試してみてね。",
-    "似合うかどうかは、実際に試してみるのが一番だよ。",
-    "情報を集めて、自分に合う方法を見つけよう。",
+    "家計の見直しは、まず固定費から手をつけるのがコツだよ。",
+    "無理な節約より、続けられるやり方を選ぶのが一番だよ。",
+    "情報を集めて、自分に合ったお金の管理方法を見つけよう。",
   ],
 };
 
 const CATEGORY_MASCOTS = {
-  "スキンケア": TSUYAMIN,
-  "メイク": TSUYAMIN,
-  "美容": TSUYAMIN,
+  "お金・家計": ZENIMARU,
 };
 
 function pickComment(mascot, seed) {
