@@ -2,7 +2,7 @@ import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const SITE_NAME = "お金・家計の総合ガイド｜NEVORA";
+const SITE_NAME = "お金の総合ガイド｜NEVORA";
 
 // サイト全体で常に出す構造化データ(WebSite: サイト内検索をSearchActionとして
 // 申告することで、検索結果にサイトリンク検索ボックスが表示される可能性がある)。

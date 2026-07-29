@@ -43,7 +43,7 @@ export default function Home({
 }) {
   return (
     <Layout
-      title="お金・家計の総合ガイド｜NEVORA｜節約・家計管理・ポイ活の情報"
+      title="お金の総合ガイド｜NEVORA｜投資・節税・家計管理の情報"
       categories={categories}
       canonicalPath="/"
       hero={

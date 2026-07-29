@@ -3,14 +3,14 @@ import Layout from "../components/Layout";
 export default function Terms() {
   return (
     <Layout
-      title="免責事項・利用規約 | お金・家計の総合ガイド｜NEVORA"
-      description="お金・家計の総合ガイド｜NEVORAの免責事項および利用規約です。記事内容の正確性、アフィリエイトリンクの利用について記載しています。"
+      title="免責事項・利用規約 | お金の総合ガイド｜NEVORA"
+      description="お金の総合ガイド｜NEVORAの免責事項および利用規約です。記事内容の正確性、アフィリエイトリンクの利用について記載しています。"
       canonicalPath="/terms"
     >
       <h1 className="page-title">免責事項・利用規約</h1>
       <div className="article-body">
         <p>
-          「お金・家計の総合ガイド｜NEVORA」(以下、「当サイト」といいます)をご利用いただく前に、以下の免責事項・利用規約(以下、「本規約」といいます)を必ずお読みください。
+          「お金の総合ガイド｜NEVORA」(以下、「当サイト」といいます)をご利用いただく前に、以下の免責事項・利用規約(以下、「本規約」といいます)を必ずお読みください。
           当サイトをご利用いただいた場合、本規約に同意いただいたものとみなします。
         </p>
 

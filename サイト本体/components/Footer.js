@@ -18,7 +18,7 @@ export default function Footer() {
           <Link href="/terms">免責事項・利用規約</Link>
           <Link href="/contact">お問い合わせ</Link>
         </nav>
-        <p>&copy; {new Date().getFullYear()} お金・家計の総合ガイド｜NEVORA</p>
+        <p>&copy; {new Date().getFullYear()} お金の総合ガイド｜NEVORA</p>
       </div>
     </footer>
   );

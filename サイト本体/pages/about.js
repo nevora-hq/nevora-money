@@ -3,8 +3,8 @@ import Layout from "../components/Layout";
 export default function About() {
   return (
     <Layout
-      title="運営者情報 | お金・家計の総合ガイド｜NEVORA"
-      description="お金・家計の総合ガイド｜NEVORAの運営者情報です。"
+      title="運営者情報 | お金の総合ガイド｜NEVORA"
+      description="お金の総合ガイド｜NEVORAの運営者情報です。"
       canonicalPath="/about"
     >
       <h1 className="page-title">運営者情報</h1>
@@ -13,7 +13,7 @@ export default function About() {
           <tbody>
             <tr>
               <th style={{ width: "30%" }}>サイト名</th>
-              <td>お金・家計の総合ガイド｜NEVORA</td>
+              <td>お金の総合ガイド｜NEVORA</td>
             </tr>
             <tr>
               <th>運営者</th>

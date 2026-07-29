@@ -78,8 +78,8 @@ img {
 /* ---- Header ----
    同系色の水色グラデーション+ごく薄い水玉模様を全ページ共通で敷く。 */
 .site-header {
-  background-image: radial-gradient(rgba(56, 163, 217, 0.14) 1px, transparent 1.6px),
-    linear-gradient(120deg, rgba(255, 241, 244, 0.92), rgba(234, 244, 251, 0.92));
+  background-image: radial-gradient(rgba(56, 163, 217, 0.12) 1px, transparent 1.6px),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.95), rgba(238, 241, 246, 0.95));
   background-size: 16px 16px, 100% 100%;
   background-repeat: repeat, no-repeat;
   backdrop-filter: saturate(180%) blur(8px);
@@ -288,8 +288,8 @@ img {
   color: var(--color-text-faint);
   font-size: 0.85rem;
   border-top: 1px solid var(--color-border);
-  background-image: radial-gradient(rgba(56, 163, 217, 0.12) 1px, transparent 1.6px),
-    linear-gradient(160deg, rgba(238, 246, 251, 1), rgba(253, 241, 244, 1));
+  background-image: radial-gradient(rgba(56, 163, 217, 0.1) 1px, transparent 1.6px),
+    linear-gradient(160deg, rgba(240, 242, 246, 1), rgba(248, 249, 251, 1));
   background-size: 18px 18px, 100% 100%;
   background-repeat: repeat, no-repeat;
 }

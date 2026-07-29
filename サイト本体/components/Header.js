@@ -16,7 +16,7 @@ export default function Header({ categories = [] }) {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="logo" onClick={close}>
-          お金・家計の総合ガイド｜NEVORA
+          お金の総合ガイド｜NEVORA
         </Link>
         <button
           type="button"

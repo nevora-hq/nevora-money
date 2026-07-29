@@ -3,14 +3,14 @@ import Layout from "../components/Layout";
 export default function PrivacyPolicy() {
   return (
     <Layout
-      title="プライバシーポリシー | お金・家計の総合ガイド｜NEVORA"
-      description="お金・家計の総合ガイド｜NEVORAのプライバシーポリシーです。個人情報の取り扱い、Cookieの利用、アクセス解析ツール、広告配信について記載しています。"
+      title="プライバシーポリシー | お金の総合ガイド｜NEVORA"
+      description="お金の総合ガイド｜NEVORAのプライバシーポリシーです。個人情報の取り扱い、Cookieの利用、アクセス解析ツール、広告配信について記載しています。"
       canonicalPath="/privacy-policy"
     >
       <h1 className="page-title">プライバシーポリシー</h1>
       <div className="article-body">
         <p>
-          「お金・家計の総合ガイド｜NEVORA」(以下、「当サイト」といいます)は、利用者の個人情報の重要性を認識し、
+          「お金の総合ガイド｜NEVORA」(以下、「当サイト」といいます)は、利用者の個人情報の重要性を認識し、
           その保護の徹底を図るため、以下のとおりプライバシーポリシー(以下、「本ポリシー」といいます)を定めます。
         </p>
 

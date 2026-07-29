@@ -22,8 +22,8 @@ export async function getStaticProps() {
 export default function ComparePage({ items }) {
   return (
     <Layout
-      title="商品・サービス比較 | お金・家計の総合ガイド｜NEVORA"
-      description="お金・家計の総合ガイド｜NEVORAで紹介している商品・サービスを一覧で比較できるページです。"
+      title="商品・サービス比較 | お金の総合ガイド｜NEVORA"
+      description="お金の総合ガイド｜NEVORAで紹介している商品・サービスを一覧で比較できるページです。"
       canonicalPath="/compare"
       panel
     >

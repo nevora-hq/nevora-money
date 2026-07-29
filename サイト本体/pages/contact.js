@@ -10,7 +10,7 @@ export default function Contact() {
     const email = form.email.value;
     const message = form.message.value;
 
-    const subject = encodeURIComponent("【お金・家計の総合ガイド｜NEVORA】お問い合わせ");
+    const subject = encodeURIComponent("【お金の総合ガイド｜NEVORA】お問い合わせ");
     const body = encodeURIComponent(
       `お名前: ${name}\nメールアドレス: ${email}\n\n${message}`
     );
@@ -19,8 +19,8 @@ export default function Contact() {
 
   return (
     <Layout
-      title="お問い合わせ | お金・家計の総合ガイド｜NEVORA"
-      description="お金・家計の総合ガイド｜NEVORAへのお問い合わせページです。"
+      title="お問い合わせ | お金の総合ガイド｜NEVORA"
+      description="お金の総合ガイド｜NEVORAへのお問い合わせページです。"
       canonicalPath="/contact"
     >
       <h1 className="page-title">お問い合わせ</h1>
