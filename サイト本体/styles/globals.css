@@ -3,7 +3,7 @@
   --color-primary-dark: #b32657;
   --color-primary-light: #ffe3ec;
   --color-primary-surface: #fff5f8;
-  --color-bg: #faf9fb;
+  --color-bg: #f5f6f8;
   --color-surface: #fff;
   --color-border: #ececec;
   --color-text: #24242b;
@@ -72,7 +72,7 @@ img {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(160deg, #fdf1f4 0%, #f7f2fb 35%, #eef6fb 65%, #e9f2fb 100%);
+  background: var(--color-bg);
 }
 
 /* ---- Header ----
