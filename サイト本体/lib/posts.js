@@ -82,9 +82,9 @@ function renderAffiliateBannerHtml(link) {
 
 // マスコットキャラクターの「一言コメント」をHTML文字列として組み立てる。
 // components/Mascot.jsの吹き出し表示(.mascot-comment)と見た目を揃えている。
-function renderMascotCommentHtml(mascot) {
+function renderMascotCommentHtml(mascot, commentText) {
   const name = escapeHtmlText(mascot.name);
-  const comment = escapeHtmlText(mascot.comment);
+  const comment = escapeHtmlText(commentText != null ? commentText : mascot.comment);
   return `<div class="mascot-comment mascot-comment-inline"><img src="${escapeHtmlText(
     mascot.researchImage
   )}" alt="${name}" width="56" height="56" class="mascot-comment-img" loading="lazy" /><div class="mascot-comment-bubble"><span class="mascot-comment-name">${name}</span><p class="mascot-comment-text">${comment}</p></div></div>`;
@@ -111,6 +111,61 @@ function insertMascotComment(html, mascot) {
 
   const insertAt = headingPositions[Math.floor(headingPositions.length / 2)];
   return html.slice(0, insertAt) + renderMascotCommentHtml(mascot) + html.slice(insertAt);
+}
+
+// frontmatterのmascotComments([{position: "intro"|"summary", afterHeading, text}])から、
+// 記事の要所(導入直後・特定見出し直後・まとめ末尾)にマスコットコメントを複数挿入する。
+// 単一のmascotComment(中間自動挿入)より優先され、こちらが指定されている記事では
+// insertMascotCommentは使わない(呼び出し側で出し分ける)。
+// - intro: 本文最初のH2見出しの直前(導入文の直後・本文に入る前)
+// - summary: 本文全体の末尾(まとめセクションの後)
+// - afterHeading: embedChartsと同じロジックで、テキストが完全一致する見出し直後
+function insertMascotComments(html, mascot, mascotComments) {
+  if (!mascot || !Array.isArray(mascotComments) || mascotComments.length === 0) {
+    return html;
+  }
+
+  const blocks = splitHtmlBlocks(html);
+  const used = new Array(mascotComments.length).fill(false);
+  const outBlocks = [];
+  let firstH2Done = false;
+
+  blocks.forEach((block, index) => {
+    const isH2 = /^<h2[ >]/.test(block);
+
+    if (isH2 && !firstH2Done) {
+      firstH2Done = true;
+      mascotComments.forEach((c, i) => {
+        if (used[i] || c.position !== "intro") return;
+        used[i] = true;
+        outBlocks.push(renderMascotCommentHtml(mascot, c.text));
+      });
+    }
+
+    outBlocks.push(block);
+
+    const headingMatch = block.match(/^<h[23][^>]*>([\s\S]*?)<\/h[23]>/);
+    if (headingMatch) {
+      const headingText = stripTags(headingMatch[1]);
+      mascotComments.forEach((c, i) => {
+        if (used[i] || !c.afterHeading) return;
+        if (stripTags(c.afterHeading) === headingText) {
+          used[i] = true;
+          outBlocks.push(renderMascotCommentHtml(mascot, c.text));
+        }
+      });
+    }
+
+    if (index === blocks.length - 1) {
+      mascotComments.forEach((c, i) => {
+        if (used[i] || c.position !== "summary") return;
+        used[i] = true;
+        outBlocks.push(renderMascotCommentHtml(mascot, c.text));
+      });
+    }
+  });
+
+  return outBlocks.join("");
 }
 
 // 本文HTML(remarkで生成済み)を段落・リスト等のブロック単位で分割し、
@@ -508,6 +563,7 @@ function normalizeFrontmatter(data, slug) {
     updatedDate: data.updatedDate || data.updated || null,
     thumbnail: data.thumbnail || "",
     mascotComment: data.mascotComment || "",
+    mascotComments: Array.isArray(data.mascotComments) ? data.mascotComments : [],
   };
 }
 
@@ -620,7 +676,10 @@ export async function getPostBySlug(slug) {
     meta.affiliateLinks
   );
   const mascot = getCategoryMascot(meta.category, slug, meta.mascotComment);
-  const contentHtml = insertMascotComment(htmlWithAffiliateBanners, mascot);
+  const contentHtml =
+    meta.mascotComments.length > 0
+      ? insertMascotComments(htmlWithAffiliateBanners, mascot, meta.mascotComments)
+      : insertMascotComment(htmlWithAffiliateBanners, mascot);
 
   return {
     slug,
