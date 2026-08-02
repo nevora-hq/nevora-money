@@ -81,12 +81,24 @@ const OTOKU = {
   ],
 };
 
+const FUDOSAN = {
+  name: "トチノスケ",
+  normalImage: "/images/mascot/fudosan-normal.svg",
+  researchImage: "/images/mascot/fudosan-research.svg",
+  comments: [
+    "不動産投資は物件そのものより、資金計画とリスク管理が肝心だよ。",
+    "利回りの数字だけで判断せず、空室リスクや修繕費も含めて考えよう。",
+    "焦って決めず、複数の情報源で比較検討する時間を大事にしよう。",
+  ],
+};
+
 const CATEGORY_MASCOTS = {
   "お金・家計": ZENIMARU,
-  "投資": FUTABA,
+  "株式投資": FUTABA,
   "FX": CANDLE,
   "税金": SORO,
   "保険": MAMORU,
+  "不動産投資": FUDOSAN,
   "節約": KOTSUKOTSU,
   "ポイ活": OTOKU,
 };
