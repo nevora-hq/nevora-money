@@ -1,7 +1,7 @@
 /**
  * 記事データ同期スクリプト
  *
- * サイト運営/記事データ/確定稿 と 公開済み の *.md を、サイト本体/content/articles/ にコピーする。
+ * 記事データ/確定稿 と 公開済み の *.md を、サイト本体/content/articles/ にコピーする。
  * (公開済みはThreads投稿後に確定稿から移動されるだけで、サイト掲載自体は継続するため両方を対象とする)
  * next dev / next build の前に自動実行される(package.json の predev / prebuild を参照)。
  *
