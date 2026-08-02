@@ -108,4 +108,6 @@ export function getCategoryMascot(categoryName, seed = categoryName, overrideCom
 export const MAIN_MASCOT = {
   name: ZENIMARU.name,
   welcomeImage: "/images/mascot/zenimaru-welcome.svg",
+  greeting:
+    "はじめまして、ゼニまるくんだよ!このサイトでは投資・FX・税金をはじめ、お金にまつわる情報を、カテゴリ担当のなかまたちと一緒に紹介しているよ。気になるジャンルから読んでみてね。",
 };

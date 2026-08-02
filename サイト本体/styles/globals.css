@@ -1626,6 +1626,30 @@ h1.page-title {
   margin: 28px 0;
 }
 
+.mascot-comment-hero {
+  margin: 20px 0 32px;
+  gap: 18px;
+}
+
+.mascot-comment-hero .mascot-comment-bubble {
+  padding: 14px 20px;
+}
+
+.mascot-comment-hero .mascot-comment-name {
+  font-size: 0.85rem;
+}
+
+.mascot-comment-hero .mascot-comment-text {
+  font-size: 0.95rem;
+}
+
+@media (max-width: 560px) {
+  .mascot-comment-hero .mascot-comment-img {
+    width: 64px;
+    height: 64px;
+  }
+}
+
 /* ---- 「次の記事」ボタン ---- */
 .article-next-post {
   margin: 40px auto 0;

@@ -6,8 +6,9 @@ import ImageSlider from "../components/ImageSlider";
 import Sidebar from "../components/Sidebar";
 import { getAllPostsMeta, getAllCategories, getPostsByCategory } from "../lib/posts";
 import { getCategoryMeta, ALWAYS_VISIBLE_CATEGORIES } from "../lib/categoryMeta";
-import { getCategoryMascot } from "../lib/categoryMascot";
+import { getCategoryMascot, MAIN_MASCOT } from "../lib/categoryMascot";
 import Mascot from "../components/Mascot";
+import MascotGreeting from "../components/MascotGreeting";
 import Link from "next/link";
 
 export async function getStaticProps() {
@@ -70,6 +71,9 @@ export default function Home({
         />
       </Head>
       <div className="home-page">
+        <div className="container">
+          <MascotGreeting mascot={MAIN_MASCOT} />
+        </div>
         <div className="home-layout">
           <div className="home-main">
             {categorySummaries.length > 0 && (
