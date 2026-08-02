@@ -5,7 +5,7 @@ import HeroBanner from "../components/HeroBanner";
 import ImageSlider from "../components/ImageSlider";
 import Sidebar from "../components/Sidebar";
 import { getAllPostsMeta, getAllCategories, getPostsByCategory } from "../lib/posts";
-import { getCategoryMeta } from "../lib/categoryMeta";
+import { getCategoryMeta, ALWAYS_VISIBLE_CATEGORIES } from "../lib/categoryMeta";
 import { getCategoryMascot } from "../lib/categoryMascot";
 import Mascot from "../components/Mascot";
 import Link from "next/link";
@@ -15,7 +15,15 @@ export async function getStaticProps() {
   const categories = getAllCategories();
   const sliderPosts = posts.filter((p) => p.thumbnail).slice(0, 5);
 
-  const categorySummaries = categories.map((c) => ({
+  // 記事がまだ無い大カテゴリ(投資/FX/税金)も、記事が0件のカードとして
+  // 常時トップページに表示する(中カテゴリ/小カテゴリは記事のtagsとして扱い、
+  // 独立カテゴリとしては公開しない)。
+  const categoryNames = new Set(categories.map((c) => c.name));
+  const placeholderCategories = ALWAYS_VISIBLE_CATEGORIES.filter(
+    (name) => !categoryNames.has(name)
+  ).map((name) => ({ name, count: 0 }));
+
+  const categorySummaries = [...categories, ...placeholderCategories].map((c) => ({
     ...c,
     ...getCategoryMeta(c.name),
     posts: getPostsByCategory(c.name).slice(0, 3),
@@ -106,12 +114,18 @@ export default function Home({
                           ))}
                         </ul>
                       )}
-                      <Link
-                        href={`/category/${encodeURIComponent(cat.name)}`}
-                        className="category-summary-more"
-                      >
-                        {cat.name}の記事をすべて見る →
-                      </Link>
+                      {cat.count > 0 ? (
+                        <Link
+                          href={`/category/${encodeURIComponent(cat.name)}`}
+                          className="category-summary-more"
+                        >
+                          {cat.name}の記事をすべて見る →
+                        </Link>
+                      ) : (
+                        <span className="category-summary-more category-summary-soon">
+                          近日公開
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
