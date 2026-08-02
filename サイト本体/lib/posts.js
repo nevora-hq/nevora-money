@@ -25,6 +25,13 @@ function stripHtmlComments(content) {
   return content.replace(/<!--[\s\S]*?-->/g, "");
 }
 
+// 本文が余白を詰めた際に文字が詰まって見えないよう、句点(。)の直後で改行する。
+// 既にタグの直前(閉じタグ・別タグの開始)にある句点は対象外にし、
+// 見出し末尾や文末直後の余分な改行を増やさないようにする。
+function breakAfterSentence(html) {
+  return html.replace(/。(?!<)/g, "。<br />");
+}
+
 // 記事によってaffiliateLinksの表示名キーが label / name のどちらかで揺れているため、
 // ここで label に統一して吸収する(未指定の場合はnullではなく空文字にし、
 // getStaticPropsでのJSONシリアライズエラー(undefined不可)を防ぐ)。
@@ -676,10 +683,11 @@ export async function getPostBySlug(slug) {
     meta.affiliateLinks
   );
   const mascot = getCategoryMascot(meta.category, slug, meta.mascotComment);
-  const contentHtml =
+  const htmlWithMascot =
     meta.mascotComments.length > 0
       ? insertMascotComments(htmlWithAffiliateBanners, mascot, meta.mascotComments)
       : insertMascotComment(htmlWithAffiliateBanners, mascot);
+  const contentHtml = breakAfterSentence(htmlWithMascot);
 
   return {
     slug,
