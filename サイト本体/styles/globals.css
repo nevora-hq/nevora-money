@@ -61,7 +61,7 @@ img {
 .container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 4px;
 }
 
 /* ---- 全ページ共通の最背面グラデーション背景 ----
@@ -687,7 +687,7 @@ img {
 
 @media (max-width: 720px) {
   .page-panel {
-    padding: 18px;
+    padding: 5px;
     margin: 20px 0 40px;
   }
 }
@@ -2248,7 +2248,7 @@ table.admin-table td {
   }
 
   .article-body {
-    padding: 20px 16px;
+    padding: 20px 5px;
     border-radius: var(--radius-md);
   }
 
