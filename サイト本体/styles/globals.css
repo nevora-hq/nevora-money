@@ -410,7 +410,6 @@ img {
   bottom: 10px;
   width: clamp(100px, 11vw, 160px);
   aspect-ratio: 1 / 1;
-  padding: 8%;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fffaf0, #ffe9c2 75%);
   border: 3px solid rgba(255, 255, 255, 0.9);
@@ -423,7 +422,7 @@ img {
 
 .hero-banner-mascot {
   display: block;
-  width: 100%;
+  width: 82%;
   height: auto;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
