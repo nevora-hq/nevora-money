@@ -1,0 +1,24 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="マスコットキャラクター フタバ(リサーチポーズ)">
+  <ellipse cx="120" cy="215" rx="55" ry="10" fill="#075463" opacity="0.08"/>
+  <circle cx="120" cy="130" r="80" fill="#e3fafc" stroke="#0b7285" stroke-width="6"/>
+  <circle cx="120" cy="130" r="66" fill="none" stroke="#0b7285" stroke-width="3" opacity="0.5"/>
+  <line x1="120" y1="95" x2="120" y2="72" stroke="#0b7285" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="103" cy="62" rx="16" ry="9" fill="#0b7285" transform="rotate(-35 103 62)"/>
+  <ellipse cx="137" cy="62" rx="16" ry="9" fill="#0b7285" transform="rotate(35 137 62)"/>
+  <g opacity="0.5">
+    <rect x="99" y="100" width="10" height="14" fill="#0b7285"/>
+    <rect x="113" y="90" width="10" height="24" fill="#0b7285"/>
+    <rect x="127" y="80" width="10" height="34" fill="#0b7285"/>
+  </g>
+  <circle cx="90" cy="150" r="10" fill="#0b7285" opacity="0.3"/>
+  <circle cx="150" cy="150" r="10" fill="#0b7285" opacity="0.3"/>
+  <path d="M93 140 Q100 132 107 140" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M133 140 Q140 132 147 140" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M102 163 Q120 180 138 163" stroke="#075463" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M175 90 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5 z" fill="#5fb87a"/>
+  <circle cx="65" cy="85" r="4" fill="#5fb87a"/>
+  <circle cx="188" cy="150" r="24" fill="none" stroke="#5fb87a" stroke-width="7"/>
+  <line x1="205" y1="167" x2="218" y2="180" stroke="#5fb87a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M160 195 q10 -10 25 -18" stroke="#0b7285" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M62 195 q-16 3 -20 18" stroke="#0b7285" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

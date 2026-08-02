@@ -1,0 +1,19 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="マスコットキャラクター キャンドル(リサーチポーズ)">
+  <ellipse cx="120" cy="215" rx="55" ry="10" fill="#94193f" opacity="0.08"/>
+  <circle cx="120" cy="130" r="80" fill="#ffe3ec" stroke="#c2255c" stroke-width="6"/>
+  <circle cx="120" cy="130" r="66" fill="none" stroke="#c2255c" stroke-width="3" opacity="0.5"/>
+  <line x1="120" y1="93" x2="120" y2="45" stroke="#c2255c" stroke-width="4" stroke-linecap="round"/>
+  <rect x="110" y="55" width="20" height="28" rx="4" fill="#c2255c"/>
+  <path d="M95 106 L108 96 L118 111 L130 91 L143 101" stroke="#c2255c" stroke-width="4" fill="none" opacity="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="90" cy="150" r="10" fill="#c2255c" opacity="0.3"/>
+  <circle cx="150" cy="150" r="10" fill="#c2255c" opacity="0.3"/>
+  <path d="M93 140 Q100 132 107 140" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M133 140 Q140 132 147 140" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M102 163 Q120 180 138 163" stroke="#94193f" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M175 90 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5 z" fill="#5fb87a"/>
+  <circle cx="65" cy="85" r="4" fill="#5fb87a"/>
+  <circle cx="188" cy="150" r="24" fill="none" stroke="#5fb87a" stroke-width="7"/>
+  <line x1="205" y1="167" x2="218" y2="180" stroke="#5fb87a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M160 195 q10 -10 25 -18" stroke="#c2255c" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M62 195 q-16 3 -20 18" stroke="#c2255c" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

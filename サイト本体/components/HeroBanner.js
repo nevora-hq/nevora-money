@@ -1,3 +1,5 @@
+import { MAIN_MASCOT } from "../lib/categoryMascot";
+
 export default function HeroBanner() {
   return (
     <section className="hero-banner">
@@ -15,6 +17,14 @@ export default function HeroBanner() {
             家計管理・節約・ポイ活など信頼できるお金の情報をわかりやすく解説します。
           </p>
         </div>
+        <img
+          src={MAIN_MASCOT.welcomeImage}
+          alt={MAIN_MASCOT.name}
+          className="hero-banner-mascot"
+          width="150"
+          height="150"
+          loading="eager"
+        />
       </div>
     </section>
   );

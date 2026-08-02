@@ -404,6 +404,23 @@ img {
   max-width: 460px;
 }
 
+.hero-banner-mascot {
+  display: block;
+  position: absolute;
+  right: 4%;
+  bottom: -6px;
+  width: clamp(90px, 10vw, 150px);
+  height: auto;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.28));
+  pointer-events: none;
+}
+
+@media (max-width: 780px) {
+  .hero-banner-mascot {
+    display: none;
+  }
+}
+
 /* ---- Hero下部の記事スライド ---- */
 .hero-slider {
   background: var(--color-surface);

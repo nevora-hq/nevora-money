@@ -1,0 +1,20 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="マスコットキャラクター ゼニまるくん(ようこそポーズ)">
+  <ellipse cx="120" cy="215" rx="55" ry="10" fill="#c98a1a" opacity="0.08"/>
+  <circle cx="120" cy="130" r="80" fill="#fff4dd" stroke="#d9a02c" stroke-width="6"/>
+  <circle cx="120" cy="130" r="66" fill="none" stroke="#d9a02c" stroke-width="3" opacity="0.5"/>
+  <text x="120" y="112" text-anchor="middle" font-size="26" font-weight="bold" fill="#d9a02c" font-family="sans-serif" opacity="0.55">¥</text>
+  <circle cx="90" cy="150" r="10" fill="#d9a02c" opacity="0.3"/>
+  <circle cx="150" cy="150" r="10" fill="#d9a02c" opacity="0.3"/>
+  <circle cx="100" cy="138" r="7" fill="#24242b"/>
+  <circle cx="140" cy="138" r="7" fill="#24242b"/>
+  <circle cx="102.5" cy="135" r="2.2" fill="#fff"/>
+  <circle cx="142.5" cy="135" r="2.2" fill="#fff"/>
+  <path d="M104 162 Q120 180 136 162" stroke="#a8681a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M188 118 Q208 100 202 72" stroke="#d9a02c" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <circle cx="202" cy="68" r="10" fill="#fff4dd" stroke="#d9a02c" stroke-width="5"/>
+  <path d="M55 195 q-16 3 -20 18" stroke="#d9a02c" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M155 200 q10 8 8 15" stroke="#d9a02c" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M175 95 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 z" fill="#5fb87a"/>
+  <circle cx="60" cy="80" r="3.5" fill="#5fb87a"/>
+  <path d="M35 130 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#5fb87a" opacity="0.7"/>
+</svg>

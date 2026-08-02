@@ -1,0 +1,23 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="マスコットキャラクター コツコツ(リサーチポーズ)">
+  <ellipse cx="120" cy="215" rx="55" ry="10" fill="#1565b3" opacity="0.08"/>
+  <circle cx="120" cy="130" r="80" fill="#e7f5ff" stroke="#1c7ed6" stroke-width="6"/>
+  <circle cx="120" cy="130" r="66" fill="none" stroke="#1c7ed6" stroke-width="3" opacity="0.5"/>
+  <path d="M96 62 L120 50 L96 40 Q90 51 96 62 Z" fill="#1c7ed6"/>
+  <path d="M144 62 L120 50 L144 40 Q150 51 144 62 Z" fill="#1c7ed6"/>
+  <circle cx="120" cy="50" r="7" fill="#1c7ed6"/>
+  <g opacity="0.5">
+    <ellipse cx="120" cy="100" rx="20" ry="7" fill="none" stroke="#1c7ed6" stroke-width="3"/>
+    <ellipse cx="120" cy="112" rx="20" ry="7" fill="none" stroke="#1c7ed6" stroke-width="3"/>
+  </g>
+  <circle cx="90" cy="150" r="10" fill="#1c7ed6" opacity="0.3"/>
+  <circle cx="150" cy="150" r="10" fill="#1c7ed6" opacity="0.3"/>
+  <path d="M93 140 Q100 132 107 140" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M133 140 Q140 132 147 140" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M102 163 Q120 180 138 163" stroke="#1565b3" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M175 90 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5 z" fill="#5fb87a"/>
+  <circle cx="65" cy="85" r="4" fill="#5fb87a"/>
+  <circle cx="188" cy="150" r="24" fill="none" stroke="#5fb87a" stroke-width="7"/>
+  <line x1="205" y1="167" x2="218" y2="180" stroke="#5fb87a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M160 195 q10 -10 25 -18" stroke="#1c7ed6" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M62 195 q-16 3 -20 18" stroke="#1c7ed6" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>
