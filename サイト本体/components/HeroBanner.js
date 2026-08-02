@@ -17,14 +17,16 @@ export default function HeroBanner() {
             家計管理・節約・ポイ活など信頼できるお金の情報をわかりやすく解説します。
           </p>
         </div>
-        <img
-          src={MAIN_MASCOT.welcomeImage}
-          alt={MAIN_MASCOT.name}
-          className="hero-banner-mascot"
-          width="150"
-          height="150"
-          loading="eager"
-        />
+        <div className="hero-banner-mascot-wrap">
+          <img
+            src={MAIN_MASCOT.welcomeImage}
+            alt={MAIN_MASCOT.name}
+            className="hero-banner-mascot"
+            width="150"
+            height="150"
+            loading="eager"
+          />
+        </div>
       </div>
     </section>
   );
