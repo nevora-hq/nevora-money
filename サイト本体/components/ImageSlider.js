@@ -23,29 +23,24 @@ export default function ImageSlider({ slides = [] }) {
   };
 
   return (
-    <section className="hero-slider" aria-label="注目記事スライド">
+    <section className="hero-slider" aria-label="カテゴリ紹介スライド">
       <div className="container">
         <div className="hero-slider-viewport">
           <div
             className="hero-slider-track"
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
-            {slides.map((post, i) => (
-              <Link
-                key={post.slug}
-                href={`/posts/${post.slug}`}
-                className="hero-slider-slide"
-              >
+            {slides.map((slide, i) => (
+              <Link key={slide.key} href={slide.href} className="hero-slider-slide">
                 {/* 先頭スライドは初期表示範囲に入るため遅延読み込みにしない(LCP対策) */}
                 <img
-                  src={post.thumbnail}
-                  alt={post.title}
+                  src={slide.image}
+                  alt={slide.name}
                   loading={i === 0 ? undefined : "lazy"}
                   fetchPriority={i === 0 ? "high" : undefined}
                 />
                 <div className="hero-slider-caption">
-                  <span className="category-badge">{post.category}</span>
-                  <p>{post.title}</p>
+                  <span className="hero-slider-category-name">{slide.name}</span>
                 </div>
               </Link>
             ))}
@@ -75,9 +70,9 @@ export default function ImageSlider({ slides = [] }) {
 
         {count > 1 && (
           <div className="hero-slider-dots">
-            {slides.map((post, i) => (
+            {slides.map((slide, i) => (
               <button
-                key={post.slug}
+                key={slide.key}
                 type="button"
                 className={`hero-slider-dot${i === index ? " active" : ""}`}
                 aria-label={`${i + 1}枚目を表示`}

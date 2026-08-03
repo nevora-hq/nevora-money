@@ -27,6 +27,7 @@ const CATEGORY_META = {
     icon: "🛡️",
     color: "#7048e8",
     soft: "#ede6fd",
+    image: "/images/category/hoken.webp",
     description:
       "保険の見直しポイントや選び方など、ライフステージに合わせた情報を紹介します。",
   },
@@ -34,6 +35,7 @@ const CATEGORY_META = {
     icon: "📈",
     color: "#0b7285",
     soft: "#e3fafc",
+    image: "/images/category/kabu.webp",
     description:
       "NISA・投資信託・株式など、資産形成の考え方と選び方をまとめています。",
   },
@@ -41,6 +43,7 @@ const CATEGORY_META = {
     icon: "🏢",
     color: "#9c36b5",
     soft: "#f8f0fc",
+    image: "/images/category/fudosan.webp",
     description:
       "区分マンション・一棟投資の仕組みやリスク管理など、不動産投資の基礎知識をまとめています。",
   },
@@ -48,6 +51,7 @@ const CATEGORY_META = {
     icon: "💱",
     color: "#c2255c",
     soft: "#ffe3ec",
+    image: "/images/category/fx.webp",
     description:
       "FXの仕組みや取引・分析の基礎から、リスク管理の考え方までを紹介します。",
   },
@@ -55,6 +59,7 @@ const CATEGORY_META = {
     icon: "🧮",
     color: "#5c940d",
     soft: "#f4fce3",
+    image: "/images/category/zeikin.webp",
     description:
       "所得税・住民税・確定申告・節税など、税金の仕組みと対策をまとめています。",
   },
@@ -62,6 +67,7 @@ const CATEGORY_META = {
     icon: "📖",
     color: "#495057",
     soft: "#f1f3f5",
+    image: "/images/category/yougo.webp",
     description:
       "NISA・iDeCo・為替・利回りなど、投資・FX・税金にまつわる基礎用語をわかりやすく解説します。",
   },
