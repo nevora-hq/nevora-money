@@ -1029,6 +1029,31 @@ h1.page-title {
   color: var(--color-text-faint);
 }
 
+.post-card-compact {
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.post-card-compact .post-card-thumb {
+  margin: -1px -1px 0;
+  width: calc(100% + 2px);
+}
+
+.post-card-compact h2 {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-card-compact:hover h2 {
+  color: var(--color-primary);
+}
+
 /* ---- Article ---- */
 .article-header {
   margin-bottom: 24px;
@@ -1519,6 +1544,42 @@ h1.page-title {
 /* ---- 目次(TOC) ----
    本文中のH2/H3見出しへのアンカーリンク一覧(components/ArticleToc.js)。
    スマホでも本文への到達を妨げないよう開閉トグル付きにしている。 */
+.article-summary-box {
+  max-width: 720px;
+  margin: 0 auto 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 18px;
+}
+
+.article-summary-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin: 0 0 8px;
+}
+
+.article-summary-list {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+.article-summary-target {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.article-summary-target-label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
 .article-toc {
   max-width: 720px;
   margin: 0 auto 24px;

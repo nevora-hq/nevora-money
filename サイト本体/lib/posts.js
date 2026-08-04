@@ -569,6 +569,14 @@ function normalizeFrontmatter(data, slug) {
     date: data.date || null,
     updatedDate: data.updatedDate || data.updated || null,
     thumbnail: data.thumbnail || "",
+    // 記事ページ上部(サムネイル下・目次上)に表示する要約。
+    // 未設定の記事では表示を省略するため、既存記事への遡及対応は不要。
+    summary: Array.isArray(data.summary)
+      ? data.summary.filter(Boolean)
+      : typeof data.summary === "string" && data.summary.trim()
+      ? data.summary.trim().split("\n").map((line) => line.trim()).filter(Boolean)
+      : [],
+    targetReader: data.targetReader || "",
     mascotComment: data.mascotComment || "",
     mascotComments: Array.isArray(data.mascotComments) ? data.mascotComments : [],
   };

@@ -120,6 +120,27 @@ export default function PostPage({ post, related, nextPost }) {
           />
         )}
 
+        {(post.summary?.length > 0 || post.targetReader) && (
+          <div className="article-summary-box">
+            {post.summary?.length > 0 && (
+              <>
+                <p className="article-summary-label">この記事で分かること</p>
+                <ul className="article-summary-list">
+                  {post.summary.map((line, i) => (
+                    <li key={i}>{line}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {post.targetReader && (
+              <p className="article-summary-target">
+                <span className="article-summary-target-label">おすすめの方: </span>
+                {post.targetReader}
+              </p>
+            )}
+          </div>
+        )}
+
         <ArticleToc items={post.toc} />
 
         {post.affiliateLinks?.length > 0 && (

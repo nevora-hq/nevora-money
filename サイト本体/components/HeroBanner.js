@@ -14,7 +14,7 @@ export default function HeroBanner() {
           <p className="hero-banner-eyebrow">WEB MAGAZINE</p>
           <h1 className="hero-banner-title">お金の総合ガイド｜NEVORA</h1>
           <p className="hero-banner-lead">
-            家計管理・節約・ポイ活など信頼できるお金の情報をわかりやすく解説します。
+            株式・不動産・FX・税金・保険——判断に役立つお金の知識を、正確に、わかりやすく。
           </p>
         </div>
         <div className="hero-banner-mascot-wrap">
