@@ -38,9 +38,6 @@ export default function PostCard({ post, compact = false }) {
           <Link href={`/posts/${post.slug}`}>{post.title}</Link>
         </h2>
         <p className="excerpt">{post.excerpt}</p>
-        {post.tags?.length > 0 && (
-          <p className="tags">{post.tags.map((t) => `#${t}`).join(" ")}</p>
-        )}
       </div>
     </div>
   );
