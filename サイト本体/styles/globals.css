@@ -721,6 +721,112 @@ img {
   font-size: 0.9rem;
 }
 
+/* ---- カテゴリまとめセクションのアコーディオン開閉 ---- */
+.category-summary-toggle {
+  display: block;
+  margin: 22px auto 0;
+  padding: 10px 22px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.category-summary-toggle:hover {
+  background: var(--color-primary-surface);
+}
+
+.category-summary-toggle:active {
+  transform: scale(0.97);
+}
+
+.category-summary-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.category-summary-extra-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  transition: grid-template-rows 0.28s ease, opacity 0.22s ease, margin-top 0.28s ease;
+}
+
+.category-summary-extra-grid > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.category-summary-extra-grid.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 20px;
+}
+
+/* ---- あなたのお金の悩みから探すセクション ---- */
+.worry-section {
+  margin: 8px 0 40px;
+}
+
+.worry-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.worry-group-title {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.worry-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.worry-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-surface);
+  border: 1px solid var(--color-primary-light);
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.worry-chip:hover {
+  background: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.worry-chip:active {
+  transform: scale(0.96);
+}
+
+.worry-chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .worry-chip {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+}
+
 /* ---- カテゴリまとめセクション ---- */
 .category-summary-section {
   position: relative;
