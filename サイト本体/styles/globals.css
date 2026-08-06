@@ -1538,6 +1538,116 @@ h1.page-title {
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
+/* ---- コールアウトボックス(💡ポイント / ⚠️注意 / 🔍結論だけ知りたい人へ) ----
+   Markdown本文中の `> [!POINT] タイトル` 記法(lib/posts.js applyCallouts)を
+   装飾ボックスに変換したもの。<blockquote>を維持したまま種類別のクラスを
+   付与しているため、上の.article-body blockquoteの基本スタイルを土台に
+   種類ごとの色だけ上書きする。 */
+.article-body .callout {
+  margin: 1.8em 0;
+  padding: 16px 18px;
+  border-left-width: 5px;
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+}
+
+.article-body .callout .callout-label {
+  margin: 0 0 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: inherit;
+}
+
+.article-body .callout p {
+  margin: 0 0 0.6em;
+}
+
+.article-body .callout p:last-child {
+  margin-bottom: 0;
+}
+
+.article-body .callout-point {
+  background: #eef7f2;
+  border-left-color: #1baf7a;
+}
+
+.article-body .callout-point .callout-label {
+  color: #157a52;
+}
+
+.article-body .callout-warning {
+  background: #fff6ea;
+  border-left-color: #eda100;
+}
+
+.article-body .callout-warning .callout-label {
+  color: #a3670a;
+}
+
+.article-body .callout-conclusion {
+  background: var(--color-primary-surface);
+  border-left-color: var(--color-primary);
+}
+
+.article-body .callout-conclusion .callout-label {
+  color: var(--color-primary-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  .article-body .callout-point {
+    background: rgba(27, 175, 122, 0.14);
+  }
+
+  .article-body .callout-warning {
+    background: rgba(237, 161, 0, 0.14);
+  }
+
+  .article-body .callout-conclusion {
+    background: rgba(214, 51, 108, 0.14);
+  }
+}
+
+/* ---- 本文用の折りたたみ(アコーディオン) ----
+   frontmatterのcollapsibles(lib/posts.js embedCollapsibles)から生成される
+   <details><summary>ブロック。体験談・失敗談など長いパートを畳んで表示する。 */
+.article-body .article-collapsible {
+  margin: 1.8em 0;
+  padding: 4px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.article-body .article-collapsible-summary {
+  cursor: pointer;
+  padding: 12px 4px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  list-style: none;
+}
+
+.article-body .article-collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+.article-body .article-collapsible-summary::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 0.75em;
+  transition: transform var(--transition);
+}
+
+.article-body .article-collapsible[open] .article-collapsible-summary::before {
+  transform: rotate(90deg);
+}
+
+.article-body .article-collapsible-body {
+  padding: 4px 4px 16px;
+  color: var(--color-text-muted);
+  line-height: 1.9;
+}
+
 .article-body img {
   border-radius: var(--radius-md);
   margin: 1em 0;

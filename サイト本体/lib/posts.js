@@ -64,6 +64,42 @@ function applyInlineMarkup(html) {
     .replace(/%%([^%\n]+?)%%/g, '<span class="article-note">$1</span>');
 }
 
+// GFM blockquoteを拡張したコールアウト記法(> [!POINT] タイトル(省略可) / > 本文…)を
+// 装飾ボックスに変換する。remarkは `[!POINT]` を通常の引用文テキストとして
+// そのまま素通しするため、applyInlineMarkup同様にremarkHtml出力後の
+// 文字列に対して正規表現で変換する。<blockquote>タグ自体は残すため
+// (class付与のみ)、splitHtmlBlocks等の既存のブロック境界判定への
+// 影響はない。
+// 対応パターン(remarkHtmlの実際の出力を確認済み):
+//   - <blockquote>\n<p>[!POINT] タイトル\n本文1行目\n本文2行目</p>\n</blockquote>
+//     (タイトル行と本文が空行なしで同一段落に続く場合)
+//   - <blockquote>\n<p>[!POINT] タイトル</p>\n<p>本文…</p>\n</blockquote>
+//     (タイトル行の後に空行を挟み、本文が別段落・リスト等になる場合)
+const CALLOUT_TYPES = {
+  POINT: { emoji: "💡", label: "ポイント", cls: "callout-point" },
+  WARNING: { emoji: "⚠️", label: "注意", cls: "callout-warning" },
+  CONCLUSION: {
+    emoji: "🔍",
+    label: "結論だけ知りたい人へ",
+    cls: "callout-conclusion",
+  },
+};
+
+function applyCallouts(html) {
+  return html.replace(
+    /<blockquote>\n<p>\[!(POINT|WARNING|CONCLUSION)\]([^\n<]*)(?:\n([\s\S]*?))?<\/p>\n([\s\S]*?)<\/blockquote>/g,
+    (match, type, titleRaw, sameParaRest, restBlocks) => {
+      const info = CALLOUT_TYPES[type];
+      const title = titleRaw.trim();
+      const labelText = title
+        ? `${info.emoji} ${info.label}: ${title}`
+        : `${info.emoji} ${info.label}`;
+      const sameParaHtml = sameParaRest ? `<p>${sameParaRest}</p>\n` : "";
+      return `<blockquote class="callout ${info.cls}"><p class="callout-label">${labelText}</p>\n${sameParaHtml}${restBlocks}</blockquote>`;
+    }
+  );
+}
+
 function escapeHtmlText(text) {
   return String(text || "")
     .replace(/&/g, "&amp;")
@@ -189,7 +225,7 @@ function escapeRegExp(text) {
 // アフィリエイトバナー・グラフの挿入箇所判定の両方で使う。
 function splitHtmlBlocks(html) {
   return html.split(
-    /(?<=<\/(?:p|ul|ol|blockquote|h1|h2|h3|h4|h5|h6|pre|table)>)\n*(?=<)/
+    /(?<=<\/(?:p|ul|ol|blockquote|h1|h2|h3|h4|h5|h6|pre|table|details)>|<hr ?\/?>)\n*(?=<)/
   );
 }
 
@@ -488,6 +524,48 @@ function embedCharts(html, charts) {
   return outBlocks.join("");
 }
 
+// frontmatterのcollapsibles([{afterHeading, summary, bodyMarkdown}])から、
+// 体験談・失敗談など長いパートを折りたたむ<details><summary>ブロックを
+// HTML文字列として組み立てる。ライターが本文Markdown中に直接<details>を
+// 書く方式は、remarkのデフォルトサニタイズ(生HTML除去)で消えてしまうため
+// 採用せず、chartsと全く同じ「frontmatter経由でposts.js側がHTML文字列を
+// 組み立てる」設計を踏襲する。bodyMarkdownは簡易的に改行→<br />変換のみ行う
+// (太字・リンク等のMarkdown記法までは解釈しない、あくまでシンプルな本文用)。
+function renderCollapsibleHtml(collapsible) {
+  const { summary, bodyMarkdown } = collapsible;
+  const summaryText = escapeHtmlText(summary);
+  const bodyHtml = escapeHtmlText(bodyMarkdown).replace(/\n/g, "<br />");
+
+  return `<details class="article-collapsible"><summary class="article-collapsible-summary">${summaryText}</summary><div class="article-collapsible-body">${bodyHtml}</div></details>`;
+}
+
+// frontmatterのcollapsiblesを、embedChartsと同じロジック(afterHeadingの
+// テキストと完全一致する見出しブロックの直後)で挿入する。
+function embedCollapsibles(html, collapsibles) {
+  if (!Array.isArray(collapsibles) || collapsibles.length === 0) return html;
+
+  const blocks = splitHtmlBlocks(html);
+  const used = new Array(collapsibles.length).fill(false);
+  const outBlocks = [];
+
+  for (const block of blocks) {
+    outBlocks.push(block);
+    const headingMatch = block.match(/^<h[23][^>]*>([\s\S]*?)<\/h[23]>/);
+    if (!headingMatch) continue;
+    const headingText = stripTags(headingMatch[1]);
+
+    collapsibles.forEach((collapsible, i) => {
+      if (used[i] || !collapsible.afterHeading) return;
+      if (stripTags(collapsible.afterHeading) === headingText) {
+        used[i] = true;
+        outBlocks.push(renderCollapsibleHtml(collapsible));
+      }
+    });
+  }
+
+  return outBlocks.join("");
+}
+
 // remarkHtmlが出力するHTMLエンティティ(&amp; 等)を、見出しIDの生成やTOC表示用の
 // プレーンテキストとして扱うために元の文字に戻す。JSXのテキストノードとして
 // そのまま描画すると再エスケープされるため、二重エスケープ(&amp;amp;)を防ぐ。
@@ -678,7 +756,7 @@ export async function getPostBySlug(slug) {
     .use(remarkGfm)
     .use(remarkHtml)
     .process(stripHtmlComments(content));
-  const rawHtml = applyInlineMarkup(processedContent.toString());
+  const rawHtml = applyCallouts(applyInlineMarkup(processedContent.toString()));
   // 目次(TOC)表示・アンカーリンクのため、H2/H3見出しにid属性を付与する。
   // charts/アフィリエイトバナーの挿入(段落単位の分割・再結合)より前に行う
   // (挿入処理は開始タグの属性追加に影響されず、見出しブロック判定の
@@ -686,8 +764,10 @@ export async function getPostBySlug(slug) {
   const { html: htmlWithHeadingIds, toc } = addHeadingIdsAndBuildToc(rawHtml);
   const charts = Array.isArray(data.charts) ? data.charts : [];
   const htmlWithCharts = embedCharts(htmlWithHeadingIds, charts);
+  const collapsibles = Array.isArray(data.collapsibles) ? data.collapsibles : [];
+  const htmlWithCollapsibles = embedCollapsibles(htmlWithCharts, collapsibles);
   const { html: htmlWithAffiliateBanners, unplaced } = embedAffiliateBanners(
-    htmlWithCharts,
+    htmlWithCollapsibles,
     meta.affiliateLinks
   );
   const mascot = getCategoryMascot(meta.category, slug, meta.mascotComment);
