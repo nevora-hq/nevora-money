@@ -150,7 +150,7 @@ export default function Home({
             <SectionBand
               base="/images/band/band-01"
               widths={[640, 1024, 1536]}
-              objectPosition="50% 8%"
+              objectPosition="50% 45%"
               hasImage={hasBand01}
             >
               <h2 id="worry-finder-title" className="section-band-title">
