@@ -11,7 +11,7 @@ export default function HeroBanner({ hasImage = true }) {
       {hasImage && (
         <img
           src="/images/hero/home-hero.webp"
-          srcSet="/images/hero/home-hero-640.webp 640w, /images/hero/home-hero-1024.webp 1024w, /images/hero/home-hero-1600.webp 1600w"
+          srcSet="/images/hero/home-hero-640.webp 640w, /images/hero/home-hero-1024.webp 1024w, /images/hero/home-hero-1536.webp 1536w"
           sizes="100vw"
           alt=""
           className="hero-banner-img"
@@ -19,7 +19,7 @@ export default function HeroBanner({ hasImage = true }) {
           decoding="async"
         />
       )}
-      {/* 暖色ウォッシュ→スクリムの順で重ねる(CSSのレイヤー構成コメント参照) */}
+      {/* 寒色ウォッシュ→スクリムの順で重ねる(CSSのレイヤー構成コメント参照) */}
       <div className="hero-banner-warm" aria-hidden="true" />
       <div className="hero-banner-scrim" aria-hidden="true" />
       <div className="hero-banner-overlay">

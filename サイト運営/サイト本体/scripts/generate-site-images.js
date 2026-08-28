@@ -11,9 +11,11 @@
  * 出力側のファイル名・幅構成は保たれる。
  *
  * 出力の考え方:
- *   - responsive: true  … 640/1024/1600wの3枚 + srcset非対応向けの
- *                         フォールバック<name>.webp(=1600w)を出力。
+ *   - responsive: true  … 640/1024/1536wの3枚 + srcset非対応向けの
+ *                         フォールバック<name>.webp(=1536w)を出力。
  *                         画面幅いっぱいに敷くヒーロー・バンド用。
+ *   - fixed: {w,h}      … 指定サイズちょうどに中央クロップしてPNGで出力。
+ *                         SNSのOGP画像(1200x630、PNG固定)用。
  *   - responsive: false … <name>.webp 1枚(既定800w)のみ。
  *                         カード内に収まるカテゴリ画像用(表示幅は最大でも
  *                         約380pxなので、DPR2でも800wで足りる)。
@@ -26,8 +28,10 @@ const sharp = require("sharp");
 const SRC_DIR =
   "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/お金サイト/ホームページ修正用";
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
-const RESPONSIVE_WIDTHS = [640, 1024, 1600];
-const RESPONSIVE_FALLBACK = 1600;
+// 1536は画像生成AI(ChatGPT等)の横長出力の実寸(1536x1024)に合わせた上限。
+// 元画像がこれより小さい場合は元画像の幅に丸められる(main()参照)。
+const RESPONSIVE_WIDTHS = [640, 1024, 1536];
+const RESPONSIVE_FALLBACK = 1536;
 const CARD_WIDTH = 800;
 const QUALITY = 78;
 
@@ -49,6 +53,10 @@ const MANIFEST = [
   { key: "category-insurance", src: "category-insurance.png", out: "images/category/insurance" },
   { key: "category-household", src: "category-household.png", out: "images/category/household" },
   { key: "category-card-point", src: "category-card-point.png", out: "images/category/card-point" },
+
+  // ---- SNSシェア用のOGP画像。1200x630ちょうど・PNGで出力する ----
+  // (components/Layout.js の DEFAULT_OG_IMAGE が参照する)
+  { key: "ogp", src: "ogp.png", out: "images/ogp", fixed: { w: 1200, h: 630 } },
 ];
 
 
@@ -85,7 +93,16 @@ async function main() {
     const outBase = path.join(PUBLIC_DIR, item.out);
 
     const written = [];
-    if (item.responsive) {
+    if (item.fixed) {
+      // OGPは規定サイズちょうどが求められるため、中央クロップしてPNGで出力する。
+      const outPath = `${outBase}.png`;
+      fs.mkdirSync(path.dirname(outPath), { recursive: true });
+      await sharp(srcPath)
+        .resize({ width: item.fixed.w, height: item.fixed.h, fit: "cover", position: "centre" })
+        .png()
+        .toFile(outPath);
+      written.push(outPath);
+    } else if (item.responsive) {
       // 元画像より大きい幅は拡大になるので作らない。最大幅は元画像の幅に丸め、
       // srcsetの最大候補と実ファイルが必ず一致するようにする。
       const maxWidth = Math.min(RESPONSIVE_FALLBACK, meta.width);

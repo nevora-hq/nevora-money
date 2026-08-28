@@ -123,7 +123,7 @@ export default function Home({
             rel="preload"
             as="image"
             href="/images/hero/home-hero.webp"
-            imageSrcSet="/images/hero/home-hero-640.webp 640w, /images/hero/home-hero-1024.webp 1024w, /images/hero/home-hero-1600.webp 1600w"
+            imageSrcSet="/images/hero/home-hero-640.webp 640w, /images/hero/home-hero-1024.webp 1024w, /images/hero/home-hero-1536.webp 1536w"
             imageSizes="100vw"
             type="image/webp"
             fetchPriority="high"
@@ -149,7 +149,7 @@ export default function Home({
           <>
             <SectionBand
               base="/images/band/band-01"
-              widths={[640, 1024, 1600]}
+              widths={[640, 1024, 1536]}
               objectPosition="50% 8%"
               hasImage={hasBand01}
             >

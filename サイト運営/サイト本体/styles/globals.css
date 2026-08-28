@@ -394,7 +394,7 @@ img {
 
    レイヤー構成(下から順に):
      .hero-banner-img   … 写真本体(object-fitでトリミング)
-     .hero-banner-warm  … 暖色ウォッシュ(クール系の写真をブランドのピンク寄りに寄せる)
+     .hero-banner-warm  … 寒色ウォッシュ(写真をブランドのブルー〜ティール寄りに寄せる)
      .hero-banner-scrim … 左側スクリム+下端/右下の落とし込み(文字とマスコットの可読性)
      .hero-banner-overlay(.hero-banner-inner) … テキスト
      .hero-banner-mascot … マスコット */
@@ -426,9 +426,9 @@ img {
   pointer-events: none;
   background: linear-gradient(
     115deg,
-    rgba(255, 176, 196, 0.18) 0%,
-    rgba(255, 214, 196, 0.12) 55%,
-    rgba(255, 244, 236, 0.06) 100%
+    rgba(150, 196, 232, 0.18) 0%,
+    rgba(168, 222, 214, 0.12) 55%,
+    rgba(236, 246, 250, 0.06) 100%
   );
   mix-blend-mode: multiply;
 }
@@ -450,15 +450,15 @@ img {
   background:
     linear-gradient(
       90deg,
-      rgba(48, 16, 30, 0.78) 0%,
-      rgba(48, 16, 30, 0.74) calc(50% + 60px),
-      rgba(56, 22, 38, 0.34) calc(50% + 200px),
-      rgba(60, 26, 44, 0) calc(50% + 330px)
+      rgba(12, 30, 52, 0.78) 0%,
+      rgba(12, 30, 52, 0.74) calc(50% + 60px),
+      rgba(16, 38, 62, 0.34) calc(50% + 200px),
+      rgba(20, 44, 70, 0) calc(50% + 330px)
     ),
     /* 右下: マスコットを明るい写真の上でも見えるようにわずかに落とす */
-      radial-gradient(220px 140px at 93% 88%, rgba(40, 14, 26, 0.3), transparent 72%),
+      radial-gradient(220px 140px at 93% 88%, rgba(10, 26, 46, 0.3), transparent 72%),
     /* 下端: 直下のスライダーとの境目をなじませる */
-      linear-gradient(to top, rgba(40, 14, 26, 0.2) 0%, rgba(40, 14, 26, 0) 38%);
+      linear-gradient(to top, rgba(10, 26, 46, 0.2) 0%, rgba(10, 26, 46, 0) 38%);
 }
 
 /* スマホは写真の右側(化粧品ボトル・窓)が明るく、左側スクリムだけでは
@@ -467,9 +467,9 @@ img {
 @media (max-width: 767px) {
   .hero-banner-scrim {
     background:
-      linear-gradient(100deg, rgba(45, 16, 28, 0.82) 0%, rgba(52, 20, 34, 0.72) 100%),
-      radial-gradient(160px 110px at 90% 86%, rgba(40, 14, 26, 0.3), transparent 72%),
-      linear-gradient(to top, rgba(40, 14, 26, 0.3) 0%, rgba(40, 14, 26, 0) 46%);
+      linear-gradient(100deg, rgba(11, 28, 49, 0.82) 0%, rgba(14, 34, 57, 0.72) 100%),
+      radial-gradient(160px 110px at 90% 86%, rgba(10, 26, 46, 0.3), transparent 72%),
+      linear-gradient(to top, rgba(10, 26, 46, 0.3) 0%, rgba(10, 26, 46, 0) 46%);
   }}
 
 /* タブレット〜小型PC(768〜1179px)はコンテンツ幅1180pxに達しておらず
@@ -480,13 +480,13 @@ img {
     background:
       linear-gradient(
         90deg,
-        rgba(48, 16, 30, 0.86) 0px,
-        rgba(48, 16, 30, 0.74) 520px,
-        rgba(56, 22, 38, 0.34) 760px,
-        rgba(60, 26, 44, 0) 920px
+        rgba(12, 30, 52, 0.86) 0px,
+        rgba(12, 30, 52, 0.74) 520px,
+        rgba(16, 38, 62, 0.34) 760px,
+        rgba(20, 44, 70, 0) 920px
       ),
-      radial-gradient(220px 140px at 93% 88%, rgba(40, 14, 26, 0.4), transparent 72%),
-      linear-gradient(to top, rgba(40, 14, 26, 0.32) 0%, rgba(40, 14, 26, 0) 42%);
+      radial-gradient(220px 140px at 93% 88%, rgba(10, 26, 46, 0.4), transparent 72%),
+      linear-gradient(to top, rgba(10, 26, 46, 0.32) 0%, rgba(10, 26, 46, 0) 42%);
   }}
 
 .hero-banner-overlay {
@@ -1335,10 +1335,10 @@ img {
   pointer-events: none;
   background: linear-gradient(
     90deg,
-    rgba(48, 16, 30, 0.84) 0%,
-    rgba(48, 16, 30, 0.76) calc(50% - 180px),
-    rgba(56, 22, 38, 0.3) calc(50% + 60px),
-    rgba(60, 26, 44, 0) calc(50% + 220px)
+    rgba(12, 30, 52, 0.84) 0%,
+    rgba(12, 30, 52, 0.76) calc(50% - 180px),
+    rgba(16, 38, 62, 0.3) calc(50% + 60px),
+    rgba(20, 44, 70, 0) calc(50% + 220px)
   );
 }
 
@@ -1350,8 +1350,8 @@ img {
   .section-band-scrim {
     background: linear-gradient(
       100deg,
-      rgba(48, 16, 30, 0.86) 0%,
-      rgba(52, 20, 34, 0.76) 100%
+      rgba(12, 30, 52, 0.86) 0%,
+      rgba(14, 34, 57, 0.76) 100%
     );
   }}
 
