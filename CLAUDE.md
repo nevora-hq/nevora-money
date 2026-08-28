@@ -76,4 +76,4 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 
 - **お悩み別ページ(`/worry/[slug]`)**: `サイト運営\サイト本体\lib\worryTopics.js`にチップ(お金の悩み12件)を定義済み。本文を`lib\worryContent.js`に同じslugで登録すると、その悩みのページ・トップのチップ・`/worry`ハブ・サイトマップに自動で載る
 - **セルフ診断ページ(`/diagnosis/[slug]`)**: `lib\diagnosisTopics.js`に質問と結果を登録すると生成される。表示は`components\DiagnosisQuiz.js`が担当(データ駆動のためコンポーネント改修は不要)
-- **写真素材(ヒーロー/セクションバンド/カテゴリカード)**: 美容サイトの画像は全削除済み。`サイト運営\サイト本体\scripts\generate-site-images.js`のMANIFESTに沿って元画像を`画像フォルダ\お金サイト\ホームページ修正用`に置き、`node scripts/generate-site-images.js`で生成する。未生成の間は画像を出さずグラデーション背景で代替する(`pages\index.js`の`hasHeroImage`等)
+- **写真素材(ヒーロー/セクションバンド/カテゴリカード)**: 美容サイトの画像は全削除済み。`サイト運営\サイト本体\scripts\generate-site-images.js`のMANIFESTに沿って元画像を`画像フォルダ\各種サイト\お金サイト\ホームページ修正用`に置き、`node scripts/generate-site-images.js`で生成する。未生成の間は画像を出さずグラデーション背景で代替する(`pages\index.js`の`hasHeroImage`等)

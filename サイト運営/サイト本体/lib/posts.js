@@ -1314,7 +1314,7 @@ function renderProcessContrastMotifHtml(motif, chart, panel) {
     const guidesHtml = guides
       .map((g, i) => {
         const isActive = i === activeIndex;
-        const color = isActive ? "var(--chart-accent, #d6336c)" : "var(--diagram-line, #4a3f33)";
+        const color = isActive ? "var(--chart-accent, #0b5c8a)" : "var(--diagram-line, #4a3f33)";
         return `<line x1="20" y1="${g.y}" x2="126" y2="${
           g.y
         }" stroke="${color}" stroke-width="${
@@ -1329,7 +1329,7 @@ function renderProcessContrastMotifHtml(motif, chart, panel) {
     const targetY = guides[activeIndex] ? Number(guides[activeIndex].y) : 40;
     return `<g><circle cx="55" cy="35" r="26" fill="var(--diagram-skin, #f4e4d0)" stroke="var(--diagram-line, #4a3f33)" stroke-width="1.5" /><rect x="45" y="58" width="20" height="30" fill="var(--diagram-skin, #f4e4d0)" stroke="var(--diagram-line, #4a3f33)" stroke-width="1.5" />${guidesHtml}<path d="M40,16 Q30,${
       (16 + targetY) / 2
-    } 38,${targetY}" fill="none" stroke="var(--chart-accent, #d6336c)" stroke-width="6" stroke-linecap="round" /></g>`;
+    } 38,${targetY}" fill="none" stroke="var(--chart-accent, #0b5c8a)" stroke-width="6" stroke-linecap="round" /></g>`;
   }
   // hairCuticleContrast: 毛髪の縦断面をシャフト(中心の帯)+左右のキューティクル
   // (鱗状のうろこ)で表現する。panel.state==="damaged"のときキューティクルの
@@ -1359,7 +1359,7 @@ function renderProcessContrastMotifHtml(motif, chart, panel) {
       } Z" fill="var(--diagram-skin, #f4e4d0)" stroke="var(--diagram-line, #4a3f33)" stroke-width="1" />`;
     }
     const shaftHeight = scaleCount * scaleH + 6;
-    const shaftHtml = `<rect x="${shaftX}" y="${top}" width="${shaftWidth}" height="${shaftHeight}" rx="8" fill="var(--chart-accent, #d6336c)" fill-opacity="0.12" stroke="var(--diagram-line, #4a3f33)" stroke-width="1.5" />`;
+    const shaftHtml = `<rect x="${shaftX}" y="${top}" width="${shaftWidth}" height="${shaftHeight}" rx="8" fill="var(--chart-accent, #0b5c8a)" fill-opacity="0.12" stroke="var(--diagram-line, #4a3f33)" stroke-width="1.5" />`;
     const causeLabels = isDamaged && Array.isArray(panel.causeLabels) ? panel.causeLabels : [];
     const causesHtml = causeLabels
       .map((label, i) => {
@@ -1420,7 +1420,7 @@ function renderProcessContrastMotifHtml(motif, chart, panel) {
     const sparseFilled = new Set([3, 9, 14, 19]);
     const denseFilled = new Set([0, 1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 15, 16, 18]);
     const filled = isDense ? denseFilled : sparseFilled;
-    const filledColor = isDense ? "var(--chart-accent, #d6336c)" : "var(--color-text-faint, #9ca3af)";
+    const filledColor = isDense ? "var(--chart-accent, #0b5c8a)" : "var(--color-text-faint, #9ca3af)";
     const cellSize = 16;
     const gap = 4;
     const cols = 7;

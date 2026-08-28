@@ -1,8 +1,8 @@
 :root {
-  --color-primary: #d6336c;
-  --color-primary-dark: #b32657;
-  --color-primary-light: #ffe3ec;
-  --color-primary-surface: #fff5f8;
+  --color-primary: #0b5c8a;
+  --color-primary-dark: #084764;
+  --color-primary-light: #d7ebf5;
+  --color-primary-surface: #f2f9fc;
   /* 汎用4type(steps/checklist/summaryCard/compareCards)+セクション交互化の既定色。
      記事側で独自テーマ(.asemo-article等)を持つ場合は、そのスコープ内でこの4変数だけ
      再定義すれば、クラス自体をコピーしなくても配色を変えられる(2026-08-08追加)。 */
@@ -30,7 +30,7 @@
   --radius-lg: 16px;
   --shadow-sm: 0 1px 2px rgba(20, 20, 30, 0.05);
   --shadow-md: 0 6px 20px rgba(20, 20, 30, 0.07);
-  --shadow-hover: 0 10px 28px rgba(214, 51, 108, 0.14);
+  --shadow-hover: 0 10px 28px rgba(11, 92, 138, 0.14);
   --transition: 180ms ease;
 }
 
@@ -101,14 +101,14 @@ img {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(160deg, #fdf1f4 0%, #f7f2fb 35%, #eef6fb 65%, #e9f2fb 100%);
+  background: linear-gradient(160deg, #eef6fb 0%, #f2f6fb 35%, #eaf4f7 65%, #e7f1f8 100%);
 }
 
 /* ---- Header ----
    同系色の水色グラデーション+ごく薄い水玉模様を全ページ共通で敷く。 */
 .site-header {
   background-image: radial-gradient(rgba(56, 163, 217, 0.14) 1px, transparent 1.6px),
-    linear-gradient(120deg, rgba(255, 241, 244, 0.92), rgba(234, 244, 251, 0.92));
+    linear-gradient(120deg, rgba(234, 244, 251, 0.92), rgba(232, 244, 246, 0.92));
   background-size: 16px 16px, 100% 100%;
   background-repeat: repeat, no-repeat;
   backdrop-filter: saturate(180%) blur(8px);
@@ -348,7 +348,7 @@ img {
   font-size: 0.85rem;
   border-top: 1px solid var(--color-border);
   background-image: radial-gradient(rgba(56, 163, 217, 0.12) 1px, transparent 1.6px),
-    linear-gradient(160deg, rgba(238, 246, 251, 1), rgba(253, 241, 244, 1));
+    linear-gradient(160deg, rgba(238, 246, 251, 1), rgba(232, 244, 246, 1));
   background-size: 18px 18px, 100% 100%;
   background-repeat: repeat, no-repeat;
 }
@@ -514,7 +514,7 @@ img {
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #ffe3ec;
+  color: #d7ebf5;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
@@ -532,7 +532,7 @@ img {
   margin: 0;
   font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.98rem);
   line-height: 1.7;
-  color: #f5eef1;
+  color: #eaf2f7;
   max-width: 460px;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
@@ -885,15 +885,15 @@ img {
 
 /* イントロ(マスコット挨拶+診断バナー)。無地のままだと2560px幅で
    左右319pxぶんがほぼ白(実測rgb 250,249,251)に見えるため、ここもティントを敷く。
-   スライダー(薄ベージュ)の次なので薄ピンク側にする。 */
+   スライダー(薄ベージュ)の次なので薄ブルー側にする。 */
 .home-stripe--intro {
   padding-top: clamp(18px, 2.2vw, 30px);
-  background: rgba(255, 241, 246, 0.72);
+  background: rgba(235, 245, 251, 0.78);
 }
 
-/* 薄ピンク(悩みから探す / 記事セクション) */
+/* 薄ブルー(悩みから探す / 記事セクション) */
 .home-stripe--tint {
-  background: rgba(255, 241, 246, 0.72);
+  background: rgba(235, 245, 251, 0.78);
 }
 
 /* 薄ベージュ(カテゴリで探す)。ティントを交互に置いて帯の切り替わりを作る */
@@ -949,7 +949,7 @@ img {
   letter-spacing: 0.08em;
   margin: 0 0 6px;
   color: var(--color-primary-dark);
-  background: linear-gradient(120deg, var(--color-primary), #ff8fab 65%, #ffb199);
+  background: linear-gradient(120deg, var(--color-primary), #0e5f70 65%, #0d6157);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1384,7 +1384,7 @@ img {
   max-width: 24em;
   font-size: clamp(0.8rem, 0.76rem + 0.2vw, 0.9rem);
   line-height: 1.7;
-  color: #f5eef1;
+  color: #eaf2f7;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -1883,7 +1883,7 @@ h1.page-title {
   line-height: 1.7;
   margin: 2.4em 0 1em;
   padding: 0.6em 0.9em;
-  background: linear-gradient(120deg, var(--color-primary-light), #fff6f9 75%);
+  background: linear-gradient(120deg, var(--color-primary-light), #f2f9fc 75%);
   border-left: 6px solid var(--color-primary);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   color: var(--color-text);
@@ -1918,14 +1918,14 @@ h1.page-title {
   margin-bottom: 0.5em;
 }
 
-/* 記事本文リンクの既定色。以前は--color-primary(#d6336c)のままで白背景上
-   4.61:1しかなく、tint背景(#fff5f8)では4.62:1とAA(4.5:1)ぎりぎりだった。
+/* 記事本文リンクの既定色。以前は--color-primary(#0b5c8a)のままで白背景上
+   4.61:1しかなく、tint背景(#f2f9fc)では4.62:1とAA(4.5:1)ぎりぎりだった。
    閾値ちょうどはマージン不足で「背景と同化して見える」報告が繰り返し発生した
    ため(2026-08-09)、同色相のまま暗くし白・tint双方で7:1前後を確保する。 */
 .article-body a {
   text-decoration: underline;
   text-underline-offset: 2px;
-  color: #a01f4c;
+  color: #084764;
 }
 
 .article-body strong {
@@ -2362,8 +2362,8 @@ h1.page-title {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #ffe3ec;
-  color: #9c1f49;
+  background: #d7ebf5;
+  color: #084764;
   font-weight: 700;
   font-size: 0.9rem;
   flex-shrink: 0;
@@ -2435,8 +2435,8 @@ h1.page-title {
 }
 
 .article-sources-item--editorial .article-sources-badge {
-  background: #ffe3ec;
-  color: #9c1f49;
+  background: #d7ebf5;
+  color: #084764;
 }
 
 .article-sources-meta {
@@ -2500,8 +2500,8 @@ h1.page-title {
   gap: 12px;
   margin: 24px 0;
   padding: 16px;
-  background: #fff9fb;
-  border: 1px dashed #f3b6cd;
+  background: #f7fbfd;
+  border: 1px dashed #a9cfe3;
   border-radius: var(--radius-md);
 }
 
@@ -2568,7 +2568,7 @@ h1.page-title {
   justify-content: space-between;
   width: 100%;
   padding: 14px 18px;
-  background: linear-gradient(120deg, var(--color-primary-light), #fff6f9 75%);
+  background: linear-gradient(120deg, var(--color-primary-light), #f2f9fc 75%);
   border: none;
   font-weight: 700;
   font-size: 0.95rem;
@@ -2706,7 +2706,7 @@ h1.page-title {
   font-weight: 700;
   color: #fff;
   white-space: nowrap;
-  background: linear-gradient(135deg, var(--color-primary), #ff9fc2);
+  background: linear-gradient(135deg, var(--color-primary), #0e5f70);
   border-radius: 45% 55% 60% 40% / 60% 45% 55% 40%;
   box-shadow: var(--shadow-sm);
 }
@@ -3398,15 +3398,15 @@ table.admin-table td {
   gap: 16px;
   margin-bottom: 28px;
   padding: 18px 24px;
-  background: linear-gradient(120deg, #ffd3e2, #ffeef4);
+  background: linear-gradient(120deg, #cfe6f2, #eef6fb);
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-lg);
-  box-shadow: 0 6px 16px rgba(214, 51, 108, 0.28);
+  box-shadow: 0 6px 16px rgba(11, 92, 138, 0.28);
   transition: box-shadow var(--transition), transform var(--transition);
 }
 
 .diagnosis-banner:hover {
-  box-shadow: 0 12px 30px rgba(214, 51, 108, 0.38);
+  box-shadow: 0 12px 30px rgba(11, 92, 138, 0.38);
   transform: translateY(-2px);
   text-decoration: none;
 }
@@ -3559,180 +3559,6 @@ table.admin-table td {
   cursor: pointer;
 }
 
-/* --- カルーセル(横スライド。ネイティブスクロール+scroll-snap) --- */
-
-.skin-type-carousel {
-  margin-bottom: 20px;
-}
-
-.skin-type-carousel-track {
-  list-style: none;
-  margin: 0;
-  padding: 4px 4px 12px;
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.skin-type-carousel-slide {
-  flex: 0 0 auto;
-  width: 78%;
-  scroll-snap-align: start;
-}
-
-.skin-type-carousel-link {
-  position: relative;
-  display: block;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-hover);
-  text-decoration: none;
-  color: inherit;
-}
-
-.skin-type-carousel-img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.skin-type-carousel-img-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  background: var(--color-surface-alt, #f4f4f4);
-}
-
-.skin-type-carousel-caption {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 10px 12px 20px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
-  color: #fff;
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-@media (min-width: 480px) {
-  .skin-type-carousel-slide {
-    width: 62%;
-  }}
-
-@media (min-width: 768px) {
-  .skin-type-carousel-slide {
-    width: 30%;
-  }}
-
-@media (min-width: 1080px) {
-  .skin-type-carousel-slide {
-    width: 22%;
-  }}
-
-/* --- カード一覧(縦list。左サムネイル+右テキスト) --- */
-
-.skin-type-cards {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.skin-type-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
-}
-
-.skin-type-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-  border-color: var(--color-primary-light);
-}
-
-.skin-type-card-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  text-decoration: none;
-  color: var(--color-text);
-}
-
-.skin-type-card-link:hover {
-  text-decoration: none;
-  color: var(--color-primary);
-}
-
-.skin-type-card-thumb {
-  flex: 0 0 auto;
-  width: 84px;
-  height: 84px;
-  border-radius: var(--radius-sm, 8px);
-  object-fit: cover;
-}
-
-.skin-type-card-thumb-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  background: var(--color-surface-alt, #f4f4f4);
-}
-
-.skin-type-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.skin-type-card-title {
-  font-size: 0.92rem;
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-.skin-type-card-desc {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-@media (min-width: 768px) {
-  .skin-type-card-thumb {
-    width: 110px;
-    height: 110px;
-  }
-
-  .skin-type-card-title {
-    font-size: 1rem;
-  }
-
-  .skin-type-card-desc {
-    font-size: 0.85rem;
-  }}
-
 /* =========================================================================
    汎用4type(steps/checklist/summaryCard/compareCards)+セクション交互化の共通CSS
    (2026-08-08追加)。記事専用プレフィックス(asemo-/pc-/kss-等)を持たない、
@@ -3842,7 +3668,7 @@ table.admin-table td {
    trueをfrontmatterで指定した記事だけがwrapArticleSections()で.article-sectionに
    包まれる仕様(lib/posts.js)のため、指定のない記事(フケ皮膚科受診目安 等)では
    .article-section祖先が存在せず、このルール自体が一切適用されずリンクが既定の
-   a{color:var(--color-primary)}(#d6336c)のままグラデーション背景に埋もれて読めなく
+   a{color:var(--color-primary)}(#0b5c8a)のままグラデーション背景に埋もれて読めなく
    なっていた(2026-08-09報告で発覚)。祖先要素の有無に左右されないよう、リンク自身に
    専用クラス(chart-summary-card-link、renderGenericSummaryCardHtml側で付与)を付け、
    .chart-summary-card単体をセレクタにする。specificityは(0,2,1)となり、後方定義の
@@ -3933,7 +3759,7 @@ table.admin-table td {
 
 .chart-compare-card-list dt {
   font-size: 0.75rem;
-  /* 背景--chart-tint-bg(既定#fff5f8)上で--color-text-muted(#6b7280)は4.53:1と
+  /* 背景--chart-tint-bg(既定#f2f9fc)上で--color-text-muted(#6b7280)は4.53:1と
      僅差のため、同色相のまま少し暗くした値に上書き(2026-08-08、4.53:1→4.65:1)。 */
   color: #6a707e;
   margin-top: 8px;
@@ -4155,11 +3981,11 @@ table.admin-table td {
   background: var(--chart-tint-bg);
 }
 
-/* tint背景(既定#fff5f8)上でも.article-body aと同じ暗色(#a01f4c、約7:1)に統一する
+/* tint背景(既定#f2f9fc)上でも.article-body aと同じ暗色(#084764、約7:1)に統一する
    (2026-08-09。旧#d22a65は4.62:1でAAぎりぎりのマージン不足だったため)。
    hoverはより詳しいセレクタで既定のhover色を維持する。 */
 .article-section-tint a {
-  color: #a01f4c;
+  color: #084764;
 }
 
 .article-section-tint a:hover {
@@ -4472,429 +4298,6 @@ table.admin-table td {
     max-width: 200px;
   }}
 
-/* ---- セクション交互背景(H2見出し単位、lib/foundationCompareExtras.js) ---- */
-.fnd-section {
-  padding: 4px 0;
-}
-
-.fnd-section-plain {
-  background: #fff;
-}
-
-.fnd-section-tint {
-  background: rgba(176, 137, 104, 0.06);
-  border-radius: var(--radius-md);
-  margin: 0 -8px;
-  padding: 8px 8px 4px;
-}
-
-.fnd-section-card {
-  background: #fff;
-  border: 1px solid #e7d9c8;
-  border-radius: var(--radius-md);
-  margin: 12px -4px;
-  padding: 12px 12px 4px;
-}
-
-/* ---- タイプ別h3見出しのラベルバッジ(pill) ---- */
-.fnd-badge {
-  display: inline-block;
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.72rem;
-  padding: 3px 10px;
-  border-radius: 999px;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-.fnd-badge-sebum {
-  background: #eb6834;
-}
-
-.fnd-badge-dry {
-  background: #2a78d6;
-}
-
-.fnd-badge-mix {
-  background: #1baf7a;
-}
-
-/* =====================================================================
-   「リップ比較」記事(2026-07-26_リップ比較.md)専用スタイル(lib/lipCompareExtras.js)
-   クラス名はすべて lip- プレフィックスで他記事のスタイルと衝突しないようにしている。
-   テーマカラー: ローズレッド#D6456B / ヌードベージュ#E5C5B5 / ディープボルドー#6E1F35
-   ===================================================================== */
-
-/* ---- 独自目次(details) ---- */
-.lip-toc {
-  margin: 0 0 24px;
-  border: 1px solid #E5C5B5;
-  border-radius: var(--radius-md);
-  background: #fff;
-  overflow: hidden;
-}
-
-.lip-toc > summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 14px 18px;
-  font-weight: 700;
-  color: #6E1F35;
-  background: #fbecef;
-}
-
-.lip-toc > summary::-webkit-details-marker {
-  display: none;
-}
-
-.lip-toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 6px 10px 14px;
-}
-
-.lip-toc-item a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  min-height: 44px;
-  color: #6E1F35;
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-}
-
-.lip-toc-item a:hover {
-  background: #fbecef;
-}
-
-.lip-toc-emoji {
-  font-size: 1rem;
-}
-
-/* ---- セクション交互背景(H2見出し単位) ---- */
-.lip-section {
-  padding: 4px 0;
-}
-
-.lip-section-plain {
-  background: #fff;
-}
-
-.lip-section-tint {
-  background: rgba(214, 69, 107, 0.05);
-  border-radius: var(--radius-md);
-  margin: 0 -8px;
-  padding: 8px 8px 4px;
-}
-
-.lip-section-card {
-  background: #fff;
-  border: 1px solid #E5C5B5;
-  border-radius: var(--radius-md);
-  margin: 12px -4px;
-  padding: 12px 12px 4px;
-}
-
-.lip-section h2 {
-  background: linear-gradient(120deg, #fbecef, #fff 75%) !important;
-  border-left-color: #D6456B !important;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.lip-section h3 {
-  border-left-color: #D6456B !important;
-  color: #6E1F35 !important;
-}
-
-/* ---- 断面比較図 ---- */
-.lip-cross-section .lip-cross-svg {
-  display: block;
-  height: auto;
-  min-width: 400px;
-  overflow: visible;
-}
-
-.lip-cross-name {
-  font-size: 13px;
-  font-weight: 700;
-  fill: #6E1F35;
-}
-
-.lip-cross-desc {
-  font-size: 12px;
-  fill: #7a5c62;
-}
-
-.lip-cross-note {
-  margin: 10px 0 0;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-/* ---- レーダーチャート ---- */
-.radar-svg {
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  overflow: visible;
-}
-
-.radar-ring {
-  fill: none;
-  stroke: #e8dcd8;
-  stroke-width: 1;
-}
-
-.radar-axis-line {
-  stroke: #d8c6c1;
-  stroke-width: 1;
-}
-
-.radar-axis-label {
-  font-size: 12px;
-  fill: #6E1F35;
-  font-weight: 600;
-}
-
-.radar-legend {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 14px 0 0;
-  padding: 0;
-  font-size: 0.85rem;
-}
-
-.radar-legend li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.radar-swatch {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  display: inline-block;
-}
-
-/* ---- 商品比較表 ---- */
-.lip-scroll-hint {
-  margin: 0 0 8px;
-  font-size: 0.8rem;
-  color: var(--color-text-faint);
-}
-
-.lip-scroll-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.lip-product-table {
-  width: 100%;
-  min-width: 620px;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-
-.lip-product-table th,
-.lip-product-table td {
-  border: 1px solid #E5C5B5;
-  padding: 8px 10px;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.lip-product-table th {
-  background: #fbecef;
-  color: #6E1F35;
-  font-weight: 700;
-}
-
-.lip-product-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: normal !important;
-  min-width: 160px;
-}
-
-.lip-color-chip {
-  flex-shrink: 0;
-}
-
-/* ---- 手順ガイド ---- */
-.lip-step-list {
-  list-style: none;
-  margin: 4px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.lip-step-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.lip-step-icon {
-  flex-shrink: 0;
-}
-
-.lip-step-title {
-  margin: 0 0 4px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #6E1F35;
-}
-
-/* ==========================================================================
-   「くせ毛タイプ別まとまる髪型ガイド」記事専用スタイル
-   (content/articles/2026-08-05_くせ毛タイプ別まとまる髪型ガイド.md)
-   テーマカラー: チェスナットブラウン#8B6F52 / ピンクベージュ#E8CFC4 /
-   ダークブラウン#3A2E26。他記事のクラスとは名前空間を分け(hairtype- /
-   nevora-point- / warning-box- / hairtype-checklist- 接頭辞)、既存クラスは変更しない。
-   ========================================================================== */
-
-.hairtype-diagram-svg,
-.hairtype-flow-svg,
-.hairtype-steps-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
-}
-
-.hairtype-diagram-label-main {
-  font-size: 13px;
-  font-weight: 700;
-  fill: #3A2E26;
-}
-
-.hairtype-diagram-label-sub {
-  font-size: 11px;
-  fill: #6b5a4a;
-}
-
-.hairtype-diagram-caption {
-  margin: 10px 0 0;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-.hairtype-flow-q {
-  font-size: 13px;
-  font-weight: 700;
-  fill: #3A2E26;
-}
-
-.hairtype-flow-a {
-  font-size: 12px;
-  fill: #6b5a4a;
-}
-
-.hairtype-silhouette-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-@media (min-width: 560px) {
-  .hairtype-silhouette-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }}
-
-.hairtype-silhouette-tile {
-  text-align: center;
-  background: #FBF5F0;
-  border: 1px solid #E8CFC4;
-  border-radius: var(--radius-md);
-  padding: 10px 6px 14px;
-}
-
-.hairtype-silhouette-svg {
-  width: 100%;
-  max-width: 96px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-.hairtype-silhouette-name {
-  margin: 6px 0 4px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #3A2E26;
-}
-
-.hairtype-silhouette-badge {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #8B6F52;
-  color: #fff;
-}
-
-.hairtype-step-num {
-  text-anchor: middle;
-  font-size: 16px;
-  font-weight: 700;
-  fill: #fff;
-}
-
-.hairtype-step-label {
-  font-size: 12px;
-  font-weight: 700;
-  fill: #3A2E26;
-}
-
-.hairtype-step-desc {
-  font-size: 11px;
-  fill: #6b5a4a;
-}
-
-/* 乾かし方4ステップの説明文(SVG外のHTMLリスト。狭いスロットへの詰め込みで
-   隣の説明と重なるのを避けるため、SVGは番号・矢印のみにしテキストはここに出す) */
-.hairtype-steps-list {
-  list-style: none;
-  margin: 14px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 10px;
-}
-
-.hairtype-steps-list li {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 12px;
-  background: rgba(139, 111, 82, 0.06);
-  border-radius: var(--radius-md);
-}
-
-.hairtype-steps-list-label {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #3A2E26;
-}
-
-.hairtype-steps-list-desc {
-  font-size: 0.85rem;
-  color: #6b5a4a;
-}
-
 /* 💡 NEVORAポイント: マスコットの一言+アクセント枠(本文の言い換えではなく
    一段深い実務補足を入れる箇所)。enhanceAnnotationBlockquotes(lib/posts.js)が
    「> 💡 NEVORAポイント」の引用ブロックをこのHTML構造に変換する。 */
@@ -4980,105 +4383,6 @@ table.admin-table td {
   border-left: 6px solid #8B6F52;
 }
 
-/* ✅ 今日からできるチェックリスト */
-.hairtype-checklist {
-  margin: 1.6em 0;
-  padding: 18px 20px;
-  background: #FBF5F0;
-  border: 1px solid #E8CFC4;
-  border-radius: var(--radius-lg);
-}
-
-.hairtype-checklist-title {
-  margin: 0 0 10px;
-  font-weight: 800;
-  color: #3A2E26;
-}
-
-.hairtype-checklist ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.hairtype-checklist li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  min-height: 44px;
-  margin: 0;
-}
-
-.hairtype-checklist li::before {
-  content: "\2610";
-  font-size: 1.3rem;
-  color: #8B6F52;
-  line-height: 1.4;
-  flex-shrink: 0;
-}
-
-/* 記事末まとめカード */
-.hairtype-summary-card {
-  margin: 2em 0;
-  padding: 22px 20px;
-  background: #3A2E26;
-  color: #FBF5F0;
-  border-radius: var(--radius-lg);
-}
-
-.hairtype-summary-card h2,
-.hairtype-summary-card h3 {
-  color: #FBF5F0 !important;
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 0 10px !important;
-}
-
-.hairtype-summary-card ul {
-  margin: 0 0 14px;
-  padding-left: 1.3em;
-}
-
-.hairtype-summary-card a {
-  color: #F3D9B1;
-}
-
-@media (max-width: 480px) {
-  .hairtype-silhouette-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }}
-
-/* H2見出し単位のセクション背景交互化(白 / テーマ淡色 / 罫線カード) */
-.hairtype-section {
-  margin: 0 0 32px;
-  padding: 20px 16px;
-  border-radius: var(--radius-lg);
-}
-
-.hairtype-section-plain {
-  background: transparent;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.hairtype-section-tint {
-  background: rgba(139, 111, 82, 0.05);
-}
-
-.hairtype-section-card {
-  background: #fff;
-  border: 1px solid #E8CFC4;
-}
-
-.hairtype-section h2 {
-  margin-top: 0;
-}
-
 /* 幅375pxで表がはみ出さないようにする横スクロールラッパー。外側の
    table-scroll-outerは非スクロールでposition:relativeにし、右端フェード
    (::after)がスクロール位置に関わらず表の右端に固定表示されるようにする。 */
@@ -5114,56 +4418,10 @@ table.admin-table td {
   margin: 0;
 }
 
-.lip-step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #D6456B;
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.lip-step-desc {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-}
-
-@media (max-width: 480px) {
-  .lip-cross-name {
-    font-size: 12px;
-  }
-  .lip-toc-item a {
-    font-size: 0.92rem;
-  }}
-
 /* ==================== ピラミッド図(普通肌を支える3本柱) ==================== */
 .article-pyramid-chart {
   background: #fff;
   border: 1px solid #ecd98f;
-}
-
-.pyramid-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
-}
-
-.pyramid-layer-label {
-  font-size: 15px;
-  font-weight: 700;
-  fill: #3a331a;
-}
-
-.pyramid-layer-sub {
-  font-size: 12px;
-  fill: #5a5238;
 }
 
 /* ==================== 季節帯グラフ(年間カレンダー) ==================== */
@@ -5171,386 +4429,6 @@ table.admin-table td {
   background: #fff;
   border: 1px solid #dbe6cd;
 }
-
-.calendar-band-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
-}
-
-.calendar-band-label {
-  font-size: 11px;
-  fill: #5a5238;
-}
-
-.calendar-band-legend {
-  font-size: 12px;
-  fill: #4a4534;
-  font-weight: 600;
-}
-
-@media (max-width: 480px) {
-  .pyramid-layer-label {
-    font-size: 13px;
-  }
-  .pyramid-layer-sub {
-    font-size: 10px;
-  }}
-
-/* ====================================================================
-   「基礎化粧品とは？」記事(2026-07-26_基礎化粧品の基本知識と肌質診断.md)専用
-   SVG図解ウィジェット(lib/skincareBasicsWidgets.js)。他記事のクラス名と
-   衝突しない sc101- 接頭辞を使用し、テーマ用スコープクラスは導入せず
-   グローバルに定義する(配色はSVG側でハードコード済み)。
-   ==================================================================== */
-.sc101-figure {
-  background: #fff;
-  border: 1px solid #E8DCC8;
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-}
-
-.sc101-scroll-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.sc101-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.sc101-flow-svg {
-  display: block;
-  height: auto;
-  min-width: 460px;
-}
-
-.sc101-matrix-svg {
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  margin: 0 auto;
-}
-
-.sc101-amount-svg {
-  display: block;
-  height: auto;
-  min-width: 360px;
-}
-
-.sc101-svg-label-sm {
-  font-size: 12px;
-  font-weight: 700;
-  fill: #4A3F35;
-}
-
-.sc101-svg-step-label {
-  font-size: 12px;
-  font-weight: 700;
-  fill: #3A2E26;
-}
-
-.sc101-matrix-type {
-  font-size: 15px;
-  font-weight: 800;
-  fill: #4A3F35;
-}
-
-.sc101-matrix-desc {
-  font-size: 12px;
-  fill: #6b5a4a;
-}
-
-.sc101-axis-label {
-  font-size: 13px;
-  font-weight: 700;
-  fill: #6B8161;
-}
-
-.sc101-axis-sub {
-  font-size: 11px;
-  fill: #6b5a4a;
-}
-
-.sc101-amount-text {
-  font-size: 12px;
-  font-weight: 700;
-  fill: #8B6F52;
-}
-
-.sc101-scroll-note {
-  margin: 6px 0 0;
-  font-size: 0.78rem;
-  color: var(--color-text-faint);
-}
-
-.sc101-diagram-rule {
-  margin: 8px 0 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #6B8161;
-  background: #F1F5EE;
-  border-radius: var(--radius-sm, 6px);
-  padding: 6px 10px;
-  display: inline-block;
-}
-
-/* ---- 独自目次(details) ---- */
-.pc-toc {
-  margin: 0 0 24px;
-  border: 1px solid var(--pc-peach);
-  border-radius: var(--radius-md);
-  background: #fff;
-  overflow: hidden;
-}
-
-.pc-toc > summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 14px 18px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-  color: var(--pc-charcoal);
-  background: #fdf5ef;
-}
-
-.pc-toc > summary::-webkit-details-marker {
-  display: none;
-}
-
-.pc-toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 6px 10px 14px;
-}
-
-.pc-toc-item a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  min-height: 44px;
-  color: var(--pc-charcoal);
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-}
-
-.pc-toc-item a:hover {
-  background: #fdf5ef;
-}
-
-.pc-toc-emoji {
-  font-size: 1rem;
-}
-
-/* ---- セクション交互背景(H2見出し単位) ---- */
-.pc-section {
-  padding: 4px 0;
-}
-
-.pc-section-plain {
-  background: #fff;
-}
-
-.pc-section-tint {
-  background: rgba(217, 131, 98, 0.06);
-  border-radius: var(--radius-md);
-  margin: 0 -8px;
-  padding: 8px 8px 4px;
-}
-
-.pc-section-card {
-  background: #fff;
-  border: 1px solid var(--pc-peach);
-  border-radius: var(--radius-md);
-  margin: 12px -4px;
-  padding: 12px 12px 4px;
-}
-
-/* ---- ① 毛穴タイプ3面図 ---- */
-.pc-faces .pc-faces-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
-}
-
-.pc-face-label {
-  font-size: 13px;
-  font-weight: 800;
-  fill: var(--pc-charcoal);
-}
-
-.pc-face-sub {
-  font-size: 12px;
-  fill: #6b5850;
-}
-
-.pc-diagram-caption {
-  margin: 8px 0 0;
-  font-size: 0.85rem;
-  color: #6b5850;
-  line-height: 1.7;
-}
-
-/* ---- ② 選び方3軸アイコン ---- */
-.pc-axis-icons .pc-axis-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
-}
-
-.pc-axis-label {
-  font-size: 13px;
-  font-weight: 800;
-  fill: var(--pc-charcoal);
-}
-
-.pc-axis-sub {
-  font-size: 11px;
-  fill: #6b5850;
-}
-
-/* ---- ③ 使い心地ダイヤル ---- */
-.pc-dial .pc-dial-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
-}
-
-.pc-dial-end {
-  font-size: 12px;
-  font-weight: 700;
-  fill: var(--pc-terracotta-dark);
-}
-
-.pc-dial-item {
-  font-size: 12px;
-  font-weight: 700;
-  fill: var(--pc-charcoal);
-}
-
-.pc-dial-item2 {
-  font-size: 11px;
-  fill: #6b5850;
-}
-
-/* ---- 表の横スクロール対応(毛穴タイプ別処方・注意点の表など) ---- */
-.pc-scroll-hint {
-  margin: 4px 0 6px;
-  font-size: 0.82rem;
-  color: #6b5850;
-}
-
-.pc-scroll-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--pc-peach);
-  border-radius: var(--radius-md);
-}
-
-.pc-table {
-  width: 100%;
-  min-width: 560px;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.pc-table th,
-.pc-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--pc-peach);
-  text-align: left;
-  white-space: nowrap;
-}
-
-.pc-table thead th {
-  background: var(--pc-peach);
-  color: var(--pc-charcoal);
-  font-weight: 800;
-}
-
-/* ---- ✅ チェックリスト ---- */
-.pc-checklist {
-  margin: 1.6em 0;
-  padding: 18px 20px;
-  background: var(--pc-peach);
-  border: 1px solid #ecd4c3;
-  border-radius: var(--radius-lg);
-}
-
-.pc-checklist-title {
-  margin: 0 0 10px;
-  font-weight: 800;
-  color: var(--pc-charcoal);
-}
-
-.pc-checklist ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.pc-checklist li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  min-height: 44px;
-  margin: 0;
-  background: #fff;
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-}
-
-.pc-checklist li::before {
-  content: "\2610";
-  font-size: 1.3rem;
-  color: var(--pc-terracotta);
-  line-height: 1.4;
-  flex-shrink: 0;
-}
-
-/* ---- 記事末まとめカード ---- */
-.pc-summary-card {
-  margin: 2em 0;
-  padding: 22px 20px;
-  background: var(--pc-charcoal);
-  color: #f8efe9;
-  border-radius: var(--radius-lg);
-}
-
-.pc-summary-card h3 {
-  color: #f8efe9 !important;
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 0 10px !important;
-}
-
-.pc-summary-card ul {
-  margin: 0 0 14px;
-  padding-left: 1.3em;
-}
-
-.pc-summary-card a {
-  color: var(--pc-peach);
-}
-
-@media (max-width: 480px) {
-  .pc-table {
-    min-width: 520px;
-  }}
 
 /* デプロイ確認(nevora-beauty, Root Directory配下) 2026-08-08 */
 /* デプロイ再トリガー確認(3470be4未反映のため) 2026-08-09 */

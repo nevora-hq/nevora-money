@@ -26,7 +26,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 
 const SRC_DIR =
-  "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/お金サイト/ホームページ修正用";
+  "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/各種サイト/お金サイト/ホームページ修正用";
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 // 1536は画像生成AI(ChatGPT等)の横長出力の実寸(1536x1024)に合わせた上限。
 // 元画像がこれより小さい場合は元画像の幅に丸められる(main()参照)。

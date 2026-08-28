@@ -6,11 +6,9 @@ import { SITE_NAME, buildWebsiteJsonLd } from "../lib/structuredData";
 // ページ固有のJSON-LD(Article/BreadcrumbList等)はjsonLd propで追加する。
 // サイト全体で常に出すWebSite構造化データはlib/structuredData.jsを参照。
 
-// SNSシェア時の共通OGP画像。記事側でthumbnailが無い場合もこれを使う。
-// TODO: お金サイト用の1200x630のOGP画像(/images/ogp.png)を用意したら差し替える。
-// 美容サイトのogp.pngは「美容の総合ガイド」の文字が焼き込まれていたため削除済みで、
-// 暫定的にロゴ画像を使っている。
-const DEFAULT_OG_IMAGE = "/images/logo.png";
+// SNSシェア時の共通OGP画像(1200x630)。記事側でthumbnailが無い場合もこれを使う。
+// 実体は scripts/generate-site-images.js の key="ogp" が生成する。
+const DEFAULT_OG_IMAGE = "/images/ogp.png";
 
 export default function Layout({
   children,
