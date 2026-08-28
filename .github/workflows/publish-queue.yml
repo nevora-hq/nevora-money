@@ -1,0 +1,89 @@
+name: publish-queue
+
+# 公開キュー(サイト運営/記事データ/公開待ち)から、公開時刻の到来した記事を
+# 確定稿へ移動してcommit・pushする。pushによりVercelの自動デプロイが走り、
+# そこで初めてサイト・sitemapに記事が出る(手動のvercel CLIデプロイは使わない)。
+#
+# 実行間隔は30分。公開が発生した回だけpushするため、デプロイ回数は
+# 1日あたり最大でも公開本数(3〜5回)程度に収まる。
+
+on:
+  schedule:
+    # cronはUTC。JST 7:00〜22:00 = UTC 22:00〜13:00 に相当するため常時30分おきに回す
+    - cron: "0,30 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: publish-queue
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 公開時刻の到来した記事を確定稿へ移動
+        id: release
+        env:
+          TZ: Asia/Tokyo
+        working-directory: サイト運営/サイト本体
+        run: |
+          set -o pipefail
+          node scripts/queue-release.js | tee release.log
+          released=$(grep '^RELEASED_JSON:' release.log | tail -1 | sed 's/^RELEASED_JSON://')
+          rm -f release.log
+          count=$(printf '%s' "$released" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s||"[]").length))')
+          first=$(printf '%s' "$released" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s||"[]");console.log(a.length?a[0].title:"")})')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "first=$first" >> "$GITHUB_OUTPUT"
+
+      - name: commit & push(公開の反映)
+        if: steps.release.outputs.count != '0'
+        env:
+          TZ: Asia/Tokyo
+          COUNT: ${{ steps.release.outputs.count }}
+          FIRST: ${{ steps.release.outputs.first }}
+        run: |
+          git config user.name "nevora-publish-bot"
+          git config user.email "kokim8241@gmail.com"
+          git add -A "サイト運営/記事データ"
+          if git diff --cached --quiet; then
+            echo "コミット対象の変更がありません"
+            exit 0
+          fi
+          git commit -m "publish: ${FIRST}(${COUNT}本)"
+          # 別セッションのpushとの競合に備えてrebaseしてから再試行する
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            echo "push失敗(${i}回目)。リトライします"
+            sleep 15
+          done
+          echo "3回リトライしてもpushできませんでした"
+          exit 1
+
+      - name: 失敗時にIssueを立てる
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = "publish-queue が失敗しました";
+            // 同じ件名の未クローズIssueがあれば追記に留める(30分おき実行でIssueが増殖しないように)
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo, state: "open", labels: "publish-queue",
+            });
+            const body = `公開キューの自動公開ジョブが失敗しました。記事の自動公開が止まっている可能性があります。\n\n実行ログ: ${runUrl}`;
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: issues[0].number, body });
+            } else {
+              await github.rest.issues.create({ ...context.repo, title, body, labels: ["publish-queue"] });
+            }

@@ -1,0 +1,5615 @@
+:root {
+  --color-primary: #d6336c;
+  --color-primary-dark: #b32657;
+  --color-primary-light: #ffe3ec;
+  --color-primary-surface: #fff5f8;
+  /* 汎用4type(steps/checklist/summaryCard/compareCards)+セクション交互化の既定色。
+     記事側で独自テーマ(.asemo-article等)を持つ場合は、そのスコープ内でこの4変数だけ
+     再定義すれば、クラス自体をコピーしなくても配色を変えられる(2026-08-08追加)。 */
+  --chart-accent: var(--color-primary);
+  --chart-accent-dark: var(--color-primary-dark);
+  --chart-tint-bg: var(--color-primary-surface);
+  --chart-card-border: var(--color-primary-light);
+  --color-bg: #faf9fb;
+  --color-surface: #fff;
+  --color-border: #ececec;
+  --color-text: #24242b;
+  --color-text-muted: #6b7280;
+  --color-text-faint: #9ca3af;
+  /* 断面/構造図型・深さ比較型(chart type: crossSection/depthComparison)の
+     既定色。記事側でpart.fill等を明示指定すればここを上書きできる(2026-08-13追加)。 */
+  --diagram-skin: #f4e4d0;
+  --diagram-skin-2: #e9d1b4;
+  --diagram-line: #4a3f33;
+  /* 書体(2026-08-27): 見出し=明朝、本文=Zen Kaku Gothic New。
+     いずれも未読込時は従来のヒラギノ系へフォールバックする。 */
+  --font-serif: "Shippori Mincho", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+  --font-sans: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(20, 20, 30, 0.05);
+  --shadow-md: 0 6px 20px rgba(20, 20, 30, 0.07);
+  --shadow-hover: 0 10px 28px rgba(214, 51, 108, 0.14);
+  --transition: 180ms ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 2;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* トップページの雑誌型レイアウト用のワイドコンテナ(2026-08-17)。
+   .hero-banner-inner と同じ 1180px / 左右24px を使うことで、
+   ヒーローのタイトル左端と本文カラムの左端が一直線に揃う。
+   記事ページ等は可読性のため既定の960pxのまま。 */
+.container--wide {
+  max-width: 1180px;
+}
+
+@media (min-width: 768px) {
+  .container--wide {
+    padding: 0 24px;
+  }}
+
+/* ---- 全ページ共通の最背面グラデーション背景 ----
+   Layout.jsから全ページで描画される。position: fixedでヘッダー/フッターの
+   背後にも回り込むため、各ページ・各コンポーネントは個別に背景色を持たない。 */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(160deg, #fdf1f4 0%, #f7f2fb 35%, #eef6fb 65%, #e9f2fb 100%);
+}
+
+/* ---- Header ----
+   同系色の水色グラデーション+ごく薄い水玉模様を全ページ共通で敷く。 */
+.site-header {
+  background-image: radial-gradient(rgba(56, 163, 217, 0.14) 1px, transparent 1.6px),
+    linear-gradient(120deg, rgba(255, 241, 244, 0.92), rgba(234, 244, 251, 0.92));
+  background-size: 16px 16px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  backdrop-filter: saturate(180%) blur(8px);
+  -webkit-backdrop-filter: saturate(180%) blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+/* ロゴはマスコット(ネヴォミン)のアイコン+テキストの組み。
+   アイコンは装飾のためalt=""とし、読み上げはテキスト側に任せる。 */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  letter-spacing: 0.14em;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1rem;
+    gap: 7px;
+  }
+
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+  }}
+
+.logo:hover {
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.main-nav-link {
+  color: var(--color-primary-dark);
+  background: var(--color-primary-surface);
+  font-size: 0.95rem;
+  font-weight: 600;
+  position: relative;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.main-nav-link:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.main-nav-link[aria-current="page"] {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-toggle-bar,
+.nav-toggle-bar::before,
+.nav-toggle-bar::after {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.nav-toggle-bar {
+  position: relative;
+}
+
+.nav-toggle-bar::before,
+.nav-toggle-bar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.nav-toggle-bar::before {
+  top: -7px;
+}
+
+.nav-toggle-bar::after {
+  top: 7px;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar {
+  background: transparent;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar::before {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar::after {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ---- Header nav: category dropdown ---- */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-surface);
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.nav-dropdown-label:hover {
+  background: var(--color-primary-light);
+}
+
+.nav-dropdown.open .nav-dropdown-label,
+.nav-dropdown:focus-within .nav-dropdown-label {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-dropdown-arrow {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--transition);
+}
+
+.nav-dropdown.open .nav-dropdown-arrow {
+  transform: rotate(-135deg);
+}
+
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  padding: 8px;
+  margin-top: 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown.open .nav-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.nav-dropdown-menu a:hover {
+  background: var(--color-primary-surface);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.nav-dropdown-count {
+  color: var(--color-text-faint);
+  font-size: 0.78rem;
+}
+
+/* ---- Footer ----
+   ヘッダーと同系色のグラデーション+水玉模様を全ページ共通で敷く。 */
+/* 帯構成のページ(トップ)は最後の帯を下端まで続かせ、
+   フッターとの間に地の背景が64px覗かないようにする */
+.main--full + .site-footer {
+  margin-top: 0;
+}
+
+.site-footer {
+  margin-top: 64px;
+  padding: 32px 0;
+  text-align: center;
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-border);
+  background-image: radial-gradient(rgba(56, 163, 217, 0.12) 1px, transparent 1.6px),
+    linear-gradient(160deg, rgba(238, 246, 251, 1), rgba(253, 241, 244, 1));
+  background-size: 18px 18px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 20px;
+  margin: 14px 0;
+}
+
+.footer-nav a {
+  color: var(--color-text-muted);
+}
+
+.footer-sites {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 4px 0 14px;
+  font-size: 0.7rem;
+}
+
+.footer-sites a {
+  color: var(--color-text-faint);
+}
+
+.footer-ad-notice {
+  max-width: 640px;
+  margin: 8px auto 0;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: var(--color-text-faint);
+}
+
+/* ---- Hero banner(トップページのみ) ----
+   雑誌型ファーストビュー(2026-08-17 リデザインStep1)。写真をfull-bleedで敷き、
+   左側にスクリム(暗いグラデーション)を重ねてタイトル・キャッチをオーバーレイする。
+   スマホ(〜767px)は従来の高さ・余白・文字サイズをそのまま維持し、
+   PC(768px〜)でのみ高さとコピー幅を引き上げてレイアウトを変える。
+
+   レイヤー構成(下から順に):
+     .hero-banner-img   … 写真本体(object-fitでトリミング)
+     .hero-banner-warm  … 暖色ウォッシュ(クール系の写真をブランドのピンク寄りに寄せる)
+     .hero-banner-scrim … 左側スクリム+下端/右下の落とし込み(文字とマスコットの可読性)
+     .hero-banner-overlay(.hero-banner-inner) … テキスト
+     .hero-banner-mascot … マスコット */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  /* .hero-banner-warmのmix-blend-modeをヒーロー内部に閉じ込める */
+  isolation: isolate;
+}
+
+.hero-banner-img {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 34vw, 420px);
+  object-fit: cover;
+  /* 縦方向は強く上寄せする。ヒーローの枠は元画像(縦横比1.87)より横長になるため
+     cover時に切られるのは上下のみで、ワイドになるほど上下の切り取り量が増える。
+     基準を12%まで上げることで、超ワイド表示(2560px以上)やブラウザ縮小時でも
+     額〜目のラインが残る(0%にすると今度は化粧品が全て切れるため12%が上限)。
+     横方向は、枠が縦長寄りになるスマホでのみ効く(PCでは全幅が表示される)。 */
+  object-position: 45% 0%;
+  margin: 0;
+}
+
+.hero-banner-warm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 176, 196, 0.18) 0%,
+    rgba(255, 214, 196, 0.12) 55%,
+    rgba(255, 244, 236, 0.06) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+/* 左側スクリム。停止位置を画面中央基準のcalc()で指定することで、
+   ビューポート幅が変わってもコピー(最大幅640px・コンテンツ幅1180pxの左端起点)の
+   右端が必ず濃い側に収まり、白文字のコントラストを保てる。
+
+   濃度(α0.74)は下げられない: この写真はテキスト範囲にも白飛び寸前の明部
+   (肌のハイライト・窓の光、実測rgb 250前後)が入るため、6:1を満たすには
+   α0.62〜0.73が必要(scratchpadの実測による)。
+   そのため「濃さ」ではなく「暗くする範囲」を絞ることで明るさを取り戻す:
+     - 右方向のフェード終端を50%+420px → 50%+300pxに手前倒し
+     - 上下方向はmask-imageでスクリム自体を薄める(下記@media 768px〜) */
+.hero-banner-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(48, 16, 30, 0.78) 0%,
+      rgba(48, 16, 30, 0.74) calc(50% + 60px),
+      rgba(56, 22, 38, 0.34) calc(50% + 200px),
+      rgba(60, 26, 44, 0) calc(50% + 330px)
+    ),
+    /* 右下: マスコットを明るい写真の上でも見えるようにわずかに落とす */
+      radial-gradient(220px 140px at 93% 88%, rgba(40, 14, 26, 0.3), transparent 72%),
+    /* 下端: 直下のスライダーとの境目をなじませる */
+      linear-gradient(to top, rgba(40, 14, 26, 0.2) 0%, rgba(40, 14, 26, 0) 38%);
+}
+
+/* スマホは写真の右側(化粧品ボトル・窓)が明るく、左側スクリムだけでは
+   本文右端のコントラストが不足するため、ほぼ均一の濃さに切り替える。
+   右端でもα0.72 → 白文字で約6.1:1を確保する。 */
+@media (max-width: 767px) {
+  .hero-banner-scrim {
+    background:
+      linear-gradient(100deg, rgba(45, 16, 28, 0.82) 0%, rgba(52, 20, 34, 0.72) 100%),
+      radial-gradient(160px 110px at 90% 86%, rgba(40, 14, 26, 0.3), transparent 72%),
+      linear-gradient(to top, rgba(40, 14, 26, 0.3) 0%, rgba(40, 14, 26, 0) 46%);
+  }}
+
+/* タブレット〜小型PC(768〜1179px)はコンテンツ幅1180pxに達しておらず
+   コピーが画面左端16pxから始まるため、中央基準(calc(50%±))の停止位置では
+   コピー右端が薄い側に掛かる。この幅帯だけ%指定の停止位置に差し替える。 */
+@media (min-width: 768px) and (max-width: 1179px) {
+  .hero-banner-scrim {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(48, 16, 30, 0.86) 0px,
+        rgba(48, 16, 30, 0.74) 520px,
+        rgba(56, 22, 38, 0.34) 760px,
+        rgba(60, 26, 44, 0) 920px
+      ),
+      radial-gradient(220px 140px at 93% 88%, rgba(40, 14, 26, 0.4), transparent 72%),
+      linear-gradient(to top, rgba(40, 14, 26, 0.32) 0%, rgba(40, 14, 26, 0) 42%);
+  }}
+
+.hero-banner-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* コンテンツ幅。Step2以降で本文カラムを1100〜1200pxに広げる際、
+   ここと同じ値に揃えるとヒーローのタイトル左端が本文と一直線になる。 */
+.hero-banner-inner {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.hero-banner-copy {
+  max-width: 520px;
+}
+
+.hero-banner-eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #ffe3ec;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+.hero-banner-title {
+  margin: 0 0 12px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: clamp(1.45rem, 1.05rem + 2vw, 2.35rem);
+  line-height: 1.6;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+
+.hero-banner-lead {
+  margin: 0;
+  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.98rem);
+  line-height: 1.7;
+  color: #f5eef1;
+  max-width: 460px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* PC(768px〜)のみ、ファーストビューを大きく取る */
+@media (min-width: 768px) {
+  .hero-banner-img {
+    height: clamp(320px, 40vw, 600px);
+  }
+
+  /* スクリムを上下方向にマスクし、テキストが乗る中央帯(22〜78%)だけ
+     元の濃度を保ったまま、写真の上端・下端を明るく見せる。
+     22/78という範囲は、最小高さ320px(768px幅)でもコピー全体が
+     中央帯に収まることを実測で確認した値。スマホは高さ220pxに対して
+     コピーがほぼ全高を占めるためマスクを掛けない。 */
+  .hero-banner-scrim {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.55) 0%,
+      #000 22%,
+      #000 78%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.55) 0%,
+      #000 22%,
+      #000 78%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+  }
+
+  /* タイトル(最大48px時に約594px)が1行に収まる幅。リード文はmax-width:480pxの
+     ままなので、広げた分を実際に使うのはタイトルのみ。
+     スクリムの停止位置も中央基準のため、どの画面幅でもタイトル右端のαは
+     ほぼ一定(≒0.575)になり、写真の最も明るい箇所でも白文字で約6.6:1。 */
+  .hero-banner-copy {
+    max-width: 640px;
+  }
+
+  .hero-banner-eyebrow {
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+  }
+
+  .hero-banner-title {
+    margin-bottom: 16px;
+    font-size: clamp(2rem, 1.1rem + 2.4vw, 3rem);
+  }
+
+  /* キャッチコピー(26文字)が最大サイズでも1行に収まる幅 */
+  .hero-banner-lead {
+    font-size: clamp(0.98rem, 0.85rem + 0.35vw, 1.12rem);
+    max-width: 540px;
+  }
+
+  .hero-banner-inner {
+    padding: 0 24px;
+  }}
+
+/* スマホは右下のマスコットと本文が重ならないよう逃げ幅を持たせる。
+   マスコットはヒーロー下端にありタイトルの高さとは重ならないため、
+   逃げ幅はリード文だけに付ける(コピー全体に付けるとタイトルが折り返す)。 */
+@media (max-width: 767px) {
+  .hero-banner-lead {
+    padding-right: 62px;
+  }}
+
+/* スマホの左右余白は .container--wide(≤480pxで16px)と揃え、
+   ヒーローのタイトル左端と各セクションの左端を一致させる */
+@media (max-width: 480px) {
+  .hero-banner-inner {
+    padding: 0 16px;
+  }}
+
+/* ---- Hero下部の記事スライド ---- */
+/* スライダーの帯。従来は不透明の白(--color-surface)だったため、
+   ワイド画面でスライダー(1180px)の左右が空白に見えていた。
+   .home-stripe と同じ半透明ティントに変更し、隣の帯と色が交互になるようにする
+   (スライダー=薄ベージュ → イントロ=グラデーション → 悩み=薄ピンク →
+    カテゴリ=薄ベージュ → 記事=薄ピンク)。2026-08-17 Step5追補 */
+.hero-slider {
+  background: rgba(255, 248, 236, 0.88);
+  border-bottom: 1px solid var(--color-border);
+  padding: 22px 0;
+}
+
+.hero-slider-viewport {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.hero-slider-track {
+  display: flex;
+  transition: transform 500ms ease;
+}
+
+.hero-slider-slide {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: 21 / 9;
+  color: inherit;
+}
+
+/* PCでは幅1132pxに対して21:9だと485pxとファーストビューが縦に長くなるため、
+   高さの上限を設けて横長比率(実質3.8:1程度)に寄せる(2026-08-17 Step5) */
+@media (min-width: 768px) {
+  .hero-slider-slide {
+    max-height: 300px;
+  }}
+
+.hero-slider-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  border-radius: 0;
+}
+
+.hero-slider-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 28px clamp(16px, 4vw, 32px) 18px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+}
+
+.hero-slider-caption-name {
+  display: inline-block;
+  margin: 0;
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(1rem, 0.9rem + 0.6vw, 1.3rem);
+  line-height: 1.4;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition);
+}
+
+.hero-slider-arrow:hover {
+  background: #fff;
+}
+
+.hero-slider-arrow-prev {
+  left: 12px;
+}
+
+.hero-slider-arrow-next {
+  right: 12px;
+}
+
+.hero-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-border);
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.hero-slider-dot.active {
+  background: var(--color-primary);
+  transform: scale(1.2);
+}
+
+/* ---- ホームレイアウト(メイン + サイドバー) ---- */
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 40px;
+  align-items: start;
+}
+
+.home-main {
+  min-width: 0;
+}
+
+.home-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 80px;
+}
+
+.sidebar-widget {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-widget-title {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  padding-left: 10px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.sidebar-post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sidebar-post {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-post-rank {
+  flex-shrink: 0;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--color-primary-light);
+  min-width: 20px;
+}
+
+.sidebar-post-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.sidebar-post-link:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.sidebar-post-thumb {
+  flex-shrink: 0;
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.sidebar-post-title {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.sidebar-category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-category-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.sidebar-category-list a:hover {
+  background: var(--color-primary-surface);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.sidebar-category-count {
+  color: var(--color-text-faint);
+  font-size: 0.78rem;
+}
+
+/* ---- トップページ専用の装飾・レイアウト ----
+   HeroBanner/ImageSlider同様トップページのみで使うため、
+   他ページの共通クラス(.post-card, .page-title等)には手を入れず
+   home-系 / category-summary-系 の専用クラスで完結させている。
+   最背面の固定背景(.site-bg)・ヘッダー/フッターの装飾はLayout.js/
+   globals.cssの共通ルールとして全ページに適用済み。 */
+.home-page {
+  position: relative;
+}
+
+/* fullWidth指定のページ(トップ)ではmainが上下paddingを持たず、
+   各stripeが自前で余白を持つ。 */
+.main--full {
+  padding: 0;
+}
+
+/* ---- トップページの帯(2026-08-17 Step5) ----
+   main直下に置くため、幅指定なしで画面幅いっぱいになる。中身は各帯の中の
+   .container--wide(1180px)に収める。これにより、ワイド画面でも左右の余白が
+   「空白の白」ではなく帯の背景色として見える。
+   背景は不透明色ではなく半透明のティントにして、全ページ共通の
+   グラデーション背景(.site-bg)が透けるようにしている。 */
+.home-stripe {
+  position: relative;
+  padding: clamp(26px, 3.2vw, 48px) 0;
+}
+
+/* イントロ(マスコット挨拶+診断バナー)。無地のままだと2560px幅で
+   左右319pxぶんがほぼ白(実測rgb 250,249,251)に見えるため、ここもティントを敷く。
+   スライダー(薄ベージュ)の次なので薄ピンク側にする。 */
+.home-stripe--intro {
+  padding-top: clamp(18px, 2.2vw, 30px);
+  background: rgba(255, 241, 246, 0.72);
+}
+
+/* 薄ピンク(悩みから探す / 記事セクション) */
+.home-stripe--tint {
+  background: rgba(255, 241, 246, 0.72);
+}
+
+/* 薄ベージュ(カテゴリで探す)。ティントを交互に置いて帯の切り替わりを作る */
+.home-stripe--cream {
+  background: rgba(255, 251, 243, 0.82);
+}
+
+/* ---- 記事/ランキング/比較/検索ページ共通パネル ----
+   トップページの「カテゴリで探す」等と同じ、半透明+ぼかしの
+   ガラス風パネルで.site-bgの上にコンテンツを乗せる。 */
+.page-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 4vw, 36px);
+  margin: 28px 0 56px;
+}
+
+@media (max-width: 720px) {
+  .page-panel {
+    padding: 14px;
+    margin: 14px 0 32px;
+  }}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 4px;
+  }
+
+  /* 記事ページ(.container)は図表の幅を稼ぐため4pxだが、
+     トップページ・ヘッダー・フッター(.container--wide)は
+     読み物としての左右余白を優先して16pxを保つ。 */
+  .container--wide {
+    padding: 0 16px;
+  }
+
+  .page-panel {
+    padding: 5px;
+    border-radius: var(--radius-md);
+  }
+
+  .article-body {
+    padding: 16px 5px;
+  }}
+
+.home-section-title {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 6px;
+  color: var(--color-primary-dark);
+  background: linear-gradient(120deg, var(--color-primary), #ff8fab 65%, #ffb199);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.home-section-lead {
+  margin: 0 0 22px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* ---- カテゴリまとめセクション ---- */
+/* Step5: 帯(.home-stripe--cream)側が背景・余白を持つため、
+   セクション自身のカード装飾は外す。 */
+.category-summary-section {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.category-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.category-summary-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--cat-color, var(--color-primary));
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.category-summary-image-link {
+  position: relative;
+  display: block;
+  border-radius: var(--radius-md, 12px);
+  overflow: hidden;
+  margin: -20px -20px 16px;
+  outline-offset: -3px;
+}
+
+.category-summary-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 5px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.category-summary-badge-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.category-summary-image-link:focus-visible {
+  outline: 3px solid var(--cat-color, var(--color-primary));
+}
+
+.category-summary-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform var(--transition);
+}
+
+/* 人気カテゴリーの控えめな印。カードサイズは他と同一に保つ(2026-08-17 Step5) */
+.category-summary-pin {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--cat-color, var(--color-primary));
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 4px rgba(20, 20, 30, 0.18);
+}
+
+.category-summary-image-link:hover .category-summary-image {
+  transform: scale(1.04);
+}
+
+.category-summary-cta {
+  margin-top: 6px;
+  font-weight: 600;
+  color: var(--cat-color, var(--color-primary));
+}
+
+.category-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.category-summary-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  background: var(--cat-soft, var(--color-primary-light));
+  border-radius: 50%;
+}
+
+.category-summary-desc {
+  margin: 0 0 14px;
+  font-size: 0.87rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.category-summary-posts {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 10px 0 0;
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category-summary-post-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.category-summary-post-link:hover {
+  color: var(--cat-color, var(--color-primary));
+  text-decoration: none;
+}
+
+.category-summary-post-link img {
+  flex-shrink: 0;
+  width: 46px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.category-summary-post-link span {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.category-summary-more {
+  margin-top: auto;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--cat-color, var(--color-primary));
+}
+
+.category-summary-card--empty {
+  opacity: 0.72;
+}
+
+.category-summary-more--empty {
+  color: var(--color-text-faint);
+  cursor: default;
+}
+
+/* ---- カテゴリで探す: 人気カテゴリー表示ラベル・アコーディオン開閉 ---- */
+.category-summary-pinned-label {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.category-summary-grid--more {
+  margin-top: 20px;
+}
+
+
+/* 初期状態では非表示にするが、HTML自体は常に出力しクロール・SEOに影響しないようにする */
+.category-summary-collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  transition: grid-template-rows 320ms ease, opacity 280ms ease;
+}
+
+.category-summary-collapsible > * {
+  min-height: 0;
+}
+
+.category-summary-collapsible.is-expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-summary-collapsible {
+    transition: none;
+  }}
+
+.category-summary-toggle {
+  display: block;
+  width: fit-content;
+  margin: 24px auto 0;
+  padding: 11px 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+}
+
+/* A2: 折りたたみ中の軽量カード。画像・マスコットコメントを持たず、
+   カテゴリ名+1行説明のみの横並び行として、詳細版より縦に短く表示する。 */
+/* 2026-08-17: 折りたたみ中の軽量カード(.category-summary-card--light /
+   .category-summary-light-*)は、全12カテゴリの写真が揃い写真カードに統一したため廃止。 */
+
+/* /category(全カテゴリ一覧ページ)の一覧スタイル。 */
+.category-index-list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.category-index-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.category-index-link:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.category-index-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: var(--color-primary-light);
+  border-radius: 50%;
+}
+
+.category-index-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-index-name {
+  font-weight: 700;
+}
+
+.category-index-summary {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.category-summary-toggle:hover {
+  background: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.category-summary-toggle:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---- PC(1024px〜)のカテゴリグリッド(2026-08-17 リデザインStep3) ----
+   12カテゴリすべてを写真カードで常時表示する。アコーディオンはJSの開閉状態に
+   関わらず常に開いた状態に固定し、トグルと「人気カテゴリー」ラベルを隠すことで、
+   人気3カテゴリのグリッドと残り9カテゴリのグリッドが
+   1つの3カラムグリッド(4行)に見えるようにする。
+   1024px未満は従来どおりアコーディオンとして機能する。
+   ※ .category-summary-collapsible / .category-summary-toggle の既定値は
+     この上流に定義されているため、このブロックは必ずそれらより後ろに置くこと
+     (メディアクエリは詳細度を上げないため、前に置くと上書きされない)。 */
+@media (min-width: 1024px) {
+  /* 人気3件のグリッドとアコーディオン内9件のグリッドを display:contents で
+     透過させ、12枚すべてを .category-summary-grids 一枚のグリッド要素にする。
+     これにより行ごとにカード高さが揃い、12枚が同一ルールのグリッドに見える。 */
+  .category-summary-grids {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .category-summary-grid,
+  .category-summary-collapsible,
+  .category-summary-grid--more {
+    display: contents;
+  }
+
+  .category-summary-toggle,
+  .category-summary-pinned-label {
+    display: none;
+  }
+
+  /* 折り返して矢印だけ2行目に落ちるのを防ぐ。margin-top:autoは既定値側で
+     指定済みなので、カード下端に固定されたまま1行に収まる。 */
+  .category-summary-more {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .category-summary-more-cat {
+    display: none;
+  }}
+
+/* 1180pxを超えたら4カラム。1カラム約260pxで、吹き出し3行が収まる */
+@media (min-width: 1280px) {
+  .category-summary-grids {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }}
+
+/* ---- あなたの美容の悩みから探す ---- */
+/* ---- セクション区切りのfull-bleed画像バンド(Step4で追加・Step5でfull-bleed化) ----
+   全面背景画像を敷く代わりに、画面幅いっぱいの帯状の写真でページにリズムを作る。
+   main直下に置かれるため幅指定は不要。見出しは中の.container--wideに入るので
+   1180pxグリッドの左端(=ヒーローのタイトル左端)に揃う。 */
+.section-band {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.section-band-img {
+  display: block;
+  width: 100%;
+  height: clamp(180px, 19vw, 360px);
+  object-fit: cover;
+  margin: 0;
+}
+
+/* 見出しを重ねる側のスクリム。band-01は左側が白壁のため、
+   スクリムが無いと白文字が完全に読めない。
+   停止位置はヒーローと同じく画面中央基準のcalc()で指定し、
+   1180pxグリッド左端に置いた見出し(最大約350px幅)が
+   どの画面幅でも濃い側に収まるようにする。 */
+.section-band-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(48, 16, 30, 0.84) 0%,
+    rgba(48, 16, 30, 0.76) calc(50% - 180px),
+    rgba(56, 22, 38, 0.3) calc(50% + 60px),
+    rgba(60, 26, 44, 0) calc(50% + 220px)
+  );
+}
+
+/* 画面幅が1180px未満だと見出しが写真の明るい側(人物・窓)まで届き、
+   左寄せスクリムではコントラストが足りない(実測1.08:1)。
+   この幅帯だけほぼ均一の濃さにする。
+   α0.76で最明部rgb(250,250,250)に対しても6.2:1以上を確保する。 */
+@media (max-width: 1179px) {
+  .section-band-scrim {
+    background: linear-gradient(
+      100deg,
+      rgba(48, 16, 30, 0.86) 0%,
+      rgba(52, 20, 34, 0.76) 100%
+    );
+  }}
+
+.section-band-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* flexアイテムに margin:0 auto が付くと、stretchされずに内容幅まで縮んでしまう
+   (=見出しが1180pxグリッドの左端に揃わない)。width:100%で明示的に伸ばす。 */
+.section-band-overlay > .container {
+  width: 100%;
+}
+
+.section-band-title {
+  margin: 0 0 8px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: clamp(1.2rem, 0.95rem + 1vw, 1.6rem);
+  line-height: 1.4;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+}
+
+.section-band-lead {
+  margin: 0;
+  max-width: 24em;
+  font-size: clamp(0.8rem, 0.76rem + 0.2vw, 0.9rem);
+  line-height: 1.7;
+  color: #f5eef1;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Step5: 帯(.home-stripe)側が背景・余白を持つようになったため、
+   セクション自身のカード装飾(半透明白・枠線・角丸)は外している。
+   カード表現は中のカテゴリカード・記事カード側に残す。 */
+.worry-finder-section {
+  position: relative;
+}
+
+.worry-finder-all-link {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.worry-finder-all-link:hover {
+  color: var(--color-primary);
+}
+
+/* A4: トップページから運営・編集体制(/about)への唯一の導線。 */
+.home-about-link {
+  display: inline-block;
+  margin: 4px 0 20px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.home-about-link:hover {
+  color: var(--color-primary-dark);
+}
+
+.worry-finder-group {
+  margin-top: 18px;
+}
+
+.worry-finder-group:first-of-type {
+  margin-top: 4px;
+}
+
+.worry-finder-group-title {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.worry-finder-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.worry-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-radius: 999px;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.worry-chip:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.worry-chip:active {
+  transform: translateY(0);
+}
+
+.worry-chip:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .worry-chip {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+  }}
+
+/* ---- 注目記事/新着記事セクション ---- */
+/* Step5: 帯側が背景・余白を持つため、セクション自身のカード装飾は外す */
+.home-featured-section {
+  margin-bottom: 44px;
+}
+
+.home-new-section {
+  padding: 0;
+}
+
+/* ---- Sections ---- */
+main {
+  min-height: 60vh;
+  padding: 32px 0 60px;
+}
+
+h1.page-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2rem);
+  line-height: 1.5;
+  margin: 0 0 24px;
+  border-left: 6px solid var(--color-primary);
+  padding-left: 14px;
+}
+
+/* ---- Breadcrumb ---- */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+  margin-bottom: 20px;
+}
+
+.breadcrumb a {
+  color: var(--color-text-muted);
+}
+
+.breadcrumb .sep {
+  color: var(--color-text-faint);
+}
+
+.breadcrumb .current {
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60vw;
+}
+
+/* ---- Card / list ---- */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.post-card-thumb-link {
+  display: block;
+  line-height: 0;
+  flex: 0 0 120px;
+}
+
+.post-card-thumb {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.post-card-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  background: var(--color-primary-light);
+}
+
+.post-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary-light);
+}
+
+.post-card .category-badge {
+  display: inline-block;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.post-card h2 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.post-card h2 a {
+  color: var(--color-text);
+}
+
+.post-card h2 a:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.post-card .excerpt {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 480px) {
+  .post-card-thumb-link {
+    flex-basis: 96px;
+  }}
+
+/* シンプル版カード(ホームの新着記事・注目記事): サムネイル・カテゴリ・
+   タイトルのみ表示し、カード全体を1つのリンクにする */
+.post-card--simple {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.post-card--simple .post-card-thumb-link {
+  margin: -1px -1px 0;
+}
+
+.post-card--simple .post-card-thumb-fallback {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: var(--color-primary-light);
+}
+
+.post-card--simple .post-card-body {
+  padding: 14px 16px 16px;
+}
+
+.post-card--simple .post-card-title {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  margin: 4px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-card--simple:hover .post-card-title {
+  color: var(--color-primary);
+}
+
+.post-list--simple {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+@media (max-width: 600px) {
+  .post-list--simple {
+    grid-template-columns: 1fr;
+  }}
+
+/* 新着記事の横スクロールカルーセル(A1/A3、2026-08-10)。overflow-xによる
+   ネイティブスクロールが土台のため、JS無効でもタッチ・トラックパッドで操作できる。
+   矢印ボタンはPCでの操作性向上のためのエンハンスメント。 */
+.new-posts-carousel {
+  position: relative;
+}
+
+.new-posts-carousel-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.new-posts-carousel-item {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+}
+
+.new-posts-carousel-arrow {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.new-posts-carousel-arrow-prev {
+  left: -6px;
+}
+
+.new-posts-carousel-arrow-next {
+  right: -6px;
+}
+
+@media (max-width: 600px) {
+  .new-posts-carousel-arrow {
+    display: none;
+  }}
+
+/* ---- PC(1024px〜)の雑誌型カードグリッド(2026-08-17 リデザインStep2) ----
+   注目記事・新着記事を3カラムのカードグリッドにし、カード自体も
+   「サムネイル上・テキスト下」の縦型に切り替えてサムネイルを大きく見せる。
+   1024px未満(スマホ・タブレット)は従来のまま:
+     - 注目記事 … 横並びカードの縦積み
+     - 新着記事 … 横スクロールカルーセル(縦の長さが増えない)
+   サイドバー(280px)と併存するため、1180px幅では1カラム約257pxになる。 */
+@media (min-width: 1024px) {
+  .post-list--simple,
+  .new-posts-carousel-track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  /* カルーセルの横スクロール挙動をグリッドでは無効化する */
+  .new-posts-carousel-track {
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+
+  .new-posts-carousel-item {
+    flex: none;
+  }
+
+  .new-posts-carousel-arrow {
+    display: none;
+  }
+
+  /* シンプルカードを縦型(サムネイル16:9)に切り替える */
+  .post-card--simple {
+    flex-direction: column;
+  }
+
+  .post-card--simple .post-card-thumb-link {
+    flex: none;
+    width: auto;
+  }
+
+  .post-card--simple .post-card-thumb {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .post-card--simple .post-card-title {
+    font-size: 0.98rem;
+  }}
+
+.home-new-more-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+/* ---- Article ---- */
+.article-header {
+  margin-bottom: 24px;
+}
+
+.article-header h1 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.55rem, 1.15rem + 1.7vw, 2.15rem);
+  line-height: 1.6;
+  margin: 10px 0 12px;
+}
+
+.category-badge {
+  display: inline-block;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.article-meta {
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.article-summary-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.article-summary-block ul {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+}
+
+.article-summary-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.article-summary-conclusion-link {
+  align-self: flex-start;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.article-hero-image {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin: 0 auto 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.article-body {
+  background: var(--color-surface);
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  font-size: 1.02rem;
+  line-height: 2;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.article-body > *:first-child {
+  margin-top: 0;
+}
+
+.article-body h2 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-size: 1.35rem;
+  line-height: 1.7;
+  margin: 2.4em 0 1em;
+  padding: 0.6em 0.9em;
+  background: linear-gradient(120deg, var(--color-primary-light), #fff6f9 75%);
+  border-left: 6px solid var(--color-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--color-text);
+}
+
+.article-body h2:first-child {
+  margin-top: 0;
+}
+
+.article-body h3 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: 1.14rem;
+  margin: 1.8em 0 0.7em;
+  padding-left: 0.6em;
+  border-left: 4px solid var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.article-body p {
+  margin: 0 0 1.3em;
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 0 0 1.3em;
+  padding-left: 1.4em;
+}
+
+.article-body li {
+  margin-bottom: 0.5em;
+}
+
+/* 記事本文リンクの既定色。以前は--color-primary(#d6336c)のままで白背景上
+   4.61:1しかなく、tint背景(#fff5f8)では4.62:1とAA(4.5:1)ぎりぎりだった。
+   閾値ちょうどはマージン不足で「背景と同化して見える」報告が繰り返し発生した
+   ため(2026-08-09)、同色相のまま暗くし白・tint双方で7:1前後を確保する。 */
+.article-body a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: #a01f4c;
+}
+
+.article-body strong {
+  color: var(--color-primary-dark);
+}
+
+.article-body mark.hl {
+  background: #ffe9a8;
+  color: inherit;
+  padding: 0.05em 0.3em;
+  border-radius: 4px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.article-body u.u-accent {
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* 感情の変化・気づきを表す一文を強調する装飾(^^text^^)。
+   本文中のハイライト(mark.hl)・下線(u.u-accent)とは違う目的で使うため、
+   文字サイズと色の両方を変えて視線を止める。 */
+.article-body .emotion-emphasis {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1864ab;
+}
+
+.article-body del {
+  color: var(--color-text-faint);
+}
+
+/* 出典の信頼性注記など「補足・留意点」を示す小さめ・控えめな色の注記(%%text%%)。
+   景品表示法の打消し表示規制に配慮し、視認性を保てる範囲(0.88em・
+   コントラスト比4.5:1以上を確保した色)に留め、読めなくなるほどは縮小・
+   淡色化しない。 */
+.article-body .article-note {
+  display: block;
+  font-size: 0.88em;
+  color: #55606b;
+  /* 直後の本文段落と密着して文中に紛れて見えないよう、独立した
+     ブロックとして視認できる余白を確保する(2026-08-11、実機確認で
+     判明した可読性問題への対応)。 */
+  margin: 1em 0;
+}
+
+.article-chart {
+  margin: 2em 0;
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.chart-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: 14px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.chart-cat-label {
+  font-size: 13px;
+  fill: var(--color-text-muted);
+}
+
+.chart-value-label {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--color-text);
+}
+
+.chart-bar {
+  fill: var(--color-primary);
+}
+
+.chart-table-toggle {
+  margin-top: 14px;
+  font-size: 0.85rem;
+}
+
+.chart-table-toggle summary {
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.chart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.chart-table th,
+.chart-table td {
+  border: 1px solid var(--color-border);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.chart-source {
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+}
+
+.article-stat-tile {
+  margin: 2em 0;
+  padding: 28px 24px;
+  background: var(--color-primary-surface);
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.stat-tile-value {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.stat-tile-unit {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.stat-tile-label {
+  margin: 10px 0 0;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.article-stat-tile .chart-source {
+  margin-top: 12px;
+}
+
+/* ---- Donut chart(内訳・構成比) ---- */
+.donut-chart-layout {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.donut-svg {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.donut-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.donut-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.donut-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.donut-legend-label {
+  color: var(--color-text);
+  flex: 1;
+}
+
+.donut-legend-value {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ---- メリット/デメリット比較ブロック ---- */
+.pros-cons-block {
+  margin: 2em 0;
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.pros-cons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.pros-cons-col {
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.pros-cons-pros {
+  background: #eefaf1;
+  border: 1px solid #b7e4c7;
+}
+
+.pros-cons-cons {
+  background: #fdf0ee;
+  border: 1px solid #f3c2ba;
+}
+
+.pros-cons-head {
+  margin: 0 0 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.pros-cons-pros .pros-cons-head {
+  color: #2b8a3e;
+}
+
+.pros-cons-cons .pros-cons-head {
+  color: #c92a2a;
+}
+
+.pros-cons-col ul {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 0.9rem;
+}
+
+.pros-cons-col li {
+  margin-bottom: 6px;
+}
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.6em 0;
+  font-size: 0.92rem;
+  /* 幅の狭い画面で表がはみ出す場合、横スクロール可能であることが
+     視覚的にわかるよう、常時表示の細いスクロールバーを付ける
+     (2026-08-11、実機確認で「スクロールできると気づかない」と判明したため)。 */
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-faint) transparent;
+}
+
+.article-body table::-webkit-scrollbar {
+  height: 6px;
+}
+
+.article-body table::-webkit-scrollbar-thumb {
+  background: var(--color-text-faint);
+  border-radius: 3px;
+}
+
+.article-body th,
+.article-body td {
+  border: 1px solid var(--color-border);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.article-body th {
+  background: var(--color-primary-surface);
+  font-weight: 600;
+}
+
+.quadrant-svg {
+  width: 100%;
+  max-width: 340px;
+  display: block;
+  margin: 0 auto;
+}
+
+.quadrant-axis {
+  stroke: var(--color-border);
+  stroke-width: 1.5;
+}
+
+.quadrant-axis-label {
+  font-size: 10px;
+  fill: var(--color-text-muted);
+}
+
+.quadrant-point-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--color-text);
+}
+
+.article-accordion {
+  margin: 1.5em 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.article-accordion-summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 18px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.article-accordion-summary::-webkit-details-marker {
+  display: none;
+}
+
+.article-accordion-summary::after {
+  content: "▼";
+  font-size: 0.7em;
+  color: var(--color-primary);
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.article-accordion[open] .article-accordion-summary::after {
+  transform: rotate(180deg);
+}
+
+.article-accordion-body {
+  padding: 4px 18px 16px;
+}
+
+.article-accordion-body > *:first-child {
+  margin-top: 12px;
+}
+
+.article-body blockquote {
+  margin: 1.5em 0;
+  padding: 12px 18px;
+  border-left: 4px solid var(--color-primary-light);
+  background: var(--color-primary-surface);
+  color: var(--color-text-muted);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* 「🔍 結論だけ知りたい人へ」冒頭の結論早見ボックス。通常のblockquoteより
+   彩度の高いピンクで視線を集める。enhanceAnnotationBlockquotes()により
+   Markdownの引用記法(> 🔍 結論だけ知りたい人へ)から自動変換される。 */
+.quick-conclusion-box {
+  margin: 1.5em 0;
+  padding: 14px 18px;
+  border: 1px solid var(--color-primary-light);
+  border-left: 4px solid var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.quick-conclusion-label {
+  margin: 0 0 6px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.quick-conclusion-body {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.article-body img {
+  border-radius: var(--radius-md);
+  margin: 1em 0;
+}
+
+.article-body hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2.4em 0;
+}
+
+.ad-notice {
+  background: #fff8e1;
+  border: 2px solid #ffb300;
+  color: #8a6d00;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  margin: 16px auto;
+  max-width: 720px;
+}
+
+/* /aboutの制作プロセス開示用ステップ表示。番号バッジの配色は
+   article-sources-item--editorialと同じ検証済みペア(6.45:1)を再利用する。 */
+.about-process-steps {
+  list-style: none;
+  margin: 1.4em 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-process-steps li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  column-gap: 12px;
+  align-items: start;
+}
+
+.about-process-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffe3ec;
+  color: #9c1f49;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.about-process-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+}
+
+.about-process-label {
+  font-weight: 700;
+}
+
+.about-process-note {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* frontmatterのsourcesから描画される出典セクション(docs/citation-format.md参照)。
+   バッジの配色はCLAUDE.mdのコントラスト基準(新規配色は6:1以上)を満たすよう
+   文字色を検証済み(primary 6.70:1 / secondary 7.64:1 / editorial 6.45:1)。 */
+.article-sources {
+  margin: 1.8em 0 0;
+}
+
+.article-sources h2 {
+  font-size: 1.05rem;
+  margin: 0 0 10px;
+}
+
+.article-sources-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.article-sources-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.article-sources-badge {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.article-sources-item--primary .article-sources-badge {
+  background: #e3f5ea;
+  color: #14603a;
+}
+
+.article-sources-item--secondary .article-sources-badge {
+  background: #e6eefa;
+  color: #204a80;
+}
+
+.article-sources-item--editorial .article-sources-badge {
+  background: #ffe3ec;
+  color: #9c1f49;
+}
+
+.article-sources-meta {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+/* 記事末尾の参考情報の明記。直後に続く.warning-box(医療注記)と
+   視覚的に区別できるよう、枠や背景を持たない控えめなテキストのみとする。 */
+.article-reference-note {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  margin: 1.6em 0 0;
+}
+
+.affiliate-box {
+  margin: 32px auto 0;
+  padding: 20px;
+  max-width: 720px;
+  background: var(--color-primary-surface);
+  border-radius: var(--radius-md);
+}
+
+.affiliate-box h3 {
+  margin-top: 0;
+}
+
+.affiliate-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.affiliate-box li {
+  margin-bottom: 8px;
+}
+
+.affiliate-link-btn {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff !important;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  text-decoration: none !important;
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.affiliate-link-btn:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* ---- 本文中埋め込み型アフィリエイトバナー ----
+   AdSenseの広告枠と見た目が混同されないよう、
+   PRバッジ・枠線・余白でコンテンツ本文および広告枠の双方から
+   視覚的に区別できるようにしている。 */
+.affiliate-inline-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 16px;
+  background: #fff9fb;
+  border: 1px dashed #f3b6cd;
+  border-radius: var(--radius-md);
+}
+
+.pr-badge {
+  flex-shrink: 0;
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.affiliate-banner-link {
+  display: inline-block;
+  line-height: 0;
+}
+
+.affiliate-banner-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- 記事ページ専用: スクロール進捗バー ----
+   ヘッダー(.site-header, sticky・高さ64px)の直下に固定表示し、
+   ヘッダーと同系色(水色〜ピンク)のグラデーションでトーンを合わせる。
+   components/ScrollProgressBar.js から記事ページでのみ描画される。 */
+.article-scroll-progress {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 15; /* ヘッダー(z-index:20)より下、本文コンテンツより上 */
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.article-scroll-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #38a3d9, var(--color-primary));
+}
+
+/* ---- 目次(TOC) ----
+   本文中のH2/H3見出しへのアンカーリンク一覧(components/ArticleToc.js)。
+   スマホでも本文への到達を妨げないよう開閉トグル付きにしている。 */
+.article-toc {
+  max-width: 720px;
+  margin: 0 auto 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.article-toc-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 18px;
+  background: linear-gradient(120deg, var(--color-primary-light), #fff6f9 75%);
+  border: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.article-toc-toggle-icon {
+  font-size: 0.7rem;
+  color: var(--color-primary);
+}
+
+.article-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 14px 20px 16px;
+  counter-reset: toc-counter;
+}
+
+.article-toc-item {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.article-toc-item a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.article-toc-item a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.article-toc-item.level-2 {
+  counter-increment: toc-counter;
+}
+
+.article-toc-item.level-2::before {
+  content: counter(toc-counter) ". ";
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.article-toc-item.level-3 {
+  margin-left: 1.2em;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.article-toc-item.level-3::before {
+  content: "– ";
+  color: var(--color-text-faint);
+}
+
+/* ---- 「次の記事」ボタン ---- */
+.article-next-post {
+  margin: 40px auto 0;
+  max-width: 720px;
+}
+
+.article-next-post-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.article-next-post-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary-light);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.article-next-post-thumb {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.article-next-post-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: var(--color-primary-surface);
+}
+
+.article-next-post-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.article-next-post-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.article-next-post-title {
+  font-size: 1rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.related-posts {
+  margin: 48px auto 0;
+  max-width: 720px;
+}
+
+/* 「関連記事」見出し。角の丸みを不均一にして雲(ブロブ)のような
+   柔らかい輪郭にし、通常の見出しと区別がつく装飾にしている。 */
+.related-posts-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 10px 26px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  background: linear-gradient(135deg, var(--color-primary), #ff9fc2);
+  border-radius: 45% 55% 60% 40% / 60% 45% 55% 40%;
+  box-shadow: var(--shadow-sm);
+}
+
+.related-posts-icon {
+  font-size: 1.1rem;
+}
+
+.related-posts-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.related-post-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.related-post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary-light);
+}
+
+.related-post-link {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.related-post-link:hover {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+.related-post-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.related-post-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-surface);
+  font-size: 2rem;
+}
+
+.related-post-title {
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+/* ---- Category chips ---- */
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.category-chip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.category-chip:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+/* ---- Ranking ---- */
+.ranking-list {
+  list-style: none;
+  padding: 0;
+}
+
+.ranking-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.ranking-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.ranking-item h2 {
+  margin: 4px 0;
+  font-size: 1.05rem;
+}
+
+.ranking-thumb-link {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.ranking-thumb {
+  width: 96px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.rank-number {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  min-width: 40px;
+}
+
+/* ---- Page note (補足・注記テキスト) ---- */
+.page-note {
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.result-count {
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+
+/* ---- Form ---- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 480px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.form-field input,
+.form-field textarea {
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  transition: border-color var(--transition);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.form-submit {
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+/* ---- 404 ---- */
+.not-found {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.not-found .not-found-code {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--color-primary-light);
+  margin: 0;
+}
+
+.not-found-section {
+  text-align: left;
+  margin-top: 24px;
+}
+
+.not-found-section h2 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.not-found-link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* ---- Compare table ---- */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.compare-table th,
+.compare-table td {
+  border: 1px solid var(--color-border);
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.compare-table th {
+  background: var(--color-primary-surface);
+  font-weight: 600;
+}
+
+/* ---- Compare filter ---- */
+.compare-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.compare-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.compare-filter-field select {
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: #fff;
+  min-width: 180px;
+  transition: border-color var(--transition);
+}
+
+.compare-filter-field select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.compare-filter-reset {
+  padding: 9px 16px;
+  border: 1px solid var(--color-primary-light);
+  background: transparent;
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.compare-filter-reset:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.compare-empty-note {
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ---- Search ---- */
+.search-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: border-color var(--transition);
+}
+
+.search-box input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.search-box button {
+  padding: 10px 22px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background var(--transition);
+}
+
+.search-box button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* ---- Admin ---- */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 220px;
+  background: #1f2430;
+  color: #fff;
+  padding: 24px 0;
+  flex-shrink: 0;
+}
+
+.admin-sidebar a {
+  display: block;
+  color: #cfd3dc;
+  padding: 10px 24px;
+}
+
+.admin-sidebar a:hover,
+.admin-sidebar a.active {
+  background: #2c3244;
+  color: #fff;
+  text-decoration: none;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 32px;
+  background: #f5f6fa;
+}
+
+.admin-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.status-badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.status-badge.published {
+  background: #e3f8e9;
+  color: #1b8a4a;
+}
+
+.status-badge.draft {
+  background: #f0f0f0;
+  color: #666;
+}
+
+table.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.admin-table th,
+table.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 720px) {
+  .main-nav {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 8px 0;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition), transform var(--transition);
+  }
+
+  .main-nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .main-nav-link {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .main-nav-link:hover {
+    background: var(--color-primary-surface);
+  }
+
+  .main-nav-link[aria-current="page"] {
+    background: var(--color-primary-surface);
+    color: var(--color-primary-dark);
+    border-left: 4px solid var(--color-primary);
+    padding-left: 16px;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .nav-dropdown {
+    width: 100%;
+  }
+
+  .nav-dropdown-label {
+    width: 100%;
+    justify-content: space-between;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: normal;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-primary-dark);
+  }
+
+  .nav-dropdown-label:hover {
+    background: var(--color-primary-surface);
+  }
+
+  .nav-dropdown.open .nav-dropdown-label,
+  .nav-dropdown:focus-within .nav-dropdown-label {
+    background: var(--color-primary-surface);
+    color: var(--color-primary-dark);
+  }
+
+  .nav-dropdown-menu {
+    display: none !important;
+    position: static;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background: var(--color-bg);
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 10px 10px;
+    margin-top: 0;
+  }
+
+  .nav-dropdown.open .nav-dropdown-menu {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .nav-dropdown-menu a {
+    padding: 12px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+  }
+
+  .nav-dropdown-menu a:active {
+    background: var(--color-primary-surface);
+  }
+
+  .nav-dropdown-count {
+    min-width: 22px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--color-bg-subtle, rgba(0, 0, 0, 0.05));
+    text-align: center;
+    font-size: 0.75rem;
+  }
+
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .home-sidebar {
+    position: static;
+  }
+
+  .category-summary-section {
+    padding: 18px;
+  }
+
+  .category-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-slider-slide {
+    aspect-ratio: 4 / 3;
+  }
+
+  .hero-slider-arrow {
+    top: 38%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+
+  .hero-slider-caption-name {
+    font-size: 0.9rem;
+    padding: 3px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .article-body {
+    padding: 20px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.94rem;
+    line-height: 1.9;
+  }
+
+  .article-body h2 {
+    font-size: 1.12rem;
+    padding: 0.6em 0.7em;
+  }
+
+  .article-body h3 {
+    font-size: 0.98rem;
+  }
+
+  .article-chart,
+  .pros-cons-block,
+  .affiliate-box {
+    padding: 14px;
+  }
+
+  .article-stat-tile {
+    padding: 20px 14px;
+  }
+
+  .pros-cons-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .pros-cons-col {
+    padding: 12px 14px;
+  }
+
+  .article-body blockquote {
+    padding: 10px 14px;
+  }
+
+  .article-body th,
+  .article-body td {
+    padding: 8px 10px;
+  }
+
+  .compare-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .article-body table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }}
+
+@media (max-width: 480px) {
+  .post-list {
+    grid-template-columns: 1fr;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .ranking-thumb {
+    width: 64px;
+    height: 64px;
+  }
+
+  .pros-cons-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .donut-chart-layout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .related-posts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .diagnosis-banner {
+    padding: 14px 16px;
+  }
+
+  .diagnosis-banner-icon {
+    font-size: 1.5rem;
+  }
+
+  .skin-quiz-choices {
+    grid-template-columns: 1fr;
+  }}
+
+/* ---- ホーム: 肌タイプ診断への控えめな誘導バナー ----
+   カテゴリ一覧セクションの直前に配置する独立機能への導線。
+   home-系専用クラス(トップページのみで使用)。 */
+.diagnosis-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding: 18px 24px;
+  background: linear-gradient(120deg, #ffd3e2, #ffeef4);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 16px rgba(214, 51, 108, 0.28);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.diagnosis-banner:hover {
+  box-shadow: 0 12px 30px rgba(214, 51, 108, 0.38);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.diagnosis-banner-icon {
+  flex-shrink: 0;
+  font-size: 1.8rem;
+}
+
+.diagnosis-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.diagnosis-banner-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-dark);
+  font-size: 1.05rem;
+}
+
+.diagnosis-banner-desc {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.diagnosis-banner-arrow {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* ---- 肌タイプ診断ページ: SkinTypeQuiz ---- */
+.skin-quiz {
+  max-width: 640px;
+}
+
+.skin-quiz-progress {
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+  margin: 0 0 8px;
+}
+
+.skin-quiz-question {
+  font-size: 1.15rem;
+  color: var(--color-primary-dark);
+  margin: 0 0 20px;
+}
+
+.skin-quiz-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.skin-quiz-choice {
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.skin-quiz-choice:hover {
+  background: var(--color-primary-surface);
+  border-color: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.skin-quiz-result {
+  max-width: 640px;
+  text-align: center;
+}
+
+.skin-quiz-result-emoji {
+  font-size: 2.4rem;
+  margin: 0 0 8px;
+}
+
+.skin-quiz-result-title {
+  color: var(--color-primary-dark);
+  font-size: 1.3rem;
+  margin: 0 0 12px;
+}
+
+.skin-quiz-result-desc {
+  color: var(--color-text);
+  line-height: 1.8;
+  margin: 0 0 16px;
+}
+
+.skin-quiz-note {
+  color: var(--color-text-faint);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.skin-quiz-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.skin-quiz-cta {
+  display: inline-block;
+  padding: 12px 28px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 999px;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.skin-quiz-cta:hover {
+  background: var(--color-primary-dark);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* 診断結果から悩みページへの誘導リンク。記事へのメインCTAとは
+   視覚的な優先度を分けるため、塗りではなく輪郭のみのスタイルにする。 */
+.skin-quiz-cta-secondary {
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary-dark);
+  padding: 10px 26px;
+}
+
+.skin-quiz-cta-secondary:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.skin-quiz-restart {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --- カルーセル(横スライド。ネイティブスクロール+scroll-snap) --- */
+
+.skin-type-carousel {
+  margin-bottom: 20px;
+}
+
+.skin-type-carousel-track {
+  list-style: none;
+  margin: 0;
+  padding: 4px 4px 12px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.skin-type-carousel-slide {
+  flex: 0 0 auto;
+  width: 78%;
+  scroll-snap-align: start;
+}
+
+.skin-type-carousel-link {
+  position: relative;
+  display: block;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-hover);
+  text-decoration: none;
+  color: inherit;
+}
+
+.skin-type-carousel-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.skin-type-carousel-img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: var(--color-surface-alt, #f4f4f4);
+}
+
+.skin-type-carousel-caption {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 12px 20px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (min-width: 480px) {
+  .skin-type-carousel-slide {
+    width: 62%;
+  }}
+
+@media (min-width: 768px) {
+  .skin-type-carousel-slide {
+    width: 30%;
+  }}
+
+@media (min-width: 1080px) {
+  .skin-type-carousel-slide {
+    width: 22%;
+  }}
+
+/* --- カード一覧(縦list。左サムネイル+右テキスト) --- */
+
+.skin-type-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skin-type-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.skin-type-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary-light);
+}
+
+.skin-type-card-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.skin-type-card-link:hover {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+.skin-type-card-thumb {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-sm, 8px);
+  object-fit: cover;
+}
+
+.skin-type-card-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: var(--color-surface-alt, #f4f4f4);
+}
+
+.skin-type-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.skin-type-card-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.skin-type-card-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .skin-type-card-thumb {
+    width: 110px;
+    height: 110px;
+  }
+
+  .skin-type-card-title {
+    font-size: 1rem;
+  }
+
+  .skin-type-card-desc {
+    font-size: 0.85rem;
+  }}
+
+/* =========================================================================
+   汎用4type(steps/checklist/summaryCard/compareCards)+セクション交互化の共通CSS
+   (2026-08-08追加)。記事専用プレフィックス(asemo-/pc-/kss-等)を持たない、
+   どの記事からでも使える .chart- 系および .article-section- 系クラス群。色は :root で定義した
+   --chart-accent/--chart-accent-dark/--chart-tint-bg/--chart-card-border の4変数で
+   制御し、記事が独自テーマを持つ場合はそのスコープ内でこの4変数だけ再定義すればよい。
+   既存12記事の .asemo-checklist 等の専用クラスはここでは一切変更していない。
+   ========================================================================= */
+
+.chart-checklist {
+  background: var(--color-surface);
+  border: 1px solid var(--chart-card-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin: 1.6em 0;
+}
+
+.chart-checklist-title {
+  color: var(--chart-accent-dark);
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.chart-checklist ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.chart-checklist-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 8px 0 0;
+}
+
+/* checklistのitemsに{question, resultLabel, resultColor}形式(診断用)を渡した場合の
+   一覧レイアウト。複数の項目に同時に「はい」が当てはまってもよいセルフチェック
+   (2026-08-09、旧flowchart型のflowchart-selfcheck-*から汎用領域へ移設・改名)。 */
+.chart-checklist-list-diagnostic {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.chart-checklist-diagnostic-item {
+  background: var(--chart-tint-bg);
+  border: 1px solid var(--chart-card-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.chart-checklist-diagnostic-question {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 6px;
+}
+
+.chart-checklist-diagnostic-result {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.chart-checklist-diagnostic-badge {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+/* readMoreHeadingが指定された診断itemの「詳しく見る」リンク。背景が
+   --chart-tint-bg(明るいトーン)前提のため、既存の.chart-checklist-titleと
+   同じ--chart-accent-darkの組み合わせを踏襲する(新規の配色決定ではなく
+   既存パターンの再利用)。2026-08-09、型改修で追加。 */
+.chart-checklist-diagnostic-readmore {
+  color: var(--chart-accent-dark);
+  font-weight: 700;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.chart-summary-card {
+  background: linear-gradient(135deg, var(--chart-accent-dark), var(--chart-accent));
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin: 2em 0;
+}
+
+.chart-summary-card h3 {
+  color: #fff;
+  border-left: none;
+  padding-left: 0;
+  margin-top: 0.6em;
+}
+
+/* セレクタを.article-section .chart-summary-card aにしていたが、sectionAlternate:
+   trueをfrontmatterで指定した記事だけがwrapArticleSections()で.article-sectionに
+   包まれる仕様(lib/posts.js)のため、指定のない記事(フケ皮膚科受診目安 等)では
+   .article-section祖先が存在せず、このルール自体が一切適用されずリンクが既定の
+   a{color:var(--color-primary)}(#d6336c)のままグラデーション背景に埋もれて読めなく
+   なっていた(2026-08-09報告で発覚)。祖先要素の有無に左右されないよう、リンク自身に
+   専用クラス(chart-summary-card-link、renderGenericSummaryCardHtml側で付与)を付け、
+   .chart-summary-card単体をセレクタにする。specificityは(0,2,1)となり、後方定義の
+   .article-section-tint a(0,1,1)より確実に勝つため、sectionAlternate: trueの記事に
+   包まれた場合でも同じ事故は再発しない。 */
+.chart-summary-card a.chart-summary-card-link {
+  /* 白文字+下線のみ(2026-08-08対応)では、グラデーションの明るい端で
+     4.62:1とAA(4.5:1)ぎりぎりのマージンしかなく、実画面で背景と同化して
+     見えると複数回報告された(2026-08-09)。グラデーション位置に左右され
+     ない設計にするため、リンクの実効背景を半透明の黒で固定する
+     (濃い端で約12.6:1、明るい端で約10.5:1、両端とも大きな余裕を持ってAA
+     を満たす)。 */
+  color: #ffffff;
+  text-decoration: underline;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.05em 0.4em;
+  border-radius: 4px;
+}
+
+.chart-steps-figure {
+  margin: 2em 0;
+}
+
+.chart-steps-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-step-circle {
+  fill: var(--chart-accent);
+}
+
+.chart-step-num {
+  font-size: 13px;
+  fill: #fff;
+  font-weight: 800;
+}
+
+.chart-step-text {
+  font-size: 13px;
+  fill: var(--color-text);
+  font-weight: 700;
+}
+
+.chart-step-note {
+  font-size: 12px;
+  fill: var(--chart-accent-dark);
+}
+
+.chart-scroll-hint {
+  font-size: 0.8rem;
+  color: var(--chart-accent-dark);
+  margin: 0 0 8px;
+}
+
+.chart-compare-cards-figure {
+  margin: 2em 0;
+}
+
+.chart-compare-cards-wrap {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chart-compare-card {
+  flex: 0 0 78%;
+  max-width: 260px;
+  background: var(--chart-tint-bg);
+  border: 1px solid var(--chart-card-border);
+  border-top: 4px solid var(--chart-accent);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.chart-compare-card-title {
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin: 0 0 8px;
+}
+
+.chart-compare-card-list {
+  margin: 0;
+}
+
+.chart-compare-card-list dt {
+  font-size: 0.75rem;
+  /* 背景--chart-tint-bg(既定#fff5f8)上で--color-text-muted(#6b7280)は4.53:1と
+     僅差のため、同色相のまま少し暗くした値に上書き(2026-08-08、4.53:1→4.65:1)。 */
+  color: #6a707e;
+  margin-top: 8px;
+}
+
+.chart-compare-card-list dd {
+  margin: 2px 0 0;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+@media (min-width: 640px) {
+  .chart-compare-card {
+    flex: 1 1 0;
+  }}
+
+/* セルフ診断ウィザード(chart type: "diagnosis")。JS無効時は全質問・全選択肢・
+   全結果タイプ一覧が常に表示される静的HTMLとして読める。JS有効時は
+   components/diagnosisWidget.js が1問ずつ進めるウィザードUIに書き換える
+   (2026-08-09、記事専用React実装DrySkinSelfCheck.jsを置き換えて新設)。 */
+.chart-diagnosis {
+  background: var(--chart-tint-bg);
+  border: 1px solid var(--chart-card-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin: 1.6em 0;
+  text-align: center;
+}
+
+.chart-diagnosis .chart-title {
+  margin: 0 0 12px;
+}
+
+.chart-diagnosis-progress {
+  font-size: 0.8rem;
+  color: var(--chart-accent-dark);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.chart-diagnosis-question:not(:first-child) {
+  margin-top: 20px;
+}
+
+.chart-diagnosis-question-text {
+  font-size: 1.05rem;
+  margin: 0 0 16px;
+  color: var(--color-text);
+}
+
+.chart-diagnosis-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chart-diagnosis-choice {
+  min-height: 44px;
+  border-radius: 999px;
+  border: 2px solid var(--chart-accent);
+  background: var(--color-surface);
+  color: var(--chart-accent-dark);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.chart-diagnosis-choice:hover,
+.chart-diagnosis-choice:focus-visible {
+  background: var(--chart-accent);
+  color: #fff;
+}
+
+.chart-diagnosis-result-badge {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin: 4px 0;
+}
+
+.chart-diagnosis-result-desc {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  margin: 8px 0 12px;
+}
+
+.chart-diagnosis-restart {
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: none;
+  background: var(--chart-accent);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chart-diagnosis-outcomes {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--chart-card-border);
+  text-align: left;
+}
+
+.chart-diagnosis-outcomes-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0 0 8px;
+}
+
+.chart-diagnosis-outcomes-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.chart-diagnosis-outcome-item {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.chart-diagnosis-outcome-badge {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.chart-diagnosis-outcome-desc {
+  color: var(--color-text-muted);
+}
+
+.chart-diagnosis-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 14px 0 0;
+}
+
+.chart-quadrant-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 10px 0 0;
+}
+
+/* 断面/構造図型・深さ比較型(chart type: crossSection/depthComparison、2026-08-13追加) */
+.article-diagram-chart {
+  margin: 2em 0;
+}
+
+.chart-diagram-svg {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.chart-diagram-caption {
+  font-size: 11px;
+  fill: var(--color-text-muted);
+}
+
+.chart-diagram-label {
+  font-size: 11.5px;
+  fill: var(--color-text);
+}
+
+.chart-diagram-label-strong {
+  font-size: 12.5px;
+  font-weight: 700;
+  fill: var(--color-text);
+}
+
+.chart-diagram-leader {
+  stroke: var(--chart-accent);
+  stroke-width: 1.3;
+  fill: none;
+}
+
+.chart-diagram-leader-dot {
+  fill: var(--chart-accent);
+}
+
+.chart-diagram-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 10px 0 0;
+}
+
+.article-section {
+  margin: 0 0 32px;
+  padding: 16px 14px;
+  border-radius: var(--radius-lg);
+}
+
+.article-section-plain {
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.article-section-tint {
+  background: var(--chart-tint-bg);
+}
+
+/* tint背景(既定#fff5f8)上でも.article-body aと同じ暗色(#a01f4c、約7:1)に統一する
+   (2026-08-09。旧#d22a65は4.62:1でAAぎりぎりのマージン不足だったため)。
+   hoverはより詳しいセレクタで既定のhover色を維持する。 */
+.article-section-tint a {
+  color: #a01f4c;
+}
+
+.article-section-tint a:hover {
+  color: var(--color-primary-dark);
+}
+
+.article-section-card {
+  background: var(--color-surface);
+  border: 1px solid var(--chart-card-border);
+}
+
+.article-section h2 {
+  margin-top: 0;
+}
+
+/* ---- 悩みページ(/worry/[slug]): よくある原因・今日からできる対策 ----
+   既存トークン(--color-border/--radius-md/--color-surface/--color-primary-dark/
+   --color-primary/--color-text)のみを使い、新規クラスとして最小限追加する。 */
+.worry-cause-list,
+.worry-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.worry-cause-item,
+.worry-steps-item {
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.worry-steps-item {
+  position: relative;
+  padding-left: 48px;
+  counter-increment: worry-step;
+}
+
+.worry-steps-list {
+  counter-reset: worry-step;
+}
+
+.worry-steps-item::before {
+  content: counter(worry-step);
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.worry-cause-title,
+.worry-steps-title {
+  margin: 0 0 4px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.worry-cause-body,
+.worry-steps-body {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* ---- 悩みハブページ(/worry) ----
+   既存トークンのみを使い、悩みカードをグリッド表示する。 */
+.worry-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.worry-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.worry-hub-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.worry-hub-card-label {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  font-size: 1rem;
+}
+
+.worry-hub-card-summary {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.worry-hub-card-count {
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   ファンデーション崩れタイプ別比較 記事専用パーツ
+   (対象: content/articles/2026-07-26_ファンデーション崩れタイプ別比較.md のみ)
+   テーマカラー: モカブラウン#B08968 + ミント#A8D5C8 + アイボリー#FDF8F3
+   ============================================================ */
+
+/* 顔マップ図解(faceMap) */
+.facemap-svg {
+  width: 200px;
+  height: 240px;
+  flex-shrink: 0;
+}
+
+/* 診断フローチャート(flowchart): タイプ別3カラムのQ&Aカード */
+.flowchart-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.flowchart-column {
+  background: #fdf8f3;
+  border: 1px solid #e7d9c8;
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.flowchart-badge {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.flowchart-step {
+  margin-bottom: 2px;
+}
+
+.flowchart-question {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.flowchart-answer {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 2px 0 0;
+}
+
+.flowchart-arrow {
+  font-size: 0.75rem;
+  color: #b08968;
+  margin: 2px 0;
+}
+
+/* 二択(はい/いいえ)セルフチェック: 4問を独立したチェック項目として縦一列に
+   並べる一覧レイアウト。列挙型(.flowchart-grid)と違い横スクロールは発生させず、
+   常に画面幅いっぱいの1カラム表示にする。以前は「Q1でいいえなら次の質問へ」と
+   いう消去法の決定木にしていたが、複数の質問に同時に「はい」が付き得る内容
+   (例: 老人性色素斑と肝斑の併発)を1本道の分岐で表現すると「1タイプにしか
+   当てはまらない」かのような誤った印象を与えるため、独立項目の一覧+
+   「複数該当することもある」注記に変更した(2026-08-09)。 */
+.flowchart-selfcheck-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.flowchart-selfcheck-item {
+  background: #fdf8f3;
+  border: 1px solid #e7d9c8;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.flowchart-selfcheck-question {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 6px;
+}
+
+.flowchart-selfcheck-result {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.flowchart-selfcheck-badge {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.flowchart-selfcheck-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 8px 0 0;
+}
+
+/* 崩れ度合いの時系列イメージ(lineChart) */
+.linechart-svg {
+  width: 100%;
+  max-width: 320px;
+  display: block;
+}
+
+/* 「⏱ 30秒でわかる」冒頭サマリー・チェックリスト等、通常のblockquoteより
+   一段強めに視線を集めたいブロック向けの装飾違いのblockquote。
+   本文中でこのクラスを直接使うことはできない(生HTML不可)ため、
+   通常blockquoteの中に絵文字プレフィックスを含めて表現する。 */
+.article-body blockquote strong:first-child {
+  color: var(--color-primary-dark);
+}
+
+/* GFMタスクリスト(- [ ] 項目)のチェックリスト表示。タップ領域を
+   44px以上確保し、チェック済みはミントで塗りつぶす。 */
+.article-body ul.contains-task-list {
+  list-style: none;
+  padding-left: 0.2em;
+}
+
+.article-body li.task-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: #f4faf7;
+  border: 1px solid #cdeade;
+  border-radius: var(--radius-sm);
+  list-style: none;
+}
+
+.article-body li.task-list-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: #2f9e6e;
+  margin-top: 2px;
+}
+
+/* 診断フローチャート(.flowchart-grid)は3カラム固定だったため、480px超〜640px
+   あたりの画面幅(大きめのスマホ横向き・小型タブレット等)では1カラムあたりが
+   約150px前後まで狭まり、「何時ごろ崩れる?」のような短い日本語見出しでさえ
+   単語の途中で折り返され、読みにくく詰まった見た目になっていた。1カラム化の
+   しきい値を480pxから640pxに引き上げ、狭い幅では早めに縦積みレイアウトへ
+   切り替える(2026-08-10修正、他の480px基準のブレークポイントとは独立させ、
+   .flowchart-grid/.flowchart-column以外のスタイルには影響させない)。 */
+@media (max-width: 640px) {
+  .flowchart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flowchart-column {
+    text-align: left;
+  }}
+
+@media (max-width: 480px) {
+  .facemap-svg {
+    width: 100%;
+    max-width: 200px;
+  }}
+
+/* ---- セクション交互背景(H2見出し単位、lib/foundationCompareExtras.js) ---- */
+.fnd-section {
+  padding: 4px 0;
+}
+
+.fnd-section-plain {
+  background: #fff;
+}
+
+.fnd-section-tint {
+  background: rgba(176, 137, 104, 0.06);
+  border-radius: var(--radius-md);
+  margin: 0 -8px;
+  padding: 8px 8px 4px;
+}
+
+.fnd-section-card {
+  background: #fff;
+  border: 1px solid #e7d9c8;
+  border-radius: var(--radius-md);
+  margin: 12px -4px;
+  padding: 12px 12px 4px;
+}
+
+/* ---- タイプ別h3見出しのラベルバッジ(pill) ---- */
+.fnd-badge {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.fnd-badge-sebum {
+  background: #eb6834;
+}
+
+.fnd-badge-dry {
+  background: #2a78d6;
+}
+
+.fnd-badge-mix {
+  background: #1baf7a;
+}
+
+/* =====================================================================
+   「リップ比較」記事(2026-07-26_リップ比較.md)専用スタイル(lib/lipCompareExtras.js)
+   クラス名はすべて lip- プレフィックスで他記事のスタイルと衝突しないようにしている。
+   テーマカラー: ローズレッド#D6456B / ヌードベージュ#E5C5B5 / ディープボルドー#6E1F35
+   ===================================================================== */
+
+/* ---- 独自目次(details) ---- */
+.lip-toc {
+  margin: 0 0 24px;
+  border: 1px solid #E5C5B5;
+  border-radius: var(--radius-md);
+  background: #fff;
+  overflow: hidden;
+}
+
+.lip-toc > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 18px;
+  font-weight: 700;
+  color: #6E1F35;
+  background: #fbecef;
+}
+
+.lip-toc > summary::-webkit-details-marker {
+  display: none;
+}
+
+.lip-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px 10px 14px;
+}
+
+.lip-toc-item a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  min-height: 44px;
+  color: #6E1F35;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.lip-toc-item a:hover {
+  background: #fbecef;
+}
+
+.lip-toc-emoji {
+  font-size: 1rem;
+}
+
+/* ---- セクション交互背景(H2見出し単位) ---- */
+.lip-section {
+  padding: 4px 0;
+}
+
+.lip-section-plain {
+  background: #fff;
+}
+
+.lip-section-tint {
+  background: rgba(214, 69, 107, 0.05);
+  border-radius: var(--radius-md);
+  margin: 0 -8px;
+  padding: 8px 8px 4px;
+}
+
+.lip-section-card {
+  background: #fff;
+  border: 1px solid #E5C5B5;
+  border-radius: var(--radius-md);
+  margin: 12px -4px;
+  padding: 12px 12px 4px;
+}
+
+.lip-section h2 {
+  background: linear-gradient(120deg, #fbecef, #fff 75%) !important;
+  border-left-color: #D6456B !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lip-section h3 {
+  border-left-color: #D6456B !important;
+  color: #6E1F35 !important;
+}
+
+/* ---- 断面比較図 ---- */
+.lip-cross-section .lip-cross-svg {
+  display: block;
+  height: auto;
+  min-width: 400px;
+  overflow: visible;
+}
+
+.lip-cross-name {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #6E1F35;
+}
+
+.lip-cross-desc {
+  font-size: 12px;
+  fill: #7a5c62;
+}
+
+.lip-cross-note {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* ---- レーダーチャート ---- */
+.radar-svg {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.radar-ring {
+  fill: none;
+  stroke: #e8dcd8;
+  stroke-width: 1;
+}
+
+.radar-axis-line {
+  stroke: #d8c6c1;
+  stroke-width: 1;
+}
+
+.radar-axis-label {
+  font-size: 12px;
+  fill: #6E1F35;
+  font-weight: 600;
+}
+
+.radar-legend {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.radar-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.radar-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* ---- 商品比較表 ---- */
+.lip-scroll-hint {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+}
+
+.lip-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lip-product-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.lip-product-table th,
+.lip-product-table td {
+  border: 1px solid #E5C5B5;
+  padding: 8px 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.lip-product-table th {
+  background: #fbecef;
+  color: #6E1F35;
+  font-weight: 700;
+}
+
+.lip-product-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: normal !important;
+  min-width: 160px;
+}
+
+.lip-color-chip {
+  flex-shrink: 0;
+}
+
+/* ---- 手順ガイド ---- */
+.lip-step-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lip-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.lip-step-icon {
+  flex-shrink: 0;
+}
+
+.lip-step-title {
+  margin: 0 0 4px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6E1F35;
+}
+
+/* ==========================================================================
+   「くせ毛タイプ別まとまる髪型ガイド」記事専用スタイル
+   (content/articles/2026-08-05_くせ毛タイプ別まとまる髪型ガイド.md)
+   テーマカラー: チェスナットブラウン#8B6F52 / ピンクベージュ#E8CFC4 /
+   ダークブラウン#3A2E26。他記事のクラスとは名前空間を分け(hairtype- /
+   nevora-point- / warning-box- / hairtype-checklist- 接頭辞)、既存クラスは変更しない。
+   ========================================================================== */
+
+.hairtype-diagram-svg,
+.hairtype-flow-svg,
+.hairtype-steps-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.hairtype-diagram-label-main {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #3A2E26;
+}
+
+.hairtype-diagram-label-sub {
+  font-size: 11px;
+  fill: #6b5a4a;
+}
+
+.hairtype-diagram-caption {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.hairtype-flow-q {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #3A2E26;
+}
+
+.hairtype-flow-a {
+  font-size: 12px;
+  fill: #6b5a4a;
+}
+
+.hairtype-silhouette-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 560px) {
+  .hairtype-silhouette-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }}
+
+.hairtype-silhouette-tile {
+  text-align: center;
+  background: #FBF5F0;
+  border: 1px solid #E8CFC4;
+  border-radius: var(--radius-md);
+  padding: 10px 6px 14px;
+}
+
+.hairtype-silhouette-svg {
+  width: 100%;
+  max-width: 96px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.hairtype-silhouette-name {
+  margin: 6px 0 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #3A2E26;
+}
+
+.hairtype-silhouette-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #8B6F52;
+  color: #fff;
+}
+
+.hairtype-step-num {
+  text-anchor: middle;
+  font-size: 16px;
+  font-weight: 700;
+  fill: #fff;
+}
+
+.hairtype-step-label {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #3A2E26;
+}
+
+.hairtype-step-desc {
+  font-size: 11px;
+  fill: #6b5a4a;
+}
+
+/* 乾かし方4ステップの説明文(SVG外のHTMLリスト。狭いスロットへの詰め込みで
+   隣の説明と重なるのを避けるため、SVGは番号・矢印のみにしテキストはここに出す) */
+.hairtype-steps-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.hairtype-steps-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: rgba(139, 111, 82, 0.06);
+  border-radius: var(--radius-md);
+}
+
+.hairtype-steps-list-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #3A2E26;
+}
+
+.hairtype-steps-list-desc {
+  font-size: 0.85rem;
+  color: #6b5a4a;
+}
+
+/* 💡 NEVORAポイント: マスコットの一言+アクセント枠(本文の言い換えではなく
+   一段深い実務補足を入れる箇所)。enhanceAnnotationBlockquotes(lib/posts.js)が
+   「> 💡 NEVORAポイント」の引用ブロックをこのHTML構造に変換する。 */
+.nevora-point-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 1.6em 0;
+  padding: 16px 18px;
+  background: #FBF3EC;
+  border: 1px solid #E8CFC4;
+  border-left: 5px solid #8B6F52;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.nevora-point-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.nevora-point-label {
+  margin: 0 0 4px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  /* 背景#FBF3EC上でWCAG AA(4.5:1)を満たすよう、同色相のまま#8B6F52から
+     暗くした値(2026-08-08、4.26:1→4.67:1)。 */
+  color: #83694d;
+}
+
+.nevora-point-body p:last-child {
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ⚠️ 注意ボックス。NEVORAポイントと同じ引用記法から変換されるが、
+   色を変えて警告であることが一目でわかるようにする。 */
+.warning-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 1.6em 0;
+  padding: 16px 18px;
+  background: #FFF6EC;
+  border: 1px solid #E8B98F;
+  border-left: 5px solid #C97B3B;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.warning-box-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.warning-box-label {
+  margin: 0 0 4px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  /* 背景#FFF6EC上でWCAG AA(4.5:1)を満たすよう、同色相のまま#C97B3Bから
+     暗くした値(2026-08-08、3.08:1→4.67:1)。 */
+  color: #a0602c;
+}
+
+.warning-box-body p:last-child {
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* セクションごとの背景を白⇔テーマカラー淡色⇔罫線カードで交互にするための
+   H2見出し配色バリエーション(3周期)。article-body内のH2の出現順で
+   自動的に交互になる(記事Markdown側での指定は不要)。 */
+.article-body h2:nth-of-type(3n+2) {
+  background: linear-gradient(120deg, #F3E7DD, #FBF5F0 75%);
+  border-left-color: #8B6F52;
+}
+
+.article-body h2:nth-of-type(3n) {
+  background: #FFFFFF;
+  border: 1px solid #E8CFC4;
+  border-left: 6px solid #8B6F52;
+}
+
+/* ✅ 今日からできるチェックリスト */
+.hairtype-checklist {
+  margin: 1.6em 0;
+  padding: 18px 20px;
+  background: #FBF5F0;
+  border: 1px solid #E8CFC4;
+  border-radius: var(--radius-lg);
+}
+
+.hairtype-checklist-title {
+  margin: 0 0 10px;
+  font-weight: 800;
+  color: #3A2E26;
+}
+
+.hairtype-checklist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hairtype-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  margin: 0;
+}
+
+.hairtype-checklist li::before {
+  content: "\2610";
+  font-size: 1.3rem;
+  color: #8B6F52;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* 記事末まとめカード */
+.hairtype-summary-card {
+  margin: 2em 0;
+  padding: 22px 20px;
+  background: #3A2E26;
+  color: #FBF5F0;
+  border-radius: var(--radius-lg);
+}
+
+.hairtype-summary-card h2,
+.hairtype-summary-card h3 {
+  color: #FBF5F0 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 0 10px !important;
+}
+
+.hairtype-summary-card ul {
+  margin: 0 0 14px;
+  padding-left: 1.3em;
+}
+
+.hairtype-summary-card a {
+  color: #F3D9B1;
+}
+
+@media (max-width: 480px) {
+  .hairtype-silhouette-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }}
+
+/* H2見出し単位のセクション背景交互化(白 / テーマ淡色 / 罫線カード) */
+.hairtype-section {
+  margin: 0 0 32px;
+  padding: 20px 16px;
+  border-radius: var(--radius-lg);
+}
+
+.hairtype-section-plain {
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.hairtype-section-tint {
+  background: rgba(139, 111, 82, 0.05);
+}
+
+.hairtype-section-card {
+  background: #fff;
+  border: 1px solid #E8CFC4;
+}
+
+.hairtype-section h2 {
+  margin-top: 0;
+}
+
+/* 幅375pxで表がはみ出さないようにする横スクロールラッパー。外側の
+   table-scroll-outerは非スクロールでposition:relativeにし、右端フェード
+   (::after)がスクロール位置に関わらず表の右端に固定表示されるようにする。 */
+.table-scroll-outer {
+  position: relative;
+  margin: 1.6em 0;
+}
+
+.table-scroll-outer::after {
+  content: "";
+  position: absolute;
+  top: 34px;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95));
+  pointer-events: none;
+}
+
+.table-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-wrap table {
+  margin: 0.4em 0 0;
+  min-width: 480px;
+}
+
+.table-scroll-note {
+  font-size: 0.78rem;
+  color: #8B6F52;
+  margin: 0;
+}
+
+.lip-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #D6456B;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.lip-step-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 480px) {
+  .lip-cross-name {
+    font-size: 12px;
+  }
+  .lip-toc-item a {
+    font-size: 0.92rem;
+  }}
+
+/* ==================== ピラミッド図(普通肌を支える3本柱) ==================== */
+.article-pyramid-chart {
+  background: #fff;
+  border: 1px solid #ecd98f;
+}
+
+.pyramid-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.pyramid-layer-label {
+  font-size: 15px;
+  font-weight: 700;
+  fill: #3a331a;
+}
+
+.pyramid-layer-sub {
+  font-size: 12px;
+  fill: #5a5238;
+}
+
+/* ==================== 季節帯グラフ(年間カレンダー) ==================== */
+.article-calendar-band {
+  background: #fff;
+  border: 1px solid #dbe6cd;
+}
+
+.calendar-band-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.calendar-band-label {
+  font-size: 11px;
+  fill: #5a5238;
+}
+
+.calendar-band-legend {
+  font-size: 12px;
+  fill: #4a4534;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .pyramid-layer-label {
+    font-size: 13px;
+  }
+  .pyramid-layer-sub {
+    font-size: 10px;
+  }}
+
+/* ====================================================================
+   「基礎化粧品とは？」記事(2026-07-26_基礎化粧品の基本知識と肌質診断.md)専用
+   SVG図解ウィジェット(lib/skincareBasicsWidgets.js)。他記事のクラス名と
+   衝突しない sc101- 接頭辞を使用し、テーマ用スコープクラスは導入せず
+   グローバルに定義する(配色はSVG側でハードコード済み)。
+   ==================================================================== */
+.sc101-figure {
+  background: #fff;
+  border: 1px solid #E8DCC8;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.sc101-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sc101-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sc101-flow-svg {
+  display: block;
+  height: auto;
+  min-width: 460px;
+}
+
+.sc101-matrix-svg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.sc101-amount-svg {
+  display: block;
+  height: auto;
+  min-width: 360px;
+}
+
+.sc101-svg-label-sm {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #4A3F35;
+}
+
+.sc101-svg-step-label {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #3A2E26;
+}
+
+.sc101-matrix-type {
+  font-size: 15px;
+  font-weight: 800;
+  fill: #4A3F35;
+}
+
+.sc101-matrix-desc {
+  font-size: 12px;
+  fill: #6b5a4a;
+}
+
+.sc101-axis-label {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #6B8161;
+}
+
+.sc101-axis-sub {
+  font-size: 11px;
+  fill: #6b5a4a;
+}
+
+.sc101-amount-text {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #8B6F52;
+}
+
+.sc101-scroll-note {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-text-faint);
+}
+
+.sc101-diagram-rule {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6B8161;
+  background: #F1F5EE;
+  border-radius: var(--radius-sm, 6px);
+  padding: 6px 10px;
+  display: inline-block;
+}
+
+/* ---- 独自目次(details) ---- */
+.pc-toc {
+  margin: 0 0 24px;
+  border: 1px solid var(--pc-peach);
+  border-radius: var(--radius-md);
+  background: #fff;
+  overflow: hidden;
+}
+
+.pc-toc > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 18px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--pc-charcoal);
+  background: #fdf5ef;
+}
+
+.pc-toc > summary::-webkit-details-marker {
+  display: none;
+}
+
+.pc-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px 10px 14px;
+}
+
+.pc-toc-item a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  min-height: 44px;
+  color: var(--pc-charcoal);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.pc-toc-item a:hover {
+  background: #fdf5ef;
+}
+
+.pc-toc-emoji {
+  font-size: 1rem;
+}
+
+/* ---- セクション交互背景(H2見出し単位) ---- */
+.pc-section {
+  padding: 4px 0;
+}
+
+.pc-section-plain {
+  background: #fff;
+}
+
+.pc-section-tint {
+  background: rgba(217, 131, 98, 0.06);
+  border-radius: var(--radius-md);
+  margin: 0 -8px;
+  padding: 8px 8px 4px;
+}
+
+.pc-section-card {
+  background: #fff;
+  border: 1px solid var(--pc-peach);
+  border-radius: var(--radius-md);
+  margin: 12px -4px;
+  padding: 12px 12px 4px;
+}
+
+/* ---- ① 毛穴タイプ3面図 ---- */
+.pc-faces .pc-faces-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.pc-face-label {
+  font-size: 13px;
+  font-weight: 800;
+  fill: var(--pc-charcoal);
+}
+
+.pc-face-sub {
+  font-size: 12px;
+  fill: #6b5850;
+}
+
+.pc-diagram-caption {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: #6b5850;
+  line-height: 1.7;
+}
+
+/* ---- ② 選び方3軸アイコン ---- */
+.pc-axis-icons .pc-axis-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.pc-axis-label {
+  font-size: 13px;
+  font-weight: 800;
+  fill: var(--pc-charcoal);
+}
+
+.pc-axis-sub {
+  font-size: 11px;
+  fill: #6b5850;
+}
+
+/* ---- ③ 使い心地ダイヤル ---- */
+.pc-dial .pc-dial-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.pc-dial-end {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--pc-terracotta-dark);
+}
+
+.pc-dial-item {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--pc-charcoal);
+}
+
+.pc-dial-item2 {
+  font-size: 11px;
+  fill: #6b5850;
+}
+
+/* ---- 表の横スクロール対応(毛穴タイプ別処方・注意点の表など) ---- */
+.pc-scroll-hint {
+  margin: 4px 0 6px;
+  font-size: 0.82rem;
+  color: #6b5850;
+}
+
+.pc-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--pc-peach);
+  border-radius: var(--radius-md);
+}
+
+.pc-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.pc-table th,
+.pc-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--pc-peach);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pc-table thead th {
+  background: var(--pc-peach);
+  color: var(--pc-charcoal);
+  font-weight: 800;
+}
+
+/* ---- ✅ チェックリスト ---- */
+.pc-checklist {
+  margin: 1.6em 0;
+  padding: 18px 20px;
+  background: var(--pc-peach);
+  border: 1px solid #ecd4c3;
+  border-radius: var(--radius-lg);
+}
+
+.pc-checklist-title {
+  margin: 0 0 10px;
+  font-weight: 800;
+  color: var(--pc-charcoal);
+}
+
+.pc-checklist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pc-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  margin: 0;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.pc-checklist li::before {
+  content: "\2610";
+  font-size: 1.3rem;
+  color: var(--pc-terracotta);
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* ---- 記事末まとめカード ---- */
+.pc-summary-card {
+  margin: 2em 0;
+  padding: 22px 20px;
+  background: var(--pc-charcoal);
+  color: #f8efe9;
+  border-radius: var(--radius-lg);
+}
+
+.pc-summary-card h3 {
+  color: #f8efe9 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 0 10px !important;
+}
+
+.pc-summary-card ul {
+  margin: 0 0 14px;
+  padding-left: 1.3em;
+}
+
+.pc-summary-card a {
+  color: var(--pc-peach);
+}
+
+@media (max-width: 480px) {
+  .pc-table {
+    min-width: 520px;
+  }}
+
+/* デプロイ確認(nevora-beauty, Root Directory配下) 2026-08-08 */
+/* デプロイ再トリガー確認(3470be4未反映のため) 2026-08-09 */
+
+
+/* 運営者情報ページ末尾の最終更新日 */
+.about-last-updated {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #e2e0dc);
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #5c5852);
+  text-align: right;
+}
+
+/* お問い合わせフォームの送信結果メッセージ */
+.form-message {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.form-message-success {
+  background: #eef7f0;
+  border: 1px solid #b7ddc2;
+  color: #1d5c31;
+}
+.form-message-error {
+  background: #fdf0ee;
+  border: 1px solid #eebfb7;
+  color: #8a2b1b;
+}
+/* ------------------------------------------------------------------
+   写真素材の差し替え中(scripts/generate-site-images.jsで未生成)の
+   フォールバック。画像を出さない代わりに、ブランドカラーのグラデーション
+   だけで帯の高さと文字のコントラストを確保する。
+   素材を配置すれば自動で写真版に戻る(pages/index.jsのhasImage判定)。
+   ------------------------------------------------------------------ */
+.hero-banner--no-image {
+  min-height: clamp(220px, 34vw, 420px);
+  background: linear-gradient(135deg, #123a63 0%, #1c5f8f 55%, #0f7a63 100%);
+}
+
+.section-band--no-image {
+  min-height: clamp(160px, 22vw, 260px);
+  background: linear-gradient(135deg, #123a63 0%, #1c5f8f 100%);
+}
+
+/* カテゴリカードの要約文(マスコット吹き出しの置き換え)。
+   全カードで高さを揃えるため3行でクランプする。 */
+.category-summary-text {
+  margin: 12px 16px 14px;
+  font-size: 0.87rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

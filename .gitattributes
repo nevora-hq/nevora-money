@@ -1,0 +1,6 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# エージェント定義はLF固定(autocrlf設定に関わらずCRLF化を防ぐ)
+.claude/agents/*.md text eol=lf
+.claude/agents/**/*.md text eol=lf

@@ -1,0 +1,25 @@
+# Next.js
+/.next/
+/out/
+
+# 依存パッケージ
+/node_modules/
+
+# ビルド時に記事データから自動生成されるコピー(元データは ../記事データ/確定稿 が正)
+/content/
+
+# 環境変数
+.env
+.env*.local
+
+# ログ・OS
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# デバッグ時の一時出力(DOM/テキストダンプ等が誤ってコミットされないように)
+/out.txt
+.vercel
+.env*
+!.env.example
+!.env.local.example

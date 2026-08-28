@@ -1,0 +1,131 @@
+name: item35-weekly
+
+# item35(scripts/verify-rendered-layout.js)を全記事に対して週1で --strict 実行する。
+# publish-queue とは独立したジョブで、記事の公開フローは一切止めない。
+# 検出が出た場合は Issue を立てて気づけるようにする(公開の可否には影響しない)。
+#
+# 想定所要時間: Chromiumのインストール込みで10〜15分程度。
+# 分割実行しているのは、195記事を1プロセスで回すとタイムアウトしやすいため
+# (2026-08-25、ローカルで10分でタイムアウトした実績にもとづく)。
+
+on:
+  schedule:
+    # cronはUTC。JST 日曜 3:07 = UTC 土曜 18:07
+    - cron: "7 18 * * 6"
+  workflow_dispatch:
+
+concurrency:
+  group: item35-weekly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      # next.config.js が本番ビルドで未設定をエラーにするため必須。
+      # 未設定だと components/Layout.js が canonical/OGP を出力しなくなる。
+      # 公開URLであり秘密情報ではないので直書きしてよい。
+      # ローカルでは .env.local から読まれるが、同ファイルはgit管理外のためCIには無い。
+      NEXT_PUBLIC_SITE_URL: https://nevora-money.vercel.app
+    steps:
+      # メンテ課題(2026-08-25): actions/checkout@v4・setup-node@v4 は Node.js 20 で動作し、
+      # 実行時に deprecation 警告が出る。失敗要因ではないため据え置き。将来 v5 系へ更新する。
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: サイト運営/サイト本体/package-lock.json
+
+      - name: 依存関係のインストール
+        working-directory: サイト運営/サイト本体
+        run: npm ci
+
+      - name: Chromiumのインストール
+        working-directory: サイト運営/サイト本体
+        run: npx playwright install --with-deps chromium
+
+      - name: ビルド(prebuildでsync-contentが走る)
+        working-directory: サイト運営/サイト本体
+        env:
+          TZ: Asia/Tokyo
+        run: npm run build
+
+      - name: item35を全記事へ--strictで実行
+        id: verify
+        working-directory: サイト運営/サイト本体
+        env:
+          TZ: Asia/Tokyo
+        run: |
+          set -o pipefail
+          # 確定稿・公開済みの全スラッグをLFで書き出す
+          # (CRLFのままだとURLに%0Dが付いて全記事404になる。2026-08-24に実際に踏んだ)
+          ls ../記事データ/確定稿 ../記事データ/公開済み \
+            | grep '\.md$' | sed 's/\.md$//' | tr -d '\r' | sort -u > /tmp/slugs.txt
+          total=$(wc -l < /tmp/slugs.txt)
+          echo "対象 ${total} 記事"
+          split -l 33 /tmp/slugs.txt /tmp/batch_
+          fail=0
+          : > /tmp/item35.log
+          for b in /tmp/batch_*; do
+            echo "--- $(basename "$b") ---" | tee -a /tmp/item35.log
+            if ! node scripts/verify-rendered-layout.js --strict $(tr '\n' ' ' < "$b") 2>&1 | tee -a /tmp/item35.log; then
+              fail=1
+            fi
+          done
+          # 種別ごとの件数を出しておく(Issue本文に載せる)
+          {
+            echo "対象記事数: ${total}"
+            for k in TEXT_SHAPE_OVERLAP IMAGE_CROP_RISK OVERFLOW COLLISION OFFSCREEN; do
+              echo "${k}: $(grep -c "ITEM35_${k}" /tmp/item35.log || true) 件"
+            done
+          } > /tmp/summary.txt
+          cat /tmp/summary.txt
+          {
+            echo 'summary<<EOF'
+            cat /tmp/summary.txt
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+          exit $fail
+
+      - name: 検出ログを成果物として保存
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: item35-log
+          path: /tmp/item35.log
+          retention-days: 30
+
+      - name: 失敗時にIssueを立てる
+        if: failure()
+        uses: actions/github-script@v7
+        env:
+          SUMMARY: ${{ steps.verify.outputs.summary }}
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = "item35(実測レンダリング検査)が失敗しました";
+            // 同じ件名の未クローズIssueがあれば追記に留める(週1実行でIssueが増殖しないように)
+            const { data: issues } = await github.rest.issues.listForRepo({
+              ...context.repo, state: "open", labels: "item35",
+            });
+            const body = [
+              "図解・画像のレイアウト検査で検出がありました。対処手順は docs/CONTRIBUTING.md の32節を参照してください。",
+              "",
+              "```",
+              (process.env.SUMMARY || "(集計を取得できませんでした)").trim(),
+              "```",
+              "",
+              `実行ログ(全文はArtifacts「item35-log」): ${runUrl}`,
+            ].join("\n");
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: issues[0].number, body });
+            } else {
+              await github.rest.issues.create({ ...context.repo, title, body, labels: ["item35"] });
+            }
