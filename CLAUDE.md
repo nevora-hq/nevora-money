@@ -100,19 +100,35 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 サイトは完成済みで、本番 https://nevora-money.vercel.app が noindex 状態で稼働している。
 **独自ドメインは当面取得せず、`vercel.app` のまま公開する方針**(2026-08-29決定)。
 
-残りは公開の判断のみ。
+残っているのは公開切替だけ。
 
-- **公開切り替え** … Vercelに `NEXT_PUBLIC_ALLOW_INDEX=1` を追加 → 再デプロイ →
-  Google Search Consoleでサイトマップを送信する。手順は生活サイトの
-  `docs/rollout-noindex-and-image-convention.md` A-6節。
-  `NEXT_PUBLIC_` 付きの変数はビルド時に埋め込まれるため、設定後の再デプロイが必須
+### 公開切替は単体判断で実行しない
+
+全サイト(美容・AI・お金・副業・生活)の記事投入が終わったあとに、**まとめて号令が出る運用**。
+
+- お金サイトの準備が整っていることを理由に、**切替を提案しない**
+- 「もう公開できます」「切り替えますか」といった打診もしない
+- ユーザーから明示的に公開の号令が出たときにだけ実行する
+
+号令が出たときの手順:
+
+1. Vercelに `NEXT_PUBLIC_ALLOW_INDEX=1` を追加(production / preview / development)
+2. 再デプロイ(空コミットのpushでよい。`NEXT_PUBLIC_` 付きの変数はビルド時に埋め込まれるため必須)
+3. 解除の確認
+   - `curl -s <URL>/robots.txt` … `Allow: /` と `Sitemap:` 行が出ること
+   - `curl -s <URL>/ | grep 'name="robots"'` … noindexメタが**出ないこと**
+4. Google Search Consoleでサイトマップ(`/sitemap.xml`)を送信
+
+詳細は生活サイトの `docs/rollout-noindex-and-image-convention.md` A-6節。
 
 ### 完了済み(2026-08-29)
+
+以下は対応済みのため、再開時に再確認する必要はない。
 
 - **GA4** … `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-1P2L9TP2NG`(nevora-money専用プロパティ)を
   Vercelの3環境と `.env.local` に設定。`lib/gtag.js` の `isGAEnabled` により本番のみ送信する
 - **Google Search Console** … `NEXT_PUBLIC_GSC_VERIFICATION` を設定。`pages/_document.js` が
-  `<meta name="google-site-verification">` を出力する
+  `<meta name="google-site-verification">` を出力する。**所有権の確認はユーザー側で完了済み**
 - **問い合わせ** … Formspreeを廃止し、`nevora01123@gmail.com` へのメール直行に一本化。
   `pages/contact.js` はアドレス明示 + 件名/本文のひな形入りmailtoリンクの構成。
   プライバシーポリシーからも第三者サービス経由の記述を削除済み
