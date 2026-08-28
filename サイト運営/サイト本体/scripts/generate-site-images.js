@@ -15,7 +15,6 @@
  *                         フォールバック<name>.webp(=1536w)を出力。
  *                         画面幅いっぱいに敷くヒーロー・バンド用。
  *   - fixed: {w,h}      … 指定サイズちょうどに中央クロップしてPNGで出力。
- *                         SNSのOGP画像(1200x630、PNG固定)用。
  *   - responsive: false … <name>.webp 1枚(既定800w)のみ。
  *                         カード内に収まるカテゴリ画像用(表示幅は最大でも
  *                         約380pxなので、DPR2でも800wで足りる)。
@@ -26,7 +25,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 
 const SRC_DIR =
-  "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/各種サイト/お金サイト/ホームページ修正用";
+  "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/各種サイト/お金サイト/ライブラリ/ホームページ用";
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 // 1536は画像生成AI(ChatGPT等)の横長出力の実寸(1536x1024)に合わせた上限。
 // 元画像がこれより小さい場合は元画像の幅に丸められる(main()参照)。
@@ -54,9 +53,9 @@ const MANIFEST = [
   { key: "category-household", src: "category-household.png", out: "images/category/household" },
   { key: "category-card-point", src: "category-card-point.png", out: "images/category/card-point" },
 
-  // ---- SNSシェア用のOGP画像。1200x630ちょうど・PNGで出力する ----
-  // (components/Layout.js の DEFAULT_OG_IMAGE が参照する)
-  { key: "ogp", src: "ogp.png", out: "images/ogp", fixed: { w: 1200, h: 630 } },
+  // OGP画像(images/ogp.png)はここでは生成しない。背景にマスコットを合成した
+  // ものを scripts/generate-brand-assets.js が出力するため、ここで背景だけを
+  // 書き出すと、実行順によってマスコット入りのOGPを上書きしてしまう。
 ];
 
 

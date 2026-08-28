@@ -76,7 +76,7 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 
 - **お悩み別ページ(`/worry/[slug]`)**: `サイト運営\サイト本体\lib\worryTopics.js`にチップ(お金の悩み12件)を定義済み。本文を`lib\worryContent.js`に同じslugで登録すると、その悩みのページ・トップのチップ・`/worry`ハブ・サイトマップに自動で載る
 - **セルフ診断ページ(`/diagnosis/[slug]`)**: `lib\diagnosisTopics.js`に質問と結果を登録すると生成される。表示は`components\DiagnosisQuiz.js`が担当(データ駆動のためコンポーネント改修は不要)
-- **写真素材(ヒーロー/セクションバンド/カテゴリカード)**: 美容サイトの画像は全削除済み。`サイト運営\サイト本体\scripts\generate-site-images.js`のMANIFESTに沿って元画像を`画像フォルダ\各種サイト\お金サイト\ホームページ修正用`に置き、`node scripts/generate-site-images.js`で生成する。未生成の間は画像を出さずグラデーション背景で代替する(`pages\index.js`の`hasHeroImage`等)
+- **写真素材(ヒーロー/セクションバンド/カテゴリカード)**: 美容サイトの画像は全削除済み。`サイト運営\サイト本体\scripts\generate-site-images.js`のMANIFESTに沿って元画像を`画像フォルダ\各種サイト\お金サイト\ライブラリ\ホームページ用`に置き、`node scripts/generate-site-images.js`で生成する。未生成の間は画像を出さずグラデーション背景で代替する(`pages\index.js`の`hasHeroImage`等)
 
 ## 公開前の非公開運用(noindex)
 
@@ -91,6 +91,6 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 
 公式マスコットは **「コインミン」**(コインの姿をしたキャラクター。NEVORA姉妹サイト共通のフラットなベクター作画ルールに準拠)。記事本文へのマスコットコメント挿入機構は持たない(美容サイトから移行する際に削除済み)ため、コード上にキャラクター名は出てこない。
 
-- 原画は `画像フォルダ\各種サイト\お金サイト\ホームページ修正用` の `mascot-full.png`(全身)・`mascot-face.png`(顔アップ)。いずれも透過PNG
+- 原画は `画像フォルダ\各種サイト\お金サイト\ライブラリ\ホームページ用` の `mascot-full.png`(全身)・`mascot-face.png`(顔アップ)。いずれも透過PNG
 - `サイト運営\サイト本体\scripts\generate-brand-assets.js` が、この2枚と `ogp.png`(背景)から **logo.png / logo-mark.png / favicon一式(.ico含む) / apple-touch-icon / OGP合成** をまとめて生成する
 - **マスコットを描き直したときは、同じファイル名で原画を置き換えて `node scripts/generate-brand-assets.js` を実行するだけでよい**(個別に書き出さない)

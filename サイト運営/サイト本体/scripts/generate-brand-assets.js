@@ -22,7 +22,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 
 const SRC_DIR =
-  "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/各種サイト/お金サイト/ホームページ修正用";
+  "c:/Users/kokim/OneDrive/デスクトップ/画像フォルダ/各種サイト/お金サイト/ライブラリ/ホームページ用";
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
 const src = (name) => path.join(SRC_DIR, name);

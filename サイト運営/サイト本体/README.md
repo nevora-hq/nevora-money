@@ -99,3 +99,35 @@ Webサイト
 - 未公開の記事は `記事データ/公開待ち` にあり、`sync-content.js` の同期対象外のためサイト・sitemap のいずれにも出ない。`確定稿` に誤って置かれた場合も `publishAt` が未来ならスキップされる
 - 公開の反映は `.github/workflows/publish-queue.yml` が commit・push し、Vercel の自動デプロイで行う(手動の vercel CLI は使わない)。ジョブが失敗した場合は `publish-queue` ラベル付きの Issue が自動で立つ
 - 記事の公開日(表示・sitemap・JSON-LD の `datePublished`)は、`queue:release` が動いた**実際の公開日**になる
+
+## トップページ素材・ブランド資産の作り方
+
+元画像はリポジトリの外に置き、スクリプトで `public/` 配下へ書き出す。**`public/images` の生成物を手で差し替えず、必ず元画像を置き換えてスクリプトを再実行する。**
+
+元画像の置き場所（全サイト共通の規約。`docs/CONTRIBUTING.md` も参照）:
+
+```
+C:\Users\kokim\OneDrive\デスクトップ\画像フォルダ\各種サイト\お金サイト\ライブラリ
+├ 記事用          … 記事のサムネイル・本文画像(image-selector / image-placer の対象)
+├ ホームページ用  … 下記スクリプトが読む素材(サイト制作者の担当)
+└ 使用済み        … 記事に配置済みの元画像の退避先
+```
+
+### 写真素材（ヒーロー・セクションバンド・カテゴリカード）
+
+```bash
+node scripts/generate-site-images.js          # 全件
+node scripts/generate-site-images.js hero ogp # キー前方一致で絞り込み
+```
+
+- 必要な元画像とファイル名は `scripts/generate-site-images.js` の `MANIFEST` を参照
+- **元画像は横 1536px 以上**にする。スクリプトは元画像より大きい幅を生成しない仕様のため、これを下回ると `-1536.webp` が作られず、`components/HeroBanner.js` と `pages/index.js` の `srcSet` / `widths` が実ファイルと食い違って画像が表示されなくなる
+- 現行の素材は 1800×873 前後（生成AIの横長出力）で、640 / 1024 / 1536w の3枚 + フォールバック1枚を書き出している
+
+### ブランド資産（ロゴ・ファビコン・OGP）
+
+```bash
+node scripts/generate-brand-assets.js
+```
+
+マスコット原画 `mascot-full.png`（全身）・`mascot-face.png`（顔アップ、いずれも透過PNG）と `ogp.png`（背景）から、`logo.png` / `logo-mark.png` / favicon一式（`.ico` 含む）/ `apple-touch-icon.png` / OGP合成画像をまとめて生成する。マスコットを描き直したときも、同じファイル名で原画を置き換えて再実行するだけでよい。
