@@ -101,7 +101,9 @@ export function buildPublisherOrganization(siteUrl) {
 // 記事ページ用のArticle。
 export function buildArticleJsonLd(post, siteUrl) {
   if (!siteUrl) return null;
-  const url = `${siteUrl}/posts/${post.slug}`;
+  // sitemap.xml・canonicalと同じpercent-encoded表記に揃える(post.slugは生の
+  // ファイル名なので二重エンコードにならない)。
+  const url = `${siteUrl}/posts/${encodeURIComponent(post.slug)}`;
   const image = post.thumbnail ? `${siteUrl}${post.thumbnail}` : undefined;
   return {
     "@context": "https://schema.org",

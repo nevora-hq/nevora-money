@@ -51,7 +51,10 @@ function toIsoJst(date) {
 // スキーマ自体を出力しない(Layout側のcanonical/og:urlの扱いと同じ方針)。
 function buildPostJsonLd(post, siteUrl) {
   if (!siteUrl) return [];
-  const url = `${siteUrl}/posts/${post.slug}`;
+  // 日本語スラッグはsitemap.xml(pages/sitemap.xml.js)と同じくpercent-encodedで出力し、
+  // canonical・JSON-LD・sitemapの3者でURL表記を一致させる。post.slugは生の
+  // ファイル名(未エンコード)なので二重エンコードにはならない。
+  const url = `${siteUrl}/posts/${encodeURIComponent(post.slug)}`;
   const article = buildArticleJsonLd(post, siteUrl);
   const breadcrumb = buildBreadcrumbJsonLd(siteUrl, [
     { name: "トップ", url: siteUrl },
@@ -76,7 +79,7 @@ export default function PostPage({ post, related, nextPost }) {
       title={`${post.title} | ${SITE_NAME}`}
       description={post.description}
       ogImage={post.thumbnail}
-      canonicalPath={`/posts/${post.slug}`}
+      canonicalPath={`/posts/${encodeURIComponent(post.slug)}`}
       ogType="article"
       publishedTime={toIsoJst(post.date)}
       modifiedTime={toIsoJst(post.updatedDate || post.date)}
