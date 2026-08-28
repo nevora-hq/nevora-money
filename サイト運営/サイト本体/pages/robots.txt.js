@@ -8,7 +8,15 @@ function resolveSiteUrl(req) {
 export async function getServerSideProps({ req, res }) {
   const siteUrl = resolveSiteUrl(req);
 
-  const body = `User-agent: *
+  // サイト全体のnoindexスイッチ(components/Layout.jsのmetaタグと連動)。
+  // NEXT_PUBLIC_NOINDEX=1 の間はクロール自体を禁止し、sitemapも案内しない。
+  const noindex = process.env.NEXT_PUBLIC_NOINDEX === "1";
+
+  const body = noindex
+    ? `User-agent: *
+Disallow: /
+`
+    : `User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/

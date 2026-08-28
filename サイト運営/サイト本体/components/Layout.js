@@ -50,7 +50,13 @@ export default function Layout({
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {noindex && <meta name="robots" content="noindex, nofollow" />}
+        {/* サイト全体のnoindexスイッチ。NEXT_PUBLIC_NOINDEX=1 の間は全ページを
+            検索結果に出さない(記事が揃う前の公開・プレビュー環境向け)。
+            公開時はVercelの環境変数からこの値を外すだけでよい。
+            pages/robots.txt.js も同じ環境変数を見て Disallow: / を返す。 */}
+        {(noindex || process.env.NEXT_PUBLIC_NOINDEX === "1") && (
+          <meta name="robots" content="noindex, nofollow" />
+        )}
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:locale" content="ja_JP" />
