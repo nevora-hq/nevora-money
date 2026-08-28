@@ -62,7 +62,7 @@ export default function Terms() {
           本規約に関するお問い合わせは、<a href="/contact">お問い合わせページ</a>よりご連絡ください。
         </p>
 
-        <p style={{ textAlign: "right", color: "#888", fontSize: "0.85rem" }}>制定日: 2026年7月18日</p>
+        <p style={{ textAlign: "right", color: "var(--color-text-muted)", fontSize: "0.85rem" }}>制定日: 2026年7月18日</p>
       </div>
     </Layout>
   );

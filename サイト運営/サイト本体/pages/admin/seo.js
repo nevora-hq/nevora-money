@@ -19,7 +19,7 @@ export default function AdminSeo({ posts }) {
   return (
     <AdminLayout title="SEO管理">
       <div className="admin-card">
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+        <p style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>
           記事ごとのメタ情報(description)の設定状況です。構造化データ(JSON-LD)の自動出力は今後実装予定です。
         </p>
         <table className="admin-table">

@@ -14,8 +14,12 @@
   --color-surface: #fff;
   --color-border: #ececec;
   --color-text: #24242b;
-  --color-text-muted: #6b7280;
-  --color-text-faint: #9ca3af;
+  /* 2026-08-29 コントラスト是正: 旧値(#6b7280 / #9ca3af)は白背景でも4.83/2.51しかなく、
+     帯のティント(rgb(212,233,244))の上では3.86/2.03まで落ちていた。
+     実ピクセル監査(npm run check:contrast)の違反227件中およそ200件がこの2色に由来。
+     最も暗い背景でも6.7:1以上になる値に置き換えている。 */
+  --color-text-muted: #3f4854;
+  --color-text-faint: #454e5c;
   /* 断面/構造図型・深さ比較型(chart type: crossSection/depthComparison)の
      既定色。記事側でpart.fill等を明示指定すればここを上書きできる(2026-08-13追加)。 */
   --diagram-skin: #f4e4d0;
@@ -137,6 +141,13 @@ img {
   font-size: 1.15rem;
   color: var(--color-primary);
   letter-spacing: 0.14em;
+}
+
+/* ヘッダーのロゴ文字。地の.logoはprimaryだが、ヘッダー背景のティント
+   (rgb(208,232,245))の上では5.68:1しかない。ここだけ暗い方を使う
+   (2026-08-29、npm run check:contrast で検出)。 */
+.logo-text {
+  color: var(--color-primary-dark);
 }
 
 .logo-mark {
@@ -677,7 +688,7 @@ img {
   line-height: 1.4;
   padding: 4px 16px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.58);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
@@ -2859,46 +2870,6 @@ h1.page-title {
   margin: 0 0 16px;
 }
 
-/* ---- Form ---- */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  max-width: 480px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-}
-
-.form-field input,
-.form-field textarea {
-  padding: 11px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
-  font-family: inherit;
-  color: var(--color-text);
-  transition: border-color var(--transition);
-}
-
-.form-field input:focus,
-.form-field textarea:focus {
-  border-color: var(--color-primary);
-  outline: none;
-}
-
-.form-submit {
-  border: none;
-  cursor: pointer;
-  width: fit-content;
-}
-
 /* ---- 404 ---- */
 .not-found {
   text-align: center;
@@ -2913,7 +2884,7 @@ h1.page-title {
 .not-found .not-found-code {
   font-size: 3rem;
   font-weight: bold;
-  color: var(--color-primary-light);
+  color: var(--color-primary-dark);
   margin: 0;
 }
 
@@ -4443,25 +4414,6 @@ table.admin-table td {
   color: var(--color-text-muted, #5c5852);
   text-align: right;
 }
-
-/* お問い合わせフォームの送信結果メッセージ */
-.form-message {
-  margin: 16px 0 0;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
-.form-message-success {
-  background: #eef7f0;
-  border: 1px solid #b7ddc2;
-  color: #1d5c31;
-}
-.form-message-error {
-  background: #fdf0ee;
-  border: 1px solid #eebfb7;
-  color: #8a2b1b;
-}
 /* ------------------------------------------------------------------
    写真素材の差し替え中(scripts/generate-site-images.jsで未生成)の
    フォールバック。画像を出さない代わりに、ブランドカラーのグラデーション
@@ -4489,4 +4441,47 @@ table.admin-table td {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+/* ------------------------------------------------------------------
+   お問い合わせ(メール直行)。フォームを廃止し、アドレスとmailtoリンクを
+   主動線にしたため、本文に埋もれないようカードとして立たせる。
+   文字色は --color-text / --color-primary-dark を使い、監査(6:1)を満たす。
+   ------------------------------------------------------------------ */
+.contact-mail-card {
+  margin: 24px 0 8px;
+  padding: 20px 24px;
+  background: var(--color-primary-surface);
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius-lg);
+}
+
+.contact-mail-label {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.contact-mail-address {
+  margin: 0 0 16px;
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-primary-dark);
+  /* 長いアドレスでも狭い画面で溢れないようにする */
+  overflow-wrap: anywhere;
+  /* コピーしやすいよう等幅寄りにする */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.contact-mail-button {
+  display: inline-block;
+}
+
+.contact-mail-note {
+  margin: 14px 0 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
 }

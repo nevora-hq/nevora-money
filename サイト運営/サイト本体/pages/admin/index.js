@@ -32,7 +32,7 @@ export default function AdminHome({ postCount, categoryCount, totalAffiliateLink
         <div className="admin-card">
           <div>PV(直近30日)</div>
           <div className="stat-number">-</div>
-          <small style={{ color: "#888" }}>アクセス解析未連携</small>
+          <small style={{ color: "var(--color-text-muted)" }}>アクセス解析未連携</small>
         </div>
       </div>
 

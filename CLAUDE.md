@@ -95,44 +95,64 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 - `サイト運営\サイト本体\scripts\generate-brand-assets.js` が、この2枚と `ogp.png`(背景)から **logo.png / logo-mark.png / favicon一式(.ico含む) / apple-touch-icon / OGP合成** をまとめて生成する
 - **マスコットを描き直したときは、同じファイル名で原画を置き換えて `node scripts/generate-brand-assets.js` を実行するだけでよい**(個別に書き出さない)
 
-## 再開時の残作業(2026-08-28、公開待ちでクローズ)
+## 残作業(2026-08-29時点)
 
 サイトは完成済みで、本番 https://nevora-money.vercel.app が noindex 状態で稼働している。
-次に触るときは「作る」ではなく、以下を片付けて公開するフェーズから始まる。
+**独自ドメインは当面取得せず、`vercel.app` のまま公開する方針**(2026-08-29決定)。
 
-1. **GA4測定ID** … 新規プロパティを作成し `NEXT_PUBLIC_GA_MEASUREMENT_ID` を Vercel と `.env.local` に設定する。美容サイトの測定IDが残っていたため無効化済み(そのままだとお金サイトのアクセスが美容サイト側に計上される)
-2. **Formspreeエンドポイント** … 新規フォームを作成し `NEXT_PUBLIC_FORMSPREE_ENDPOINT` を設定する。同じ理由で美容サイトのフォームを無効化済み。未設定でも `pages/contact.js` は mailto にフォールバックするため壊れない
-3. **独自ドメイン** … 確定したら `NEXT_PUBLIC_SITE_URL` を差し替える
-4. **カテゴリ色6種のコントラスト監査** … 下記
+残りは公開の判断のみ。
 
-公開の最後の1手は、Vercelに `NEXT_PUBLIC_ALLOW_INDEX=1` を設定して再デプロイすること
-(未設定の間は全ページnoindex + robots.txtがDisallow)。手順は生活サイトの
-`docs/rollout-noindex-and-image-convention.md` A-6節にある。
-`NEXT_PUBLIC_` 付きの変数はビルド時に埋め込まれるため、設定後の再デプロイが必須。
+- **公開切り替え** … Vercelに `NEXT_PUBLIC_ALLOW_INDEX=1` を追加 → 再デプロイ →
+  Google Search Consoleでサイトマップを送信する。手順は生活サイトの
+  `docs/rollout-noindex-and-image-convention.md` A-6節。
+  `NEXT_PUBLIC_` 付きの変数はビルド時に埋め込まれるため、設定後の再デプロイが必須
 
-### 4. カテゴリ色6種のコントラスト監査(未着手・不具合が確定済み)
+### 完了済み(2026-08-29)
 
-`lib/categoryMeta.js` のカテゴリ色は、美容サイトから複製した際の値をそのまま流用している。
-`--cat-color` は装飾(上辺のボーダー)だけでなく**文字色としても4箇所で使われている**
-(`styles/globals.css` の `.category-summary-icon` 等)ため、そのままではコントラスト不足になる。
+- **GA4** … `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-1P2L9TP2NG`(nevora-money専用プロパティ)を
+  Vercelの3環境と `.env.local` に設定。`lib/gtag.js` の `isGAEnabled` により本番のみ送信する
+- **Google Search Console** … `NEXT_PUBLIC_GSC_VERIFICATION` を設定。`pages/_document.js` が
+  `<meta name="google-site-verification">` を出力する
+- **問い合わせ** … Formspreeを廃止し、`nevora01123@gmail.com` へのメール直行に一本化。
+  `pages/contact.js` はアドレス明示 + 件名/本文のひな形入りmailtoリンクの構成。
+  プライバシーポリシーからも第三者サービス経由の記述を削除済み
+- **独自ドメイン** … 取得しない方針に変更したため、残作業から除外
+- **カテゴリ色6種のコントラスト監査** … 下記のとおり是正済み
 
-2026-08-28に白背景(#fff)上で実測した値:
+## コントラスト監査(`npm run check:contrast`)
 
-| カテゴリ | 色 | 対 白 | 判定(CLAUDE.mdの新規6:1基準) |
+`scripts/check-contrast.js` は**実ピクセル方式**の監査スクリプト(生活サイトから移植)。
+文字色だけを透明にした画面と通常の画面を撮り比べ、差分が出た画素の位置の色を背景として測る。
+これにより、背景が写真・グラデーション・半透明でも正しく測れる
+(旧方式は背景画像の上の文字をスキップして検出漏れしていた)。
+
+```bash
+npm run build && npx next start -p 4399   # ビルド後は必ずサーバーを再起動してから測る
+npm run check:contrast                    # 既定は http://127.0.0.1:4399 / 基準6:1
+node scripts/check-contrast.js https://nevora-money.vercel.app   # 本番も測れる
+```
+
+2026-08-29の初回監査で **6:1未満が227件**見つかり、すべて是正して**0件**にした。
+内訳と対応は次のとおり。**色を変えるときは必ずこの監査を通し直すこと。**
+
+| 対象 | 旧 | 新 | 備考 |
 |---|---|---|---|
-| 投資 | `#1c7ed6` | 4.20 | AA(4.5)も未達 |
-| FX | `#0ca678` | 3.12 | AA未達 |
-| 税金・節税 | `#e8590c` | 3.58 | AA未達 |
-| 保険 | `#5f3dc4` | 7.12 | OK |
-| 家計・節約 | `#2f9e44` | 3.45 | AA未達 |
-| クレカ・ポイント | `#c2255c` | 5.66 | AAは満たすが6:1未達 |
+| `--color-text-muted` | `#6b7280` | `#3f4854` | 違反の主因。白背景で4.83、帯のティント上で3.86しかなかった |
+| `--color-text-faint` | `#9ca3af` | `#454e5c` | 同上。ティント上で2.03 |
+| ロゴ文字 `.logo-text` | primary | primary-dark | ヘッダーのティント上で5.68 |
+| `.not-found-code` | primary-light | primary-dark | 白背景で1.23(実質読めない状態だった) |
+| `.hero-slider-caption-name` の帯 | `rgba(0,0,0,.35)` | `rgba(0,0,0,.58)` | 写真の明るい部分の上で白文字が5.5 |
+| インラインの `#888` 7箇所 | `#888` | `var(--color-text-muted)` | 管理画面・制定日表記 |
+| カテゴリ色6種 | 美容サイト由来 | 下表 | `--cat-color` は文字色としても使われる |
 
-**6色中5色が基準未達、うち4色はWCAG AA(4.5:1)にも届いていない。**
+カテゴリ色は**色相・彩度を保ったまま明度だけを落とし**、白カード上・自身の`soft`上・
+帯のティント上のいずれでも6.3:1以上になる値にしている(`lib/categoryMeta.js`)。
 
-対応方針(再開時):
-
-- 生活サイトで作成中の**実ピクセル方式の監査スクリプト**を移植してから実測・修正する。
-  既存の `check:contrast` 系は**背景画像の上に乗る文字をスキップして検出漏れする**問題が
-  生活サイトで判明しているため、そちらの完成版を使う
-- 色を決め直す際は、白カード上・淡色tint上の**両方で6:1以上**を満たすこと。
-  6色の色相の違い(カテゴリの識別性)は保ったまま、明度だけを落とす方向で調整する
+| カテゴリ | 旧(対白) | 新(対白) |
+|---|---|---|
+| 投資 | `#1c7ed6` (4.20) | `#12528c` (8.04) |
+| FX | `#0ca678` (3.12) | `#075d43` (7.91) |
+| 税金・節税 | `#e8590c` (3.58) | `#8a3507` (8.10) |
+| 保険 | `#5f3dc4` (7.12) | `#5737b6` (7.99) |
+| 家計・節約 | `#2f9e44` (3.45) | `#1b5c28` (8.05) |
+| クレカ・ポイント | `#c2255c` (5.66) | `#9a1d49` (7.94) |

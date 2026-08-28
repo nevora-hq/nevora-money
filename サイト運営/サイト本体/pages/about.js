@@ -63,8 +63,8 @@ export default function About() {
             <tr>
               <th>お問い合わせ</th>
               <td>
-                <a href="/contact">お問い合わせフォーム</a>
-                (nevora01123@gmail.com からもご連絡いただけます)
+                <a href="/contact">お問い合わせページ</a>
+                (nevora01123@gmail.com へのメールで受け付けています)
               </td>
             </tr>
           </tbody>
@@ -79,8 +79,8 @@ export default function About() {
         </p>
         <p>
           本サイトに関するご意見・取材・お仕事のご依頼は、
-          <a href="/contact">お問い合わせフォーム</a>
-          よりご連絡ください。
+          <a href="/contact">お問い合わせページ</a>
+          に記載のメールアドレスまでご連絡ください。
         </p>
 
         <h2>NEVORAが大切にしていること</h2>
@@ -175,8 +175,8 @@ export default function About() {
         <ul>
           <li>
             記事の誤りにお気づきの場合は、
-            <a href="/contact">お問い合わせフォーム</a>
-            よりご連絡ください
+            <a href="/contact">お問い合わせページ</a>
+            に記載のメールアドレスまでご連絡ください
           </li>
           <li>誤りが確認された場合は速やかに訂正し、内容に重要な変更があった記事には更新日を記載します</li>
           <li>出典元の資料が更新・撤回された場合は、記事の修正または公開停止で対応します</li>

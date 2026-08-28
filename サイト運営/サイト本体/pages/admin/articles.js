@@ -11,7 +11,7 @@ export default function AdminArticles({ posts }) {
   return (
     <AdminLayout title="記事管理">
       <div className="admin-card">
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+        <p style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>
           記事データは Markdown(サイト運営/記事データ/確定稿)を元に自動生成されています。
           公開・非公開の切替や編集は、現時点ではMarkdownファイル側(ライター・編集長・配信者の作業)で行います。
           将来データベース化した際に、この画面から直接操作できるようにする予定です。

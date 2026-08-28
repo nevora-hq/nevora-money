@@ -15,7 +15,8 @@
     "verify:layout": "node scripts/verify-rendered-layout.js",
     "queue": "node scripts/queue.js",
     "queue:status": "node scripts/queue-status.js",
-    "queue:release": "node scripts/queue-release.js"
+    "queue:release": "node scripts/queue-release.js",
+    "check:contrast": "node scripts/check-contrast.js"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

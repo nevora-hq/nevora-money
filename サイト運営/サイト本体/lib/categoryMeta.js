@@ -1,10 +1,14 @@
 // トップページの「カテゴリで探す」まとめセクション用の表示情報。
+// colorは上辺のボーダーだけでなく文字色(--cat-color)としても使われるため、
+// 白カード上・自身のsoft上・帯のティント上のいずれでも6.3:1以上になる値にしている
+// (2026-08-29、npm run check:contrast の実ピクセル監査で是正)。
+// 色を変えるときは色相を保ったまま明度だけを調整し、必ず監査を通し直すこと。
 // 対象ジャンルはプロジェクト直下のCLAUDE.mdを唯一の情報源とし、
 // カテゴリが増えた場合はここに追記する(未登録カテゴリはdefaultにフォールバック)。
 const CATEGORY_META = {
   "投資": {
     icon: "📈",
-    color: "#1c7ed6",
+    color: "#12528c",
     soft: "#dff0ff",
     image: "/images/category/investment.webp",
     description:
@@ -14,7 +18,7 @@ const CATEGORY_META = {
   },
   "FX": {
     icon: "💱",
-    color: "#0ca678",
+    color: "#075d43",
     soft: "#dff7ee",
     image: "/images/category/fx.webp",
     description:
@@ -24,7 +28,7 @@ const CATEGORY_META = {
   },
   "税金・節税": {
     icon: "🧾",
-    color: "#e8590c",
+    color: "#8a3507",
     soft: "#ffe8d9",
     image: "/images/category/tax.webp",
     description:
@@ -34,7 +38,7 @@ const CATEGORY_META = {
   },
   "保険": {
     icon: "🛡️",
-    color: "#5f3dc4",
+    color: "#5737b6",
     soft: "#ece6fb",
     image: "/images/category/insurance.webp",
     description:
@@ -44,7 +48,7 @@ const CATEGORY_META = {
   },
   "家計・節約": {
     icon: "🏠",
-    color: "#2f9e44",
+    color: "#1b5c28",
     soft: "#e6f7ea",
     image: "/images/category/household.webp",
     description:
@@ -54,7 +58,7 @@ const CATEGORY_META = {
   },
   "クレカ・ポイント": {
     icon: "💳",
-    color: "#c2255c",
+    color: "#9a1d49",
     soft: "#fde3ee",
     image: "/images/category/card-point.webp",
     description:

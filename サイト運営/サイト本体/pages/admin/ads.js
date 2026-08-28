@@ -16,7 +16,7 @@ export default function AdminAds({ links }) {
   return (
     <AdminLayout title="広告管理">
       <div className="admin-card">
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+        <p style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>
           各記事のfrontmatter(affiliateLinks)に登録されたアフィリエイトリンクの一覧です。
           広告枠(バナー等)の管理機能は今後追加予定です。
         </p>

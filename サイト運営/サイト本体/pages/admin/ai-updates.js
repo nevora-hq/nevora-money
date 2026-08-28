@@ -26,7 +26,7 @@ export default function AdminAiUpdates() {
   return (
     <AdminLayout title="AI自動更新">
       <div className="admin-card">
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+        <p style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>
           エージェント(project-manager配下の各エージェント)による更新履歴のダミー表示です。
           実運用では実行ログをデータベース等に保存し、この画面から実行状況の確認・再実行操作を行えるようにする想定です。
         </p>
