@@ -708,7 +708,7 @@ const EXPERTS_BY_SITE = [
 // を必須にしている。「税理士に相談する」のような相談の勧めは一致しない。
 const EXPERT_NAMES = Array.from(new Set([...EXPERTS_COMMON, ...EXPERTS_BY_SITE]));
 const EXPERT_ALT = EXPERT_NAMES.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
-const EXPERT_HONORIFIC = "(?:さん|さま|様|の方|の人)?";
+const EXPERT_HONORIFIC = "(?:さん|さま|様|の方|の人|の知人|の友人)?";
 const RE_B5_FAKE_EXPERT = new RegExp(
   [
     `(?:${EXPERT_ALT})${EXPERT_HONORIFIC}(?:に|が|は)[^。\\n]{0,20}(?:言われ|聞いた|話して|教わ)`,
