@@ -4,10 +4,12 @@
  *
  *   node scripts/generate-brand-assets.js
  *
- * 入力(SRC_DIR、リポジトリ外):
- *   mascot-full.png … 全身。logo.png と OGP合成に使う
- *   mascot-face.png … 顔アップ。logo-mark.png と favicon 一式に使う
- *   ogp.png         … OGPの背景(generate-site-images.js の素材と同じもの)
+ * 入力:
+ *   public/images/mascot/coinmin-normal.svg … 全身。logo.png と OGP合成に使う
+ *   public/images/mascot/coinmin-face.svg   … 顔アップ。logo.png以外の元
+ *   public/images/mascot/coinmin-mark.svg   … 簡略版。favicon一式・logo-markに使う
+ *     いずれも scripts/generate-mascots.js の出力(絵の定義元はそちら)
+ *   <SRC_DIR>/ogp.png … OGPの背景写真のみ(リポジトリ外)
  *
  * 出力(public配下):
  *   images/logo.png        512x512  構造化データのlogo・OGPのフォールバック
@@ -15,7 +17,8 @@
  *   favicon-16/32/48.png, icon-192/512.png, apple-touch-icon.png, favicon.ico
  *   images/ogp.png         1200x630 背景にマスコットを合成したもの
  *
- * 原画を描き直したときは、同じファイル名で置き換えて再実行すれば全点が揃う。
+ * マスコットを描き直したときは scripts/generate-mascots.js を直して再実行し、
+ * 続けてこのスクリプトを実行すれば全点が揃う。
  */
 const path = require("path");
 const fs = require("fs");
@@ -26,6 +29,9 @@ const SRC_DIR =
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
 const src = (name) => path.join(SRC_DIR, name);
+// マスコットはSVG(リポジトリ内の生成物)を入力にする。ラスタ原画と違い、
+// 512pxでも16pxでも輪郭が崩れない。
+const mascot = (name) => path.join(PUBLIC_DIR, "images", "mascot", `${name}.svg`);
 const out = (rel) => {
   const p = path.join(PUBLIC_DIR, rel);
   fs.mkdirSync(path.dirname(p), { recursive: true });
@@ -77,26 +83,31 @@ function buildIco(pngBuffers) {
 }
 
 async function main() {
-  for (const f of ["mascot-full.png", "mascot-face.png", "ogp.png"]) {
-    if (!fs.existsSync(src(f))) {
-      console.error(`  [NG] 元画像が見つかりません: ${src(f)}`);
+  for (const f of ["coinmin-normal", "coinmin-face", "coinmin-mark"]) {
+    if (!fs.existsSync(mascot(f))) {
+      console.error(`  [NG] マスコットSVGがありません: ${mascot(f)}
+      先に node scripts/generate-mascots.js を実行してください。`);
       process.exit(1);
     }
+  }
+  if (!fs.existsSync(src("ogp.png"))) {
+    console.error(`  [NG] OGPの背景画像が見つかりません: ${src("ogp.png")}`);
+    process.exit(1);
   }
 
   const written = [];
 
   // ---- ロゴ ----
-  fs.writeFileSync(out("images/logo.png"), await squareFit(src("mascot-full.png"), 512, 0.06));
+  fs.writeFileSync(out("images/logo.png"), await squareFit(mascot("coinmin-normal"), 512, 0.06));
   written.push("images/logo.png");
-  fs.writeFileSync(out("images/logo-mark.png"), await squareFit(src("mascot-face.png"), 128, 0.02));
+  fs.writeFileSync(out("images/logo-mark.png"), await squareFit(mascot("coinmin-mark"), 128, 0.02));
   written.push("images/logo-mark.png");
 
   // ---- ファビコン(顔アップ。小サイズでも潰れないよう余白は最小) ----
   const icoSizes = [16, 32, 48];
   const icoPngs = [];
   for (const size of [...icoSizes, 192, 512]) {
-    const buf = await squareFit(src("mascot-face.png"), size, 0.02);
+    const buf = await squareFit(mascot("coinmin-mark"), size, 0.02);
     const name = size <= 48 ? `favicon-${size}.png` : `icon-${size}.png`;
     fs.writeFileSync(out(name), buf);
     written.push(name);
@@ -108,7 +119,7 @@ async function main() {
   // apple-touch-iconは透過を持てない(iOSが黒で埋める)ため白背景で焼き込む。
   fs.writeFileSync(
     out("apple-touch-icon.png"),
-    await sharp(await squareFit(src("mascot-face.png"), 180, 0.08))
+    await sharp(await squareFit(mascot("coinmin-mark"), 180, 0.08))
       .flatten({ background: "#ffffff" })
       .png()
       .toBuffer()
@@ -122,17 +133,17 @@ async function main() {
     .resize({ width: OGP_W, height: OGP_H, fit: "cover", position: "centre" })
     .toBuffer();
   const mascotH = Math.round(OGP_H * 0.62);
-  const mascot = await sharp(await sharp(src("mascot-full.png")).trim().png().toBuffer())
+  const mascotImg = await sharp(await sharp(mascot("coinmin-normal")).trim().png().toBuffer())
     .resize({ height: mascotH, fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .png()
     .toBuffer();
-  const mw = (await sharp(mascot).metadata()).width;
+  const mw = (await sharp(mascotImg).metadata()).width;
   fs.writeFileSync(
     out("images/ogp.png"),
     await sharp(bg)
       .composite([
         {
-          input: mascot,
+          input: mascotImg,
           left: Math.round(OGP_W * 0.80 - mw / 2),
           top: Math.round((OGP_H - mascotH) / 2),
         },

@@ -1,0 +1,12 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="マスコットキャラクター ポイミンちゃん(リサーチポーズ)">
+  <ellipse cx="120" cy="231" rx="52" ry="8" fill="#9a1d49" opacity="0.10"/>
+  <path d="M104 205 q-7 13 -3 22" stroke="#9a1d49" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M136 205 q7 13 3 22" stroke="#9a1d49" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M46 160 q-16 2 -22 14" stroke="#9a1d49" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M194 164 q12 10 18 12" stroke="#9a1d49" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <circle cx="120" cy="132" r="78" fill="#f5e8ed" stroke="#9a1d49" stroke-width="6"/><circle cx="120" cy="132" r="66" fill="none" stroke="#9a1d49" stroke-width="3.5"/>
+  
+  <ellipse cx="86" cy="150" rx="14" ry="9" fill="#e3c0cc"/><ellipse cx="154" cy="150" rx="14" ry="9" fill="#e3c0cc"/>
+  <path d="M90 130 Q98 122 106 130" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M134 130 Q142 122 150 130" stroke="#24242b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M109 152 Q120 163 131 152" stroke="#24242b" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <g transform="translate(188 164) scale(1.05)"><circle cx="17" cy="17" r="13" fill="#f5e8ed" stroke="#9a1d49" stroke-width="4"/><path d="M27 27 L37 37" stroke="#9a1d49" stroke-width="5" stroke-linecap="round"/></g>
+</svg>

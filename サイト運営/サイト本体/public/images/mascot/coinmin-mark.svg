@@ -1,0 +1,10 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="コインミンちゃん(シンボルマーク)">
+  <circle cx="120" cy="120" r="104" fill="#d7ebf5" stroke="#0b5c8a" stroke-width="13"/>
+  <circle cx="120" cy="120" r="86" fill="none" stroke="#0b5c8a" stroke-width="6"/>
+  <path d="M171 66 l7 17 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7 z" fill="#e8b44c"/>
+  <ellipse cx="76" cy="142" rx="20" ry="13" fill="#bbd1de"/>
+  <ellipse cx="164" cy="142" rx="20" ry="13" fill="#bbd1de"/>
+  <circle cx="92" cy="114" r="12" fill="#24242b"/>
+  <circle cx="148" cy="114" r="12" fill="#24242b"/>
+  <path d="M103 147 Q120 163 137 147" stroke="#24242b" stroke-width="7" fill="none" stroke-linecap="round"/>
+</svg>

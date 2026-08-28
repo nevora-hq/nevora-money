@@ -1,0 +1,12 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="マスコットキャラクター カワセミンちゃん">
+  <ellipse cx="120" cy="231" rx="52" ry="8" fill="#075d43" opacity="0.10"/>
+  <path d="M104 205 q-7 13 -3 22" stroke="#075d43" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M136 205 q7 13 3 22" stroke="#075d43" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M46 160 q-16 2 -22 14" stroke="#075d43" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M194 164 q12 10 18 12" stroke="#075d43" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <circle cx="120" cy="132" r="78" fill="#e6efec" stroke="#075d43" stroke-width="6"/><circle cx="120" cy="132" r="66" fill="none" stroke="#075d43" stroke-width="3.5"/>
+  
+  <ellipse cx="86" cy="150" rx="14" ry="9" fill="#bad2ca"/><ellipse cx="154" cy="150" rx="14" ry="9" fill="#bad2ca"/>
+  <circle cx="98" cy="129" r="8" fill="#24242b"/><circle cx="142" cy="129" r="8" fill="#24242b"/><circle cx="100.8" cy="125.6" r="2.4" fill="#fff"/><circle cx="144.8" cy="125.6" r="2.4" fill="#fff"/>
+  <path d="M109 152 Q120 163 131 152" stroke="#24242b" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <g transform="translate(184 156) scale(1.15)"><circle cx="20" cy="18" r="15" fill="#e6efec" stroke="#075d43" stroke-width="4"/><path d="M5 18 H35 M20 3 C12 10 12 26 20 33 M20 3 C28 10 28 26 20 33" fill="none" stroke="#075d43" stroke-width="3"/><path d="M20 33 V39 M12 39 H28" stroke="#075d43" stroke-width="4" stroke-linecap="round"/></g>
+</svg>

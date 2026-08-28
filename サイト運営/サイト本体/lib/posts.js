@@ -5,6 +5,7 @@ import { remark } from "remark";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import remarkHtml from "remark-html";
+import { getCategoryMascot, getMascotIntroComment, getMascotOutroComment } from "./categoryMascot";
 import { MAJOR_CATEGORIES } from "./categoryMeta";
 
 // npm run sync-content (predev/prebuild) によって
@@ -131,6 +132,60 @@ function renderAffiliateBannerHtml(link) {
     : `<a href="${url}" target="_blank" rel="nofollow sponsored noopener noreferrer" class="affiliate-link-btn">${label} を見る(公式サイト)</a>`;
 
   return `<div class="affiliate-inline-banner"><span class="pr-badge">PR</span>${inner}</div>`;
+}
+
+// マスコットキャラクターの吹き出しコメントをHTML文字列として組み立てる。
+// components/Mascot.jsの吹き出し表示(.mascot-comment)と見た目を揃えている。
+// pose: "normal"(記事冒頭の挨拶) / "research"(中盤の補足) / "matome"(末尾の振り返り)
+function renderMascotCommentHtml(mascot, pose, comment) {
+  const name = escapeHtmlText(mascot.name);
+  const image =
+    pose === "normal" ? mascot.normalImage : pose === "matome" ? mascot.matomeImage : mascot.researchImage;
+  return `<div class="mascot-comment mascot-comment-inline mascot-comment-${pose}"><img src="${escapeHtmlText(
+    image
+  )}" alt="${name}" width="56" height="56" class="mascot-comment-img" loading="lazy" /><div class="mascot-comment-bubble"><span class="mascot-comment-name">${name}</span><p class="mascot-comment-text">${escapeHtmlText(
+    comment
+  )}</p></div></div>`;
+}
+
+// 記事内へのマスコット挿入(冒頭の挨拶/中盤の補足/末尾の振り返り)をまとめて行う。
+// 挿入位置はH2見出しの直前(セクションの切れ目)に限定する。段落・リスト単位
+// (splitHtmlBlocks)で区切ると、比較ブロック(メリット/デメリット等の<figure>)の
+// 内部で使われる</p></ul>にも反応して分割されてしまい、独自レイアウトの
+// 途中にマスコットが挟まる不具合が過去にあったため、必ず記事の大きな
+// セクション区切りであるH2見出しの直前にのみ挿入する。
+// H2が少ない(短文)記事では中盤の補足が不自然になるため2つ未満の場合は挿入しない。
+// 文字列末尾への追記から順に(末尾→中盤→冒頭の順で、位置が後ろのものから)
+// 行うことで、挿入によるオフセットのズレを避けている。
+function insertMascotComment(html, mascot, seed) {
+  if (!mascot) return html;
+
+  const headingPositions = [];
+  const headingRe = /<h2[ >]/g;
+  let match;
+  while ((match = headingRe.exec(html))) {
+    headingPositions.push(match.index);
+  }
+
+  let result = html + renderMascotCommentHtml(mascot, "matome", getMascotOutroComment(mascot, seed));
+
+  if (headingPositions.length >= 2) {
+    const midAt = headingPositions[Math.floor(headingPositions.length / 2)];
+    result =
+      result.slice(0, midAt) +
+      renderMascotCommentHtml(mascot, "research", mascot.comment) +
+      result.slice(midAt);
+  }
+
+  if (headingPositions.length >= 1) {
+    const introAt = headingPositions[0];
+    result =
+      result.slice(0, introAt) +
+      renderMascotCommentHtml(mascot, "normal", getMascotIntroComment(mascot, seed)) +
+      result.slice(introAt);
+  }
+
+  return result;
 }
 
 // 本文HTML(remarkで生成済み)を段落・リスト等のブロック単位で分割し、
@@ -1795,6 +1850,90 @@ function renderChartHtml(chart, toc, debugSlug) {
   return renderBarChartHtml(chart);
 }
 
+// frontmatterのaccordions([{afterHeading, summary, content}])から、開閉式の
+// 折りたたみブロックを組み立てる。記事本文に生HTML(<details>等)を直書きさせず、
+// サイト側でHTML生成することで、remark-htmlのサニタイズ設定(生HTML不許可)を
+// 緩めずに済む(セキュリティ上、記事Markdown中の生HTMLは許可しない方針を維持するため)。
+// contentはMarkdown文字列として別途remarkで変換し、太字・リンク等の記法を使える。
+async function renderAccordionHtml(accordion) {
+  const { summary, content } = accordion;
+  const processedContent = await remark()
+    .use(remarkGfm)
+    .use(remarkBreaks)
+    .use(remarkHtml)
+    .process(content || "");
+  const innerHtml = applyInlineMarkup(processedContent.toString());
+
+  return `<details class="article-accordion"><summary class="article-accordion-summary">${escapeHtmlText(
+    summary
+  )}</summary><div class="article-accordion-body">${innerHtml}</div></details>`;
+}
+
+// frontmatterのaccordionsを、afterHeadingのテキストと完全一致する見出しブロックの
+// 直後に挿入する(embedChartsと同じマッチング方式)。一致する見出しが無い場合は
+// 黙って挿入されない(呼び出し側で見出しテキストの表記ゆれに注意する)。
+
+// frontmatterのaccordionsを、afterHeadingのテキストと完全一致する見出しブロックの
+// 直後に挿入する(embedChartsと同じマッチング方式)。一致する見出しが無い場合は
+// 黙って挿入されない(呼び出し側で見出しテキストの表記ゆれに注意する)。
+async function embedAccordions(html, accordions, debugSlug) {
+  if (!Array.isArray(accordions) || accordions.length === 0) return html;
+
+  const blocks = splitHtmlBlocks(html);
+  const used = new Array(accordions.length).fill(false);
+  const outBlocks = [];
+
+  for (const block of blocks) {
+    outBlocks.push(block);
+    const headingMatch = block.match(/^<h[23][^>]*>([\s\S]*?)<\/h[23]>/);
+    if (!headingMatch) continue;
+    const headingText = stripTags(headingMatch[1]);
+
+    for (let i = 0; i < accordions.length; i += 1) {
+      const accordion = accordions[i];
+      if (used[i] || !accordion.afterHeading) continue;
+      if (stripTags(accordion.afterHeading) === headingText) {
+        used[i] = true;
+        outBlocks.push(await renderAccordionHtml(accordion));
+      }
+    }
+  }
+
+  // item33(宣言vs実描画の突き合わせ、scripts/verify-declared-vs-rendered.js)用のフック。
+  // 通常ビルドでは未設定のため何もしない。2026-08-14、splitHtmlBlocksの単一div境界
+  // バグ(afterHeadingは一致するのにHTML分割の都合で挿入が失敗する)がfrontmatter
+  // だけを見るverify-article.jsでは検出できなかった教訓から、実際のレンダリング
+  // パイプラインを通した後の「使われなかった宣言」を検出できるようにしている。
+  if (process.env.NEVORA_VERIFY_RENDER_MATCH) {
+    accordions.forEach((accordion, i) => {
+      if (!used[i]) {
+        console.error(
+          `[UNMATCHED_ACCORDION] ${debugSlug}\tafterHeading=${JSON.stringify(
+            accordion.afterHeading
+          )}`
+        );
+      }
+    });
+  }
+
+  return outBlocks.join("");
+}
+
+// frontmatterのcharts([{type, afterHeading, title/label, unit, data, source, sourceUrl}])を、
+// afterHeadingのテキストと完全一致する見出しブロックの直後に挿入する。
+// 一致する見出しが無いchartは挿入されない(黙って消える不具合を避けるため、
+// 呼び出し側で見出しテキストの表記ゆれに注意する)。
+// tip/ポイント系chart(💡NEVORAポイント相当)は、見出し直後ではなく
+// 該当セクション末尾(次のH2/H3見出しの直前、または本文末尾)に描画する
+// (2026-08-17、writer.mdルール改訂・項目36〔計測モード〕対応の第1段階。
+// 「本文・手順・図を補足する」性質のコールアウトが、読者がまだ読んでいない
+// 内容を見出し直後で先取りしてしまう配置バグの恒久対策)。対象はNEVORAポイント
+// 相当の2type("tip"=lib/microneedleExtras.js等の共通実装、"skincareTip"=
+// lib/skincareBasicsExtras.js)のみ。注意喚起型(warning系)・要約型
+// (summaryCard/finalSummary系)は現行通り見出し直後の先頭配置を維持する
+// (writer.md改訂ルールの「要約型のみ先頭配置可」と整合)。
+const END_OF_SECTION_CHART_TYPES = new Set(["tip", "skincareTip"]);
+
 function embedCharts(html, charts, toc, debugSlug) {
   if (!Array.isArray(charts) || charts.length === 0) return html;
 
@@ -2042,6 +2181,9 @@ function normalizeFrontmatter(data, slug) {
     // アクセス解析導入までの暫定運用で、編集判断で個別記事に付与する。
     featured: data.featured === true,
     popular: data.popular === true,
+    // カテゴリ担当マスコットの一言コメント(ライターが記事内容に即して設定)。
+    // 未指定ならlib/categoryMascot.jsの既定コメントから自動で選ばれる。
+    mascotComment: data.mascotComment || "",
     // 記事ページ上部の要約表示用(任意)。記事の内容に応じて手動設定する。
     summaryPoints: Array.isArray(data.summaryPoints) ? data.summaryPoints : [],
     targetReader: data.targetReader || "",
@@ -2203,7 +2345,8 @@ export async function getPostBySlug(slug) {
     htmlWithAccordions,
     meta.affiliateLinks
   );
-  let contentHtml = htmlWithAffiliateBanners;
+  const mascot = getCategoryMascot(meta.category, slug, meta.mascotComment);
+  let contentHtml = insertMascotComment(htmlWithAffiliateBanners, mascot, slug);
 
   // frontmatterに sectionAlternate: true を指定するだけで、H2見出し単位の
   // セクション背景交互化(汎用CSSクラス.article-section-*)を適用できる。

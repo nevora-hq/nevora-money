@@ -1,7 +1,9 @@
 import Layout from "../../components/Layout";
 import PostCard from "../../components/PostCard";
 import { getAllCategories, getPostsByCategory } from "../../lib/posts";
+import MascotComment from "../../components/MascotComment";
 import { getCategoryMeta } from "../../lib/categoryMeta";
+import { getCategoryMascot, getMascotIntroComment } from "../../lib/categoryMascot";
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from "../../lib/structuredData";
 
 export async function getStaticPaths() {
@@ -15,7 +17,9 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const posts = getPostsByCategory(params.name);
   const { description } = getCategoryMeta(params.name);
-  return { props: { posts, category: params.name, description } };
+  const mascot = getCategoryMascot(params.name);
+  const mascotComment = mascot ? getMascotIntroComment(mascot, params.name) : "";
+  return { props: { posts, category: params.name, description, mascot, mascotComment } };
 }
 
 function buildCategoryJsonLd(category, posts, siteUrl) {
@@ -30,7 +34,7 @@ function buildCategoryJsonLd(category, posts, siteUrl) {
   return [breadcrumb, itemList].filter(Boolean);
 }
 
-export default function CategoryPage({ posts, category, description }) {
+export default function CategoryPage({ posts, category, description, mascot, mascotComment }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
 
   return (
@@ -47,6 +51,7 @@ export default function CategoryPage({ posts, category, description }) {
       </nav>
       <h1 className="page-title">カテゴリ: {category}</h1>
       <p className="page-note">{description}</p>
+      <MascotComment mascot={mascot} comment={mascotComment} />
       {posts.length === 0 ? (
         <p>このカテゴリの記事はまだありません。</p>
       ) : (

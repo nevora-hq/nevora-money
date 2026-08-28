@@ -130,7 +130,7 @@ img {
   height: 64px;
 }
 
-/* ロゴはマスコット(ネヴォミン)のアイコン+テキストの組み。
+/* ロゴはマスコット(コインミン)のアイコン+テキストの組み。
    アイコンは装飾のためalt=""とし、読み上げはテキスト側に任せる。 */
 .logo {
   display: inline-flex;
@@ -1600,7 +1600,8 @@ h1.page-title {
 .post-card .category-badge {
   display: inline-block;
   background: var(--color-primary-light);
-  color: var(--color-primary);
+  /* 淡色の下地に載るため暗い方を使う(.category-badge と同じ理由) */
+  color: var(--color-primary-dark);
   font-size: 0.72rem;
   font-weight: 600;
   padding: 3px 10px;
@@ -1816,7 +1817,9 @@ h1.page-title {
 .category-badge {
   display: inline-block;
   background: var(--color-primary-light);
-  color: var(--color-primary);
+  /* 淡色の下地に載るため、primaryだと5.87:1しかない。暗い方を使う
+     (2026-08-29、記事を置いた状態の監査で検出)。 */
+  color: var(--color-primary-dark);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 10px;
@@ -4330,9 +4333,9 @@ table.admin-table td {
   font-weight: 800;
   font-size: 0.85rem;
   letter-spacing: 0.02em;
-  /* 背景#FFF6EC上でWCAG AA(4.5:1)を満たすよう、同色相のまま#C97B3Bから
-     暗くした値(2026-08-08、3.08:1→4.67:1)。 */
-  color: #a0602c;
+  /* 背景#FFF6EC上でCLAUDE.mdの基準(6:1)を満たすよう、同色相のまま暗くした値。
+     旧#a0602cはAA(4.5:1)ぎりぎりの4.67しかなかった(2026-08-29是正、7.04:1)。 */
+  color: #7d471e;
 }
 
 .warning-box-body p:last-child {
@@ -4484,4 +4487,148 @@ table.admin-table td {
   font-size: 0.82rem;
   line-height: 1.7;
   color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------------
+   マスコットキャラクター(生活サイトから移植)。
+   絵は scripts/generate-mascots.js が唯一の定義元。
+   表示は components/Mascot.js(コンパクト表示)と
+   components/MascotComment.js / lib/posts.js(吹き出し)が使う。
+   ------------------------------------------------------------------ */
+/* 写真ヒーローでは上質感を優先し、PCでもマスコットは控えめなサイズに留める
+   (従来の最大88px → 72px)。 */
+.hero-banner-mascot img {
+  display: block;
+  width: clamp(52px, 9vw, 72px);
+  height: auto;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
+}
+
+.category-summary-mascot-comment {
+  margin: 0 0 16px;
+}
+
+.category-summary-mascot-comment .mascot-comment-bubble {
+  border-color: var(--cat-color, var(--color-primary-light));
+}
+
+.category-summary-mascot-comment .mascot-comment-bubble::before {
+  border-right-color: var(--cat-color, var(--color-primary-light));
+}
+
+/* ---- マスコットキャラクター ---- */
+.mascot-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 56px;
+}
+
+.mascot-compact-img {
+  display: block;
+}
+
+.mascot-compact-name {
+  font-size: 0.62rem;
+  line-height: 1.2;
+  color: var(--color-text-faint);
+  text-align: center;
+}
+
+.mascot-comment {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 0;
+}
+
+.mascot-comment-img {
+  flex-shrink: 0;
+}
+
+.mascot-comment-bubble {
+  position: relative;
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--color-primary-light);
+  border-radius: 16px;
+  padding: 10px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.mascot-comment-bubble::before,
+.mascot-comment-bubble::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  width: 0;
+  height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+}
+
+.mascot-comment-bubble::before {
+  left: -10px;
+  border-right: 10px solid var(--color-primary-light);
+}
+
+.mascot-comment-bubble::after {
+  left: -8px;
+  border-right: 9px solid #fff;
+}
+
+.mascot-comment-name {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-bottom: 2px;
+}
+
+.mascot-comment-text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.mascot-comment-inline {
+  margin: 28px 0;
+}
+
+.mascot-comment-matome {
+  border-top: 1px dashed var(--color-border);
+  padding-top: 24px;
+}
+
+.mascot-comment-category {
+  max-width: 720px;
+  margin: 16px 0 24px;
+}
+
+.mascot-comment-home {
+  margin: 0 0 28px;
+}
+
+@media (min-width: 1024px) {
+
+
+  /* カード内の吹き出しを詰め、説明文は3行に固定して全カードの高さを揃える
+     (min-heightで短い文でも3行分の高さを確保する) */
+  .category-summary-mascot-comment .mascot-comment-img {
+    width: 40px;
+    height: 40px;
+  }
+
+
+  .category-summary-mascot-comment .mascot-comment-text {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: calc(3 * 1.7em);
+  }
 }

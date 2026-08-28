@@ -13,9 +13,10 @@ export default function Document() {
   return (
     <Html lang="ja">
       <Head>
-        {/* ファビコン/アプリアイコンは2026-08-23に公式マスコット(ネヴォミン)の
-            デザインへ差し替え。旧SVG(/images/favicon.svg)はSVG対応ブラウザで
-            PNGより優先されてしまい新デザインが出ないため、リンクを外している。 */}
+        {/* ファビコン/アプリアイコンは公式マスコット「コインミンちゃん」のマーク版
+            (scripts/generate-mascots.js の coinmin-mark.svg)から
+            scripts/generate-brand-assets.js が書き出したもの。
+            SVGを直接linkするとSVG対応ブラウザでPNGより優先されるため、リンクしない。 */}
         {/* 高級感のあるトーンへ振るためのWebフォント(2026-08-27, design-luxury)。
             見出し=明朝(Shippori Mincho)/本文=Zen Kaku Gothic New。
             display=swapでFOITを避け、未読込時は従来のヒラギノ系にフォールバックする。 */}

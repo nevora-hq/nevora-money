@@ -10,6 +10,7 @@ import NewPostsCarousel from "../components/NewPostsCarousel";
 import SectionBand from "../components/SectionBand";
 import { getAllPostsMeta, getAllMajorCategories } from "../lib/posts";
 import { getCategoryMeta } from "../lib/categoryMeta";
+import { getCategoryMascot, COINMIN } from "../lib/categoryMascot";
 import { getPublishedWorryGroups, getWorryHref } from "../lib/worryTopics";
 import { publicFileExists, responsiveImageExists } from "../lib/siteImages";
 import Link from "next/link";
@@ -145,6 +146,25 @@ export default function Home({
           スマホでの縦の並び順は変更前と同じ。 */}
       <div className="home-page">
         {/* 左側に白壁の余白がある写真。見出しは1180pxグリッドの左端に揃えて白抜きで重ねる */}
+        <section className="home-stripe home-stripe--intro">
+          <div className="container container--wide">
+            <div className="mascot-comment mascot-comment-home">
+              <img
+                src={COINMIN.normalImage}
+                alt={COINMIN.name}
+                width={64}
+                height={64}
+                className="mascot-comment-img"
+                loading="lazy"
+              />
+              <div className="mascot-comment-bubble">
+                <span className="mascot-comment-name">{COINMIN.name}</span>
+                <p className="mascot-comment-text">{COINMIN.homeComment}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {worryGroups.length > 0 && (
           <>
             <SectionBand
@@ -317,6 +337,7 @@ function CategorySummarySection({ categorySummaries }) {
 // popular=true のカードには「人気」バッジを付ける。カードの大きさは
 // 全カード同一の大きさにし、差別化はこのバッジだけに留める(2026-08-17 Step5)。
 function CategorySummaryCard({ cat, popular = false, index = 0 }) {
+  const mascot = getCategoryMascot(cat.name);
   const categoryHref = `/category/${encodeURIComponent(cat.name)}`;
 
   return (
@@ -349,8 +370,23 @@ function CategorySummaryCard({ cat, popular = false, index = 0 }) {
         </Link>
       )}
 
-      {cat.shortSummary && (
-        <p className="category-summary-text">{cat.shortSummary}</p>
+      {mascot && (
+        <div className="mascot-comment category-summary-mascot-comment">
+          <img
+            src={mascot.normalImage}
+            alt={mascot.name}
+            width={48}
+            height={48}
+            className="mascot-comment-img"
+            loading="lazy"
+          />
+          <div className="mascot-comment-bubble">
+            <span className="mascot-comment-name">{mascot.name}</span>
+            {/* 全カードで行数を揃えるため、長いdescriptionではなく
+                1文にまとめたshortSummaryを使う(CSS側で3行にクランプ) */}
+            <p className="mascot-comment-text">{cat.shortSummary}</p>
+          </div>
+        </div>
       )}
 
       {cat.count > 0 ? (

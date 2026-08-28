@@ -7,10 +7,10 @@ export const SITE_NAME = "お金の総合ガイド｜NEVORA";
 // 運営者(個人)の氏名。記事のauthor・Organizationのfounderに用いる。
 export const AUTHOR_NAME = "眞井 虹輝";
 
-// サイトの正式なロゴ画像は現状用意されていないため、サイト全体のメイン
-// マスコット「ネヴォミンちゃん」(public/images/mascot/nevomin-normal.svg)を
-// 512×512pxのPNGとして書き出したものを暫定のロゴとして使う
-// (Googleの推奨最小サイズ112×112pxを満たす。2026-08-09生成)。
+// サイトのロゴは、メインマスコット「コインミンちゃん」
+// (public/images/mascot/coinmin-normal.svg)を512×512pxのPNGへ書き出したもの。
+// 生成は scripts/generate-brand-assets.js が行う
+// (Googleの推奨最小サイズ112×112pxを満たす)。
 export const LOGO_PATH = "/images/logo.png";
 
 // サイト全体で常に出す構造化データ(WebSite: サイト内検索をSearchActionとして
