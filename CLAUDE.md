@@ -77,3 +77,20 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 - **お悩み別ページ(`/worry/[slug]`)**: `サイト運営\サイト本体\lib\worryTopics.js`にチップ(お金の悩み12件)を定義済み。本文を`lib\worryContent.js`に同じslugで登録すると、その悩みのページ・トップのチップ・`/worry`ハブ・サイトマップに自動で載る
 - **セルフ診断ページ(`/diagnosis/[slug]`)**: `lib\diagnosisTopics.js`に質問と結果を登録すると生成される。表示は`components\DiagnosisQuiz.js`が担当(データ駆動のためコンポーネント改修は不要)
 - **写真素材(ヒーロー/セクションバンド/カテゴリカード)**: 美容サイトの画像は全削除済み。`サイト運営\サイト本体\scripts\generate-site-images.js`のMANIFESTに沿って元画像を`画像フォルダ\各種サイト\お金サイト\ホームページ修正用`に置き、`node scripts/generate-site-images.js`で生成する。未生成の間は画像を出さずグラデーション背景で代替する(`pages\index.js`の`hasHeroImage`等)
+
+## 公開前の非公開運用(noindex)
+
+独自ドメイン確定・記事が揃うまでの間、サイト全体を検索結果に載せない運用にしている(姉妹サイト共通の方式)。
+
+- **既定は非公開**。環境変数 `NEXT_PUBLIC_ALLOW_INDEX` が未設定(または`1`以外)の間は、全ページに `noindex, nofollow` のメタタグが入り、`robots.txt` も `Disallow: /` を返す
+- ただし `robots.txt` では **SNSのリンクプレビュー用UA(Twitterbot / facebookexternalhit / Facebot / Slackbot-LinkExpanding / Discordbot / LINE)だけ `Allow: /`** にしている。これらもrobots.txtに従うため、全面Disallowにするとシェア時のOGPカードが出なくなる
+- **公開する段階で、Vercelの環境変数に `NEXT_PUBLIC_ALLOW_INDEX=1` を設定する**だけで両方が同時に解除される
+- 実装: `サイト運営\サイト本体\components\Layout.js`(`SITE_NOINDEX`)と `pages\robots.txt.js`(`allowIndex`)。同じフラグを見ているので必ず一致する
+
+## ブランド資産(マスコット・ロゴ・ファビコン・OGP)
+
+公式マスコットは **「コインミン」**(コインの姿をしたキャラクター。NEVORA姉妹サイト共通のフラットなベクター作画ルールに準拠)。記事本文へのマスコットコメント挿入機構は持たない(美容サイトから移行する際に削除済み)ため、コード上にキャラクター名は出てこない。
+
+- 原画は `画像フォルダ\各種サイト\お金サイト\ホームページ修正用` の `mascot-full.png`(全身)・`mascot-face.png`(顔アップ)。いずれも透過PNG
+- `サイト運営\サイト本体\scripts\generate-brand-assets.js` が、この2枚と `ogp.png`(背景)から **logo.png / logo-mark.png / favicon一式(.ico含む) / apple-touch-icon / OGP合成** をまとめて生成する
+- **マスコットを描き直したときは、同じファイル名で原画を置き換えて `node scripts/generate-brand-assets.js` を実行するだけでよい**(個別に書き出さない)
