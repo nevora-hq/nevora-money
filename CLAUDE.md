@@ -95,29 +95,31 @@ Next.js(React)+ GitHub + Vercel(無料ホスティング・自動デプロイ)�
 - `サイト運営\サイト本体\scripts\generate-brand-assets.js` が、この2枚と `ogp.png`(背景)から **logo.png / logo-mark.png / favicon一式(.ico含む) / apple-touch-icon / OGP合成** をまとめて生成する
 - **マスコットを描き直したときは、同じファイル名で原画を置き換えて `node scripts/generate-brand-assets.js` を実行するだけでよい**(個別に書き出さない)
 
-## 残作業(2026-08-29時点)
+## 公開切替(2026-08-28 実施済み)
 
-サイトは完成済みで、本番 https://nevora-money.vercel.app が noindex 状態で稼働している。
+サイトは完成済みで、本番 https://nevora-money.vercel.app が稼働している。
 **独自ドメインは当面取得せず、`vercel.app` のまま公開する方針**(2026-08-29決定)。
 
-残っているのは公開切替だけ。
+2026-08-28、ユーザーからの明示的な号令により検索エンジンへの公開切替を実施した。
+サイト構築上の残作業はない。
 
-### 公開切替は単体判断で実行しない
+実施した内容は次のとおり。
 
-全サイト(美容・AI・お金・副業・生活)の記事投入が終わったあとに、**まとめて号令が出る運用**。
+1. Vercelの **Production のみ** に `NEXT_PUBLIC_ALLOW_INDEX=1` を追加した。
+   Preview / Development には設定していないため、**プレビュー環境は引き続き noindex** のまま
+   (検証用URLが検索結果に出るのを防ぐため。切替前の想定は3環境だったが、Productionのみに変更した)
+2. 空コミットのpushで再デプロイした(`NEXT_PUBLIC_` 付きの変数はビルド時に埋め込まれるため、
+   変数を追加しただけでは既存のデプロイには反映されない)
+3. 解除を確認した
+   - `/robots.txt` … `Allow: /` と `Sitemap:` 行が出ること(`/admin/` `/api/` のDisallowは維持)
+   - トップ・記事・カテゴリページ … noindexメタが**出ないこと**
+   - `/404`・`/compare`(リンク0件時) … noindexが**維持されていること**
+   - `/sitemap.xml` … 200で正常なXMLを返し、記事のcanonicalと`<loc>`のURL表記が一致すること
+4. Google Search Consoleへの `/sitemap.xml` の送信は**ユーザー側で実施する**(未完了の場合はここを確認)
 
-- お金サイトの準備が整っていることを理由に、**切替を提案しない**
-- 「もう公開できます」「切り替えますか」といった打診もしない
-- ユーザーから明示的に公開の号令が出たときにだけ実行する
-
-号令が出たときの手順:
-
-1. Vercelに `NEXT_PUBLIC_ALLOW_INDEX=1` を追加(production / preview / development)
-2. 再デプロイ(空コミットのpushでよい。`NEXT_PUBLIC_` 付きの変数はビルド時に埋め込まれるため必須)
-3. 解除の確認
-   - `curl -s <URL>/robots.txt` … `Allow: /` と `Sitemap:` 行が出ること
-   - `curl -s <URL>/ | grep 'name="robots"'` … noindexメタが**出ないこと**
-4. Google Search Consoleでサイトマップ(`/sitemap.xml`)を送信
+再び非公開に戻す場合は、Vercelの `NEXT_PUBLIC_ALLOW_INDEX` を削除(または`1`以外に変更)して
+再デプロイする。`components/Layout.js` の `SITE_NOINDEX` と `pages/robots.txt.js` の `allowIndex` が
+同じフラグを見ているため、robots.txtとnoindexメタは必ず同時に切り替わる。
 
 詳細は生活サイトの `docs/rollout-noindex-and-image-convention.md` A-6節。
 
