@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { postHref } from "../lib/urls";
 
 export default function ImageSlider({ slides = [] }) {
   const [index, setIndex] = useState(0);
@@ -34,7 +35,7 @@ export default function ImageSlider({ slides = [] }) {
             {slides.map((slide, i) => (
               <Link
                 key={slide.key || slide.slug}
-                href={slide.href || `/posts/${slide.slug}`}
+                href={slide.href || postHref(slide.slug)}
                 className="hero-slider-slide"
               >
                 {/* 先頭スライドは初期表示範囲に入るため遅延読み込みにしない(LCP対策) */}

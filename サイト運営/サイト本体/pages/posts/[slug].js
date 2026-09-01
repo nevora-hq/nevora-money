@@ -17,6 +17,7 @@ import {
 import { getWorryItemBySlug } from "../../lib/worryTopics";
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, SITE_NAME, AUTHOR_NAME } from "../../lib/structuredData";
 import { formatDate } from "../../lib/formatDate";
+import { postHref } from "../../lib/urls";
 
 export async function getStaticPaths() {
   const slugs = getAllSlugs();
@@ -205,7 +206,7 @@ export default function PostPage({ post, related, nextPost }) {
 
         {nextPost && (
           <div className="article-next-post">
-            <a href={`/posts/${nextPost.slug}`} className="article-next-post-link">
+            <a href={postHref(nextPost.slug)} className="article-next-post-link">
               {nextPost.thumbnail ? (
                 <img
                   src={nextPost.thumbnail}
@@ -240,7 +241,7 @@ export default function PostPage({ post, related, nextPost }) {
             <ul className="related-posts-grid">
               {related.map((p) => (
                 <li key={p.slug} className="related-post-card">
-                  <a href={`/posts/${p.slug}`} className="related-post-link">
+                  <a href={postHref(p.slug)} className="related-post-link">
                     {p.thumbnail ? (
                       <img
                         src={p.thumbnail}

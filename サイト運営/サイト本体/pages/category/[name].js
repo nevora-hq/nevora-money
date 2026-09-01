@@ -5,6 +5,7 @@ import MascotComment from "../../components/MascotComment";
 import { getCategoryMeta } from "../../lib/categoryMeta";
 import { getCategoryMascot, getMascotIntroComment } from "../../lib/categoryMascot";
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from "../../lib/structuredData";
+import { postHref } from "../../lib/urls";
 
 export async function getStaticPaths() {
   const categories = getAllCategories();
@@ -29,7 +30,7 @@ function buildCategoryJsonLd(category, posts, siteUrl) {
     { name: category, url: `${siteUrl}/category/${encodeURIComponent(category)}` },
   ]);
   const itemList = buildItemListJsonLd(
-    posts.map((p) => ({ name: p.title, url: `${siteUrl}/posts/${p.slug}` }))
+    posts.map((p) => ({ name: p.title, url: `${siteUrl}${postHref(p.slug)}` }))
   );
   return [breadcrumb, itemList].filter(Boolean);
 }

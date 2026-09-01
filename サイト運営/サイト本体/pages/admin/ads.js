@@ -1,5 +1,6 @@
 import AdminLayout from "../../components/AdminLayout";
 import { getAllPostsMeta } from "../../lib/posts";
+import { postHref } from "../../lib/urls";
 
 export async function getStaticProps() {
   const posts = getAllPostsMeta();
@@ -38,7 +39,7 @@ export default function AdminAds({ links }) {
                   </a>
                 </td>
                 <td>
-                  <a href={`/posts/${link.slug}`}>{link.postTitle}</a>
+                  <a href={postHref(link.slug)}>{link.postTitle}</a>
                 </td>
               </tr>
             ))}

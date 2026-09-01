@@ -1,5 +1,6 @@
 import Layout from "../components/Layout";
 import { getAllPostsMeta } from "../lib/posts";
+import { postHref } from "../lib/urls";
 
 export async function getStaticProps() {
   // アクセス解析データが無いため、実際にはアクセス数等に基づく「ランキング」
@@ -27,13 +28,13 @@ export default function RankingPage({ posts }) {
           <li key={post.slug} className="ranking-item">
             <span className="rank-number">{i + 1}</span>
             {post.thumbnail && (
-              <a href={`/posts/${post.slug}`} className="ranking-thumb-link">
+              <a href={postHref(post.slug)} className="ranking-thumb-link">
                 <img src={post.thumbnail} alt="" loading="lazy" className="ranking-thumb" />
               </a>
             )}
             <div>
               <h2>
-                <a href={`/posts/${post.slug}`}>{post.title}</a>
+                <a href={postHref(post.slug)}>{post.title}</a>
               </h2>
             </div>
           </li>

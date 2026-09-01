@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { getWorryItemBySlug } from "../lib/worryTopics";
+import { postHref } from "../lib/urls";
 
 // セルフ診断ウィザードの汎用コンポーネント。
 // 質問・結果はすべて lib/diagnosisTopics.js のデータから受け取り、
@@ -61,7 +62,7 @@ export default function DiagnosisQuiz({ questions = [], results = {}, defaultTyp
         {disclaimer && <p className="skin-quiz-note">{disclaimer}</p>}
         <div className="skin-quiz-actions">
           {result.slug && (
-            <Link href={`/posts/${result.slug}`} className="skin-quiz-cta">
+            <Link href={postHref(result.slug)} className="skin-quiz-cta">
               {result.title.replace("タイプ", "")}について詳しく見る →
             </Link>
           )}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useFadeInProps } from "./FadeInCard";
+import { postHref } from "../lib/urls";
 
 // motion.create() はレンダーごとに呼ぶと再マウントされるため、モジュール
 // スコープで1度だけラップする。
@@ -29,7 +30,7 @@ export default function PostCard({ post, simple = false, index = 0, animate = tr
     return (
       <SimpleTag
         {...fade}
-        href={`/posts/${post.slug}`}
+        href={postHref(post.slug)}
         className="post-card post-card--simple"
       >
         <span className="post-card-thumb-link">
@@ -58,7 +59,7 @@ export default function PostCard({ post, simple = false, index = 0, animate = tr
 
   return (
     <Tag {...fade} className="post-card">
-      <Link href={`/posts/${post.slug}`} className="post-card-thumb-link">
+      <Link href={postHref(post.slug)} className="post-card-thumb-link">
         {post.thumbnail ? (
           <img
             src={post.thumbnail}
@@ -75,7 +76,7 @@ export default function PostCard({ post, simple = false, index = 0, animate = tr
       <div className="post-card-body">
         <span className="category-badge">{post.category}</span>
         <h2>
-          <Link href={`/posts/${post.slug}`}>{post.title}</Link>
+          <Link href={postHref(post.slug)}>{post.title}</Link>
         </h2>
         <p className="excerpt">{truncateExcerpt(post.excerpt)}</p>
       </div>

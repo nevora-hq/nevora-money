@@ -1,5 +1,6 @@
 import AdminLayout from "../../components/AdminLayout";
 import { getAllPostsMeta } from "../../lib/posts";
+import { postHref } from "../../lib/urls";
 
 export async function getStaticProps() {
   const posts = getAllPostsMeta();
@@ -34,7 +35,7 @@ export default function AdminSeo({ posts }) {
             {posts.map((post) => (
               <tr key={post.slug}>
                 <td>
-                  <a href={`/posts/${post.slug}`}>{post.title}</a>
+                  <a href={postHref(post.slug)}>{post.title}</a>
                 </td>
                 <td>{post.description || "(未設定)"}</td>
                 <td>

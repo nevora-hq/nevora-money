@@ -1,6 +1,7 @@
 import AdminLayout from "../../components/AdminLayout";
 import { getAllPostsMeta } from "../../lib/posts";
 import { formatDate } from "../../lib/formatDate";
+import { postHref } from "../../lib/urls";
 
 export async function getStaticProps() {
   const posts = getAllPostsMeta();
@@ -30,7 +31,7 @@ export default function AdminArticles({ posts }) {
             {posts.map((post) => (
               <tr key={post.slug}>
                 <td>
-                  <a href={`/posts/${post.slug}`}>{post.title}</a>
+                  <a href={postHref(post.slug)}>{post.title}</a>
                 </td>
                 <td>{post.category}</td>
                 <td>{post.tags.join(", ")}</td>

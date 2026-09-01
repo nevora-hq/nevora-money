@@ -7,6 +7,7 @@ import remarkBreaks from "remark-breaks";
 import remarkHtml from "remark-html";
 import { getCategoryMascot, getMascotIntroComment, getMascotOutroComment } from "./categoryMascot";
 import { MAJOR_CATEGORIES } from "./categoryMeta";
+import { encodePath } from "./urls";
 
 // npm run sync-content (predev/prebuild) によって
 // サイト運営/記事データ/確定稿 から自動コピーされるディレクトリ
@@ -2168,7 +2169,9 @@ function normalizeFrontmatter(data, slug) {
     affiliateLinks: normalizeAffiliateLinks(data.affiliateLinks),
     date: data.date || null,
     updatedDate: data.updatedDate || data.updated || null,
-    thumbnail: data.thumbnail || "",
+    // ファイル名に `%` を含む記事(例: 「…75%時代の備え方」)でも壊れないよう、
+    // 画像パスはここでパーセントエンコードして配る(lib/urls.js 参照)。
+    thumbnail: encodePath(data.thumbnail || ""),
     // 記事ページ上部のヒーロー画像(16:9固定表示)専用の差し替え画像(任意)。
     // 未指定の場合はthumbnailがヒーローにも使われる(従来通り)。カード表示
     // (ホーム・カテゴリ・関連記事等、正方形/横長カード)は常にthumbnailを使う。
@@ -2176,7 +2179,7 @@ function normalizeFrontmatter(data, slug) {
     // object-fit:coverすると下部の焼き込みテキストがクロップされる」不具合が
     // 発覚し、ヒーロー専用のクロップ済み画像を分離するために新設した
     // (`docs/CONTRIBUTING.md`のセーフゾーン規則も参照)。
-    heroImage: data.heroImage || "",
+    heroImage: encodePath(data.heroImage || ""),
     // ホームの「注目記事」「人気記事」セクション用の手動ピックフラグ。
     // アクセス解析導入までの暫定運用で、編集判断で個別記事に付与する。
     featured: data.featured === true,
