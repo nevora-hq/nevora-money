@@ -25,11 +25,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # 2026-09-07: 各アクションを node24 ランタイムの最新メジャーへ更新した。
+      # v4系・github-script@v7 は Node.js 20 で動作しており実行時に deprecation 警告が
+      # 出ていた(Node 20 自体も 2026-04-30 に EOL 済み)。item35-weekly.yml と同じ判断。
+      # 本ワークフローは commit・push を行うため、checkout の persist-credentials の
+      # 既定が v7 でも true のままであること(= push が従来どおり動くこと)を確認済み。
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          # Node 20 は EOL 済みのため 24(Active LTS、2028-04-30まで)に更新。
+          node-version: "24"
 
       - name: 公開時刻の到来した記事を確定稿へ移動
         id: release
@@ -72,7 +78,7 @@ jobs:
 
       - name: 失敗時にIssueを立てる
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
