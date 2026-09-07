@@ -321,23 +321,52 @@ function estimateZenkakuLength(text) {
 // 均等にemUnits幅として見積もる保守的な式)に合わせたもの(全角換算〔0.5/1.0
 // 加重〕で見積もると、数字主体のラベル・値ラベルでスキャナの推定よりも
 // 実装側の見積もりが甘くなり、はみ出しが解消しきれない食い違いが生じていた)。
-// 中間点付近に「の」「・」「(」「（」「スペース」等の自然な区切り文字があれば
-// そこで、無ければ文字数の中間点に最も近い位置で分割する。
+// 分割点付近に「の」「・」「(」「（」「スペース」等の自然な区切り文字があれば
+// そこで、無ければ等分割の位置に最も近い位置で分割する。
+//
+// 行数について(2026-09-07): 以前は「必ず2行に分割する」実装で、maxLineCharsを
+// 上限として守っていなかった。このため maxLineChars の2倍を超える長さのラベルは
+// 2分割しても各行が上限を超え、そのままはみ出していた
+// (項目35が「家計調査2025から見る支出の内訳」のsteps図で、上限18文字に対し
+// 21文字の行3件をITEM35_OVERFLOWとして検出。42文字のnoteを2分割した結果)。
+// 現在は必要な行数 n = ceil(文字数 / maxLineChars) を求めてn等分する。
+// n=2 のときの分割位置は従来と同一(ceil(len/2)を基準に区切り文字を探す)のため、
+// 2行に収まる既存ラベルの見た目は変わらない。
+// 戻り値が3行以上になり得るため、呼び出し側は行数を固定で仮定しないこと。
 function splitLabelForWrap(label, maxLineChars) {
   const text = String(label || "");
   const chars = Array.from(text);
-  if (chars.length <= maxLineChars) return [text];
-  const bestIdx = Math.ceil(chars.length / 2);
+  const max = Math.max(1, maxLineChars);
+  if (chars.length <= max) return [text];
   // 句点・感嘆符を追加(2026-08-25)。CHAR_UNIT引き上げで折り返しが増えた際、
   // 「。」が次の行の先頭に落ちる行頭禁則違反が発生したため。
   const breakChars = new Set(["の", "・", "(", "（", " ", "、", "。", "!", "?", "！", "？"]);
-  let chosen = bestIdx;
-  for (let d = 0; d <= 2 && chosen === bestIdx; d += 1) {
-    if (breakChars.has(chars[bestIdx - 1 + d])) chosen = bestIdx + d;
-    else if (bestIdx - 1 - d >= 0 && breakChars.has(chars[bestIdx - 1 - d])) chosen = bestIdx - d;
+  const lineCount = Math.ceil(chars.length / max);
+  const cuts = [];
+  let prev = 0;
+  for (let k = 1; k < lineCount; k += 1) {
+    const base = Math.ceil((chars.length * k) / lineCount);
+    // 残りの行数で最後まで割り切れる範囲に収める(この行が上限を超えず、
+    // かつ後続の行も上限内に収まる位置だけを候補にする)
+    const lo = Math.max(prev + 1, chars.length - (lineCount - k) * max);
+    const hi = Math.min(prev + max, chars.length - (lineCount - k));
+    let chosen = Math.max(lo, Math.min(hi, base));
+    const fallback = chosen;
+    for (let d = 0; d <= 2 && chosen === fallback; d += 1) {
+      if (fallback + d <= hi && breakChars.has(chars[fallback - 1 + d])) chosen = fallback + d;
+      else if (fallback - d >= lo && breakChars.has(chars[fallback - 1 - d])) chosen = fallback - d;
+    }
+    cuts.push(chosen);
+    prev = chosen;
   }
-  chosen = Math.max(1, Math.min(chars.length - 1, chosen));
-  return [chars.slice(0, chosen).join(""), chars.slice(chosen).join("")];
+  const lines = [];
+  let start = 0;
+  for (const c of cuts) {
+    lines.push(chars.slice(start, c).join(""));
+    start = c;
+  }
+  lines.push(chars.slice(start).join(""));
+  return lines;
 }
 
 function renderBarChartHtml(chart) {
@@ -383,7 +412,12 @@ function renderBarChartHtml(chart) {
   // 変えずにスロット内で縦中央に配置する。2行の間隔(24単位)は、CHAR_UNIT基準の
   // ascent/descent(スキャナの推定式と同じ0.88/0.2比率)で2行が互いに重ならない
   // 最小限のマージンを確保した値。
-  const rowHeights = catLines.map((lines) => (lines.length > 1 ? barHeight + 34 : barHeight));
+  // 折り返し行数に比例して行高を確保する(2026-09-07、splitLabelForWrapが3行以上を
+  // 返し得るようになったため。以前は「2行まで」の前提で +34 の固定値だった)。
+  const CAT_LABEL_EXTRA_LINE_H = 34;
+  const rowHeights = catLines.map(
+    (lines) => barHeight + (lines.length - 1) * CAT_LABEL_EXTRA_LINE_H
+  );
   const rowTops = [];
   {
     let cursor = barGap;
@@ -1569,16 +1603,18 @@ function renderProcessContrastHtml(chart) {
       const x = 10 + i * (panelWidth + gap);
       const motifHtml = renderProcessContrastMotifHtml(motif, chart, p);
       const captionLines = splitLabelForWrap(p.caption || "", captionMaxLineChars);
-      const captionHtml =
-        captionLines.length > 1
-          ? `<text x="${panelWidth / 2}" y="166" text-anchor="middle" class="chart-diagram-label-strong">${escapeHtmlText(
-              captionLines[0]
-            )}</text><text x="${panelWidth / 2}" y="185" text-anchor="middle" class="chart-diagram-label-strong">${escapeHtmlText(
-              captionLines[1]
+      // 全行を描画する(2026-09-07)。以前は captionLines[0] と [1] だけを参照しており、
+      // splitLabelForWrapが3行以上を返した場合に3行目以降が黙って消えていた。
+      // 1行なら y=180、複数行なら 166 から19単位ずつ下げる(従来の2行時と同じ位置)。
+      const captionTopY = captionLines.length > 1 ? 166 : 180;
+      const captionHtml = captionLines
+        .map(
+          (line, li) =>
+            `<text x="${panelWidth / 2}" y="${captionTopY + li * 19}" text-anchor="middle" class="chart-diagram-label-strong">${escapeHtmlText(
+              line
             )}</text>`
-          : `<text x="${panelWidth / 2}" y="180" text-anchor="middle" class="chart-diagram-label-strong">${escapeHtmlText(
-              captionLines[0]
-            )}</text>`;
+        )
+        .join("");
       return `<g transform="translate(${x},10)"><rect x="0" y="0" width="${panelWidth}" height="${panelHeight}" rx="10" fill="var(--color-surface, #fff)" stroke="var(--color-border, #ececec)" />${motifHtml}${captionHtml}</g>`;
     })
     .join("");
