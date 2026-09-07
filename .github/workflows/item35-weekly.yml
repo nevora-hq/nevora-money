@@ -33,13 +33,20 @@ jobs:
       # ローカルでは .env.local から読まれるが、同ファイルはgit管理外のためCIには無い。
       NEXT_PUBLIC_SITE_URL: https://nevora-money.vercel.app
     steps:
-      # メンテ課題(2026-08-25): actions/checkout@v4・setup-node@v4 は Node.js 20 で動作し、
-      # 実行時に deprecation 警告が出る。失敗要因ではないため据え置き。将来 v5 系へ更新する。
-      - uses: actions/checkout@v4
+      # 2026-09-07: 各アクションを node24 ランタイムの最新メジャー(v7系)へ更新した。
+      # v4系は Node.js 20 で動作しており実行時に deprecation 警告が出ていた
+      # (失敗要因ではないが、Node 20 自体が 2026-04-30 に EOL 済み)。
+      # このワークフローは schedule / workflow_dispatch で同一リポジトリを見るだけなので、
+      # checkout v7 の破壊的変更(fork PR を pull_request_target / workflow_run で
+      # チェックアウトさせない)の影響は受けない。
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          # Node 20 は 2026-04-30 に EOL 済みのため 24(Active LTS、2028-04-30まで)に更新。
+          # Next 16 / React 19 の要件(Node 20.9+)を満たす。package.json に engines も
+          # .nvmrc も無いため固定先の競合は無い。
+          node-version: "24"
           cache: npm
           cache-dependency-path: サイト運営/サイト本体/package-lock.json
 
@@ -104,7 +111,7 @@ jobs:
 
       - name: 検出ログを成果物として保存
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: item35-log
           path: /tmp/item35.log
@@ -112,7 +119,7 @@ jobs:
 
       - name: 失敗時にIssueを立てる
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           SUMMARY: ${{ steps.verify.outputs.summary }}
         with:
