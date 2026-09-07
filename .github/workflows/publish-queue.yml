@@ -10,7 +10,7 @@ name: publish-queue
 on:
   schedule:
     # cronはUTC。JST 7:00〜22:00 = UTC 22:00〜13:00 に相当するため常時30分おきに回す
-    - cron: "0,30 * * * *"
+    - cron: "7,37 * * * *"
   workflow_dispatch:
 
 concurrency:
