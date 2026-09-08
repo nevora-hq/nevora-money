@@ -1,0 +1,386 @@
+{
+  "file": "../実務/ライター/2026-08-30_家計調査2025から見る支出の内訳.md",
+  "items": [
+    {
+      "id": 1,
+      "name": "afterHeadingの見出し一致",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 2,
+      "name": "アコーディオンの本文重複",
+      "result": "Yes",
+      "violations": [],
+      "note": "完全一致(先頭30字)の候補提示のみ。表現を変えた言い換えによる重複はこのスクリプトでは検出できないため、最終判断は人間が行うこと。"
+    },
+    {
+      "id": 3,
+      "name": "chartsの数",
+      "result": "Yes",
+      "count": 5,
+      "exemptionComment": null
+    },
+    {
+      "id": 4,
+      "name": "装飾要素の合計使用数",
+      "result": "Yes",
+      "count": 6,
+      "breakdown": {
+        "highlight": 5,
+        "emotion": 0,
+        "emoji": 1,
+        "ellipsis": 0
+      }
+    },
+    {
+      "id": 5,
+      "name": "NEVORAポイントの文字数",
+      "result": "Yes",
+      "blocks": [
+        {
+          "startLine": 182,
+          "charCount": 46
+        },
+        {
+          "startLine": 195,
+          "charCount": 48
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": 6,
+      "name": "NEVORAポイント内のハイライト",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 7,
+      "name": "連続プレーンテキストの上限(200字) — 2026-08-14廃止・永久欠番。300字ルール(項目23)に一本化",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 8,
+      "name": "H2セクションごとの視覚要素",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 9,
+      "name": "未変換の装飾記号",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 10,
+      "name": "B5違反表現(一人称・体験証言・虚偽の実体験申告)",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 11,
+      "name": "出典紐付けのない伝聞表現",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 12,
+      "name": "頻度断定・社会的証明表現",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 13,
+      "name": "アフィリエイトリンクの残存",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 14,
+      "name": "「まとめ」二重表示",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 15,
+      "name": "quadrantチャートのnote/source欠落",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 16,
+      "name": "frontmatter必須項目",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 17,
+      "name": "sourcesのURL形式・editorial必須項目",
+      "result": "Yes",
+      "violations": [],
+      "sourcesMissing": false
+    },
+    {
+      "id": 18,
+      "name": "商品名の実在確認(参考情報・非ブロッキング)",
+      "result": "N/A",
+      "candidates": [],
+      "note": "完全自動化不可。sources掲載済みURLと突合していない候補一覧のみ。人手でメーカー公式ページと照合すること。"
+    },
+    {
+      "id": 19,
+      "name": "主語省略の一人称体験談(参考情報・非ブロッキング・要目視確認)",
+      "result": "N/A",
+      "candidates": [],
+      "note": "正規表現では一人称マーカーの有無まで判定できないため警告のみ。該当箇所は目視で主語省略の体験談になっていないか確認すること。"
+    },
+    {
+      "id": 20,
+      "name": "チャート数値と本文中の近傍数値の整合性(参考情報・非ブロッキング・要目視確認)",
+      "result": "N/A",
+      "candidates": [],
+      "note": "chartsのdata値と単位が一致する本文中の数値のうち、chartの値の範囲内にありながらどの値とも一致しないものを警告として列挙する。数値を修正した際、記事内の他の重複箇所(本文・summaryPoints・description・まとめ等)の修正漏れがないか目視で確認すること。"
+    },
+    {
+      "id": 21,
+      "name": "タイトル約束語と実体の一致",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 22,
+      "name": "検証済み出典(要人手確認でないもの)1件以上",
+      "result": "Yes",
+      "verifiedCount": 2,
+      "totalCount": 2
+    },
+    {
+      "id": 23,
+      "name": "地の文の連続文字数(400字ルール)",
+      "result": "Yes",
+      "violations": [],
+      "note": "画像・チャート(図解含む)/アコーディオン・表・コールアウトボックスのいずれにも当たらないまま、地の文(箇条書き含む)が300字以上連続する箇所を検出する。見出し自体(図解等が紐づいていない場合)・箇条書き自体・区切り線(hr)はリセット条件に含めない。Markdownリンク[表示テキスト](URL)はURL・角括弧・丸括弧を除いた表示テキストのみをカウントする(2026-08-15、L1決裁)。解消手段は説明内容の図解化を優先する(docs/CONTRIBUTING.md 24〜25節参照)。"
+    },
+    {
+      "id": 24,
+      "name": "視覚要素の質スコア(記事全体でHIGH型1つ以上)",
+      "result": "Yes",
+      "charts": [
+        {
+          "index": 0,
+          "type": "stat",
+          "afterHeading": "一人暮らしから二人以上世帯になると、支出はどう変わるのか",
+          "value": "neutral"
+        },
+        {
+          "index": 1,
+          "type": "(bar)",
+          "afterHeading": "二人以上世帯の消費支出は月31万4,001円",
+          "value": "low"
+        },
+        {
+          "index": 2,
+          "type": "compareScroll",
+          "afterHeading": "費目別に見ると何が違うのか",
+          "value": "neutral"
+        },
+        {
+          "index": 3,
+          "type": "crossSection",
+          "afterHeading": "住居費の重みが単身世帯の方が大きい理由",
+          "value": "high"
+        },
+        {
+          "index": 4,
+          "type": "pie",
+          "afterHeading": "実質で増えている費目・減っている費目",
+          "value": "neutral"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "連続段落数の上限(参考情報・非ブロッキング・要目視確認)",
+      "result": "N/A",
+      "candidates": [
+        {
+          "startLine": 170,
+          "endLine": 174,
+          "paragraphCount": 3
+        }
+      ],
+      "note": "視覚要素(画像・表・チャート・アコーディオン・区切り線)を挟まず段落が3個以上連続する箇所を候補として提示する。"
+    },
+    {
+      "id": 26,
+      "name": "図表への虚偽参照の検出",
+      "result": "Yes",
+      "violations": []
+    },
+    {
+      "id": 27,
+      "name": "視覚要素の連続配置(参考情報・非ブロッキング・要目視確認)",
+      "result": "N/A",
+      "candidates": [
+        {
+          "first": {
+            "kind": "callout",
+            "line": 182
+          },
+          "second": {
+            "kind": "chart:compareScroll",
+            "line": 185
+          }
+        },
+        {
+          "first": {
+            "kind": "callout",
+            "line": 200
+          },
+          "second": {
+            "kind": "chart:pie",
+            "line": 203
+          }
+        }
+      ],
+      "note": "本文(地の文)を挟まず視覚要素(chart/accordion/画像/表/コールアウトボックス)が連続する箇所を候補として提示する。連続配置そのものは禁止しない(対・補完の関係で自然に流れるなら問題ない)。違和感の有無はeditor-in-chiefが一次判定し、最終判断はユーザーが行う(docs/CONTRIBUTING.md 25節(e)参照)。"
+    },
+    {
+      "id": 28,
+      "name": "chartsへのアコーディオン誤混入検出",
+      "result": "Yes",
+      "violations": [],
+      "note": "frontmatterのcharts配列内に、type未指定かつsummary/content(アコーディオンの形)を持ちdataを持たない項目がある場合に検出する。この形のchart項目はembedCharts()で空文字列にフォールバックし、embedAccordions()の対象(accordions配列)にも含まれないため、本文に何も挿入されないまま検証をすり抜ける。該当項目はcharts配列からaccordions配列へ移すこと。"
+    },
+    {
+      "id": 29,
+      "name": "crossSection leaderの指示先実体チェック",
+      "result": "Yes",
+      "violations": [],
+      "note": "leaders[].fromX/fromY(図形側の起点)が、partsのいずれかの図形の描画範囲(±15単位の許容マージン)内にあるかを検査する。範囲外の場合、指示線が実体のない座標を起点にしている。shape:\"path\"はd文字列中の数値をx,y交互ペアとみなした近似バウンディングボックスで判定する(A/C(円弧)コマンドを使うpathは非対応)。"
+    },
+    {
+      "id": 30,
+      "name": "SVGラベルの推定占有幅チェック(警告・非ブロッキング)",
+      "result": "N/A",
+      "warnings": [],
+      "note": "x方向: 実機幅を保守的に325px、全角1文字をfont-size×(viewBoxWidth/325)の概算幅として、anchor方向の残り余白と比較する。y方向(2026-08-14追加): ascentをフォントサイズの0.88倍、descentを0.2倍と概算し、viewBoxMinY/viewBoxHeightの範囲を超えないか比較する。誤検知があり得るため警告のみでブロッキングしない。crossSection型のleadersのみ対象。"
+    },
+    {
+      "id": 31,
+      "name": "自己参照の誘導文検出(ページ内UI要素への言及)",
+      "result": "Yes",
+      "violations": [],
+      "note": "「(詳しくは上のアコーディオンから読めます)」等、見出し直下に自動挿入される要素の存在を地の文で説明するだけの一文を検出する。図への内容的な参照(item26の対象)と混同しないよう、対象をアコーディオン/チェックリストへの自己言及パターンに限定している。"
+    },
+    {
+      "id": 32,
+      "name": "装飾密度の後半失速検出(警告・非ブロッキング)",
+      "result": "N/A",
+      "sections": [
+        {
+          "heading": "一人暮らしから二人以上世帯になると、支出はどう変わるのか",
+          "line": 168,
+          "chars": 289,
+          "score": 1,
+          "breakdown": {
+            "emoji": 0,
+            "highlight": 1,
+            "emotion": 0,
+            "callout": 0
+          }
+        },
+        {
+          "heading": "二人以上世帯の消費支出は月31万4,001円",
+          "line": 176,
+          "chars": 148,
+          "score": 2,
+          "breakdown": {
+            "emoji": 0,
+            "highlight": 1,
+            "emotion": 0,
+            "callout": 1
+          }
+        },
+        {
+          "heading": "費目別に見ると何が違うのか",
+          "line": 185,
+          "chars": 410.5,
+          "score": 3,
+          "breakdown": {
+            "emoji": 0,
+            "highlight": 1,
+            "emotion": 0,
+            "callout": 2
+          }
+        },
+        {
+          "heading": "実質で増えている費目・減っている費目",
+          "line": 203,
+          "chars": 229,
+          "score": 0,
+          "breakdown": {
+            "emoji": 0,
+            "highlight": 0,
+            "emotion": 0,
+            "callout": 0
+          }
+        },
+        {
+          "heading": "この数字をどう読むか",
+          "line": 216,
+          "chars": 244,
+          "score": 1,
+          "breakdown": {
+            "emoji": 0,
+            "highlight": 0,
+            "emotion": 0,
+            "callout": 1
+          }
+        },
+        {
+          "heading": "まとめ",
+          "line": 227,
+          "chars": 384.5,
+          "score": 1,
+          "breakdown": {
+            "emoji": 0,
+            "highlight": 0,
+            "emotion": 0,
+            "callout": 1
+          }
+        }
+      ],
+      "zeroScoreSections": [
+        {
+          "heading": "実質で増えている費目・減っている費目",
+          "line": 203,
+          "chars": 229
+        }
+      ],
+      "backHalfSlowdown": {
+        "frontAvg": 2,
+        "backAvg": 0.67,
+        "flagged": false
+      },
+      "note": "H2見出しごとに(絵文字+==ペア+^^ペア+コールアウト数)を装飾スコアとして算出する。本文100字未満のH2はスコア対象外(前後半分割・zeroScoreSections集計いずれからも除外)。スコア対象H2を文書順で前半/後半に2分し、後半平均が前半平均の30%未満ならbackHalfSlowdown.flagged=trueとする。誤検知があり得るため警告のみでブロッキングしない。詳細な密度基準はdocs/CONTRIBUTING.md 25節・writer.md「装飾密度ルール」節を参照。"
+    },
+    {
+      "id": 34,
+      "name": "crossSection leaderラベル同士の衝突検出",
+      "result": "Yes",
+      "collisions": [],
+      "note": "labelMain/labelSubの推定バウンディングボックス(x範囲: 項目30と同じgrowLeft/幅推定式、y範囲: toYを中心とした概算フォント高さ)が、同一chart内の他のleaderと重なるペアを検出する。crossSection型のleadersのみ対象。1件でもあれば差し戻す。"
+    },
+    {
+      "id": 36,
+      "name": "tip/ポイント系コールアウトの見出し先頭配置",
+      "result": "Yes",
+      "violations": [],
+      "note": "H2/H3見出し直後の最初の実質ブロックが、本文側のtip/ポイント系コールアウト(💡NEVORAポイント等のアイコン)である箇所を検出する。chart type:\"tip\"/\"skincareTip\"は2026-08-17の`embedCharts`恒久修正によりセクション末尾描画に変更済みのため検出対象から除外(構造的に発生しない)。要約型(🔍/📝/✅等)・注意喚起型(⚠️)は除外。アイコンベースの機械判定のため、コールアウトの文面が実際に前方内容の要約か補足かという意味的判断は行っておらず、誤検知・見逃しの余地がある(詳細はdocs/reports参照)。2026-08-18にブロッキング化(§13遡及検証済み、公開済み・確定稿131本は検出0件)。下書きフォルダの非参照重複ファイルで検出される既知1件は、下書き自体が本番未反映かつ7-5浄化工程の対象のため、この項目のブロッキング化の障壁とはしない。"
+    }
+  ],
+  "overall": "Yes"
+}
