@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
- * Pinterest用の縦長ピン画像(1000x1500 / 2:3 PNG)とマニフェストCSVを生成する。
+ * Pinterest用の縦長ピン画像(1000x1500 / 2:3 PNG)を生成し、マニフェスト用の行データを
+ * JSON(_pending-manifest-rows.json)に書き出す。実際のxlsxへの追記は
+ * scripts/append-pinterest-xlsx.py が行う(2026-09-10、xlsx手動スケジュール管理に変更)。
  *
  *   npm run build                                   … 事前に必須(next startで実ページを描画するため)
  *   node scripts/generate-pinterest-pins.js --sample … サンプル数記事(異なるカテゴリ)のみ生成
@@ -155,11 +157,6 @@ function buildPinTitle(fm) {
   return title.length > 100 ? `${title.slice(0, 99)}…` : title;
 }
 
-function csvCell(v) {
-  const s = String(v == null ? "" : v);
-  return `"${s.replace(/"/g, '""')}"`;
-}
-
 function buildRow(slug, fm) {
   const category = String(fm.category || "");
   return {
@@ -172,70 +169,33 @@ function buildRow(slug, fm) {
   };
 }
 
-// CSVの1行(ダブルクォート区切り、""はエスケープされたダブルクォート)をセル配列に分解する。
-function parseCsvLine(line) {
-  const out = [];
-  let cur = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (line[i + 1] === '"') {
-          cur += '"';
-          i++;
-        } else inQuotes = false;
-      } else cur += c;
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === ",") {
-      out.push(cur);
-      cur = "";
-    } else cur += c;
-  }
-  out.push(cur);
-  return out;
-}
-
-// マニフェスト: 既存行はslug単位でマージし、今回生成した分で上書きする
-// (部分生成のときに過去分が消えないようにするため)。
-// ステータス列(D列, ボード名の右)はPinterestへの投稿管理用にExcelで手動更新する運用のため、
-// 既存slugの値はそのまま引き継ぎ、新規slugのみ既定値「未投稿」を入れる。
+// マニフェストの実体は `pinterest-お金.xlsx`(投稿日・投稿時間のスケジュール込みで
+// ユーザーがExcel上で手動管理する運用に2026-09-10変更)。このスクリプトはxlsxの
+// フォーマット(数式・スタイル)を直接組み立てられないため、今回生成した分の行データを
+// JSONで書き出すだけに留め、実際の追記は `scripts/append-pinterest-xlsx.py` が行う。
 function writeManifest(rows) {
-  const manifestPath = path.join(OUT_DIR, "pinterest-お金.csv");
-  const prevStatus = new Map();
-  if (fs.existsSync(manifestPath)) {
-    const prevLines = fs.readFileSync(manifestPath, "utf8").replace(/^﻿/, "").split(/\r?\n/).slice(1);
-    prevLines.forEach((line) => {
-      if (!line.trim()) return;
-      const cells = parseCsvLine(line);
-      if (cells[0]) prevStatus.set(cells[0], cells[4] || "未投稿");
-    });
-  }
-  const merged = new Map();
-  rows.forEach((r) => {
-    const status = prevStatus.get(r.slug) || "未投稿";
-    merged.set(
-      r.slug,
-      [r.slug, r.url, r.category, r.board, status, r.pinTitle, r.pinDescription].map(csvCell).join(",")
-    );
-  });
-  // 今回対象外だった既存行はそのまま保持する
-  if (fs.existsSync(manifestPath)) {
-    const prevLines = fs.readFileSync(manifestPath, "utf8").replace(/^﻿/, "").split(/\r?\n/).slice(1);
-    prevLines.forEach((line) => {
-      if (!line.trim()) return;
-      const cells = parseCsvLine(line);
-      const slug = cells[0];
-      if (slug && !merged.get(slug)) merged.set(slug, line);
-    });
-  }
-  const header = ["slug", "記事URL", "カテゴリ名", "ボード名", "ステータス", "ピンタイトル案", "ピン説明文案"]
-    .map(csvCell)
-    .join(",");
-  // Excelで文字化けしないようUTF-8 BOM付きで書き出す
-  fs.writeFileSync(manifestPath, `﻿${header}\n${[...merged.values()].join("\n")}\n`, "utf8");
-  return merged.size;
+  const pendingPath = path.join(OUT_DIR, "_pending-manifest-rows.json");
+  fs.writeFileSync(
+    pendingPath,
+    JSON.stringify(
+      rows.map((r) => ({
+        slug: r.slug,
+        url: r.url,
+        category: r.category,
+        board: r.board,
+        pinTitle: r.pinTitle,
+        pinDescription: r.pinDescription,
+      })),
+      null,
+      2
+    ),
+    "utf8"
+  );
+  console.log(
+    `[pins] ${pendingPath} に${rows.length}件を書き出しました。` +
+      `続けて次を実行してxlsxへ追記してください: python scripts/append-pinterest-xlsx.py`
+  );
+  return rows.length;
 }
 
 /**
@@ -491,12 +451,12 @@ async function main() {
     process.exit(1);
   }
 
-  // --manifest-only: 画像は再生成せず、マニフェストCSVだけを作り直す。
+  // --manifest-only: 画像は再生成せず、マニフェスト行(JSON)だけを作り直す。
   // タイトル案・説明文案の文言だけを直したいときに使う。
   if (argv.includes("--manifest-only")) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     const total = writeManifest(targets.map(({ slug, fm }) => buildRow(slug, fm)));
-    console.log(`[pins] マニフェストのみ更新: ${targets.length}件を再生成 / 全${total}行`);
+    console.log(`[pins] マニフェスト行を再生成: ${total}件`);
     return;
   }
 
