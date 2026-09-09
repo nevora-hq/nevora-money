@@ -12,7 +12,7 @@
  * ピン用の3段レイアウトに差し替えて1000x1500でスクリーンショットする
  * (記事HTML内の図解はlib/posts.jsが組み立てて出力しglobals.cssのクラスで配色が決まるため)。
  *
- * 出力先はリポジトリ直下の pinterest-pins/(public配下ではないため公開ビルドには
+ * 出力先はリポジトリ直下の pinterest-pins-お金/(public配下ではないため公開ビルドには
  * 含まれない)。既存のサムネイル生成・記事ビルド処理には一切手を入れていない。
  *
  * 記事側で図解・タイトルを指定したい場合はfrontmatterに以下を追加できる(任意):
@@ -29,7 +29,7 @@ const BASE_URL = `http://127.0.0.1:${PORT}`;
 const SITE_URL = "https://nevora-money.vercel.app";
 const ARTICLES_DIR = path.join(__dirname, "..", "content", "articles");
 // リポジトリ直下(サイト運営/サイト本体 から2つ上)に出力する。
-const OUT_DIR = path.join(__dirname, "..", "..", "..", "pinterest-pins");
+const OUT_DIR = path.join(__dirname, "..", "..", "..", "pinterest-pins-お金");
 
 const PIN_WIDTH = 1000;
 const PIN_HEIGHT = 1500;
@@ -202,7 +202,7 @@ function parseCsvLine(line) {
 // ステータス列(D列, ボード名の右)はPinterestへの投稿管理用にExcelで手動更新する運用のため、
 // 既存slugの値はそのまま引き継ぎ、新規slugのみ既定値「未投稿」を入れる。
 function writeManifest(rows) {
-  const manifestPath = path.join(OUT_DIR, "pinterest.csv");
+  const manifestPath = path.join(OUT_DIR, "pinterest-お金.csv");
   const prevStatus = new Map();
   if (fs.existsSync(manifestPath)) {
     const prevLines = fs.readFileSync(manifestPath, "utf8").replace(/^﻿/, "").split(/\r?\n/).slice(1);
