@@ -172,26 +172,65 @@ function buildRow(slug, fm) {
   };
 }
 
+// CSVの1行(ダブルクォート区切り、""はエスケープされたダブルクォート)をセル配列に分解する。
+function parseCsvLine(line) {
+  const out = [];
+  let cur = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (line[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else inQuotes = false;
+      } else cur += c;
+    } else if (c === '"') {
+      inQuotes = true;
+    } else if (c === ",") {
+      out.push(cur);
+      cur = "";
+    } else cur += c;
+  }
+  out.push(cur);
+  return out;
+}
+
 // マニフェスト: 既存行はslug単位でマージし、今回生成した分で上書きする
 // (部分生成のときに過去分が消えないようにするため)。
+// ステータス列(D列, ボード名の右)はPinterestへの投稿管理用にExcelで手動更新する運用のため、
+// 既存slugの値はそのまま引き継ぎ、新規slugのみ既定値「未投稿」を入れる。
 function writeManifest(rows) {
-  const manifestPath = path.join(OUT_DIR, "manifest.csv");
-  const merged = new Map();
+  const manifestPath = path.join(OUT_DIR, "pinterest.csv");
+  const prevStatus = new Map();
   if (fs.existsSync(manifestPath)) {
-    const prev = fs.readFileSync(manifestPath, "utf8").replace(/^﻿/, "").split(/\r?\n/).slice(1);
-    prev.forEach((line) => {
+    const prevLines = fs.readFileSync(manifestPath, "utf8").replace(/^﻿/, "").split(/\r?\n/).slice(1);
+    prevLines.forEach((line) => {
       if (!line.trim()) return;
-      const m = line.match(/^"((?:[^"]|"")*)"/);
-      if (m) merged.set(m[1].replace(/""/g, '"'), line);
+      const cells = parseCsvLine(line);
+      if (cells[0]) prevStatus.set(cells[0], cells[4] || "未投稿");
     });
   }
+  const merged = new Map();
   rows.forEach((r) => {
+    const status = prevStatus.get(r.slug) || "未投稿";
     merged.set(
       r.slug,
-      [r.slug, r.url, r.category, r.board, r.pinTitle, r.pinDescription].map(csvCell).join(",")
+      [r.slug, r.url, r.category, r.board, status, r.pinTitle, r.pinDescription].map(csvCell).join(",")
     );
   });
-  const header = ["slug", "記事URL", "カテゴリ名", "ボード名", "ピンタイトル案", "ピン説明文案"]
+  // 今回対象外だった既存行はそのまま保持する
+  if (fs.existsSync(manifestPath)) {
+    const prevLines = fs.readFileSync(manifestPath, "utf8").replace(/^﻿/, "").split(/\r?\n/).slice(1);
+    prevLines.forEach((line) => {
+      if (!line.trim()) return;
+      const cells = parseCsvLine(line);
+      const slug = cells[0];
+      if (slug && !merged.get(slug)) merged.set(slug, line);
+    });
+  }
+  const header = ["slug", "記事URL", "カテゴリ名", "ボード名", "ステータス", "ピンタイトル案", "ピン説明文案"]
     .map(csvCell)
     .join(",");
   // Excelで文字化けしないようUTF-8 BOM付きで書き出す
