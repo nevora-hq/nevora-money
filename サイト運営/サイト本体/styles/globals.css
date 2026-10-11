@@ -3561,6 +3561,31 @@ table.admin-table td {
   padding-left: 1.2em;
 }
 
+/* チェックの図(通常のチェックリスト)は、黒丸の箇条書きをやめ、各項目の左に四角を出す。
+   診断用(.chart-checklist-list-diagnostic)は別の見え方なので対象外。 */
+.chart-checklist ul:not(.chart-checklist-list-diagnostic) {
+  list-style: none;
+  padding-left: 0;
+}
+
+.chart-checklist ul:not(.chart-checklist-list-diagnostic) > li {
+  position: relative;
+  padding-left: 1.9em;
+}
+
+.chart-checklist ul:not(.chart-checklist-list-diagnostic) > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.4em;
+  width: 1.05em;
+  height: 1.05em;
+  box-sizing: border-box;
+  border: 2px solid var(--chart-accent-dark);
+  border-radius: 3px;
+  background: var(--color-surface);
+}
+
 .chart-checklist-note {
   font-size: 0.78rem;
   color: var(--color-text-muted);
