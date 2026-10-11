@@ -63,8 +63,24 @@ function normalizeAffiliateLinks(links) {
 // 区切り記号と同じ文字が内容中に1つでも現れた時点でそこで打ち切られてしまい、
 // 対応する閉じ記号まで届かず変換自体が失敗し、==や%%が生テキストとして
 // 読者に表示される不具合があった)。
+// 出典の印(%%出典:…%%)は原稿に残してよい決まりのため、本文・折りたたみ・表・箇条書き・
+// 一覧の抜粋には画面に出さない(2026-10-11、依頼者の決定)。読者に見える出典は記事末の
+// 出典欄(ArticleSources.js)と図表の下の「出典:」だけ。出典以外の%%注記%%(補足・留意点)は
+// 従来どおりapplyInlineMarkupで小さめの注記として表示する。印が消えたあとに残る空の
+// 括弧・空の段落・空のリスト項目も取り除く(印を含まない文章には何もしない)。
+const CITATION_MARK_RE = /%%出典[:：]((?:(?!%%)[^\n])+?)%%/g;
+function stripCitationMarks(text) {
+  const src = String(text || "");
+  if (!/%%出典[:：]/.test(src)) return src;
+  return src
+    .replace(CITATION_MARK_RE, "")
+    .replace(/<p>\s*<\/p>/g, "")
+    .replace(/<li>\s*<\/li>/g, "")
+    .replace(/[（(]\s*[）)]/g, "");
+}
+
 function applyInlineMarkup(html) {
-  return html
+  return stripCitationMarks(html)
     .replace(/==((?:(?!==)[^\n])+?)==/g, '<mark class="hl">$1</mark>')
     // (?<!\+)\+\+(?!\+) ... (?<!\+)\+\+(?!\+): "++"区切りが3つ以上連続する"+"の一部として
     // 出現している場合(例: 本文中の"PA++++"という4連続プラス表記)は区切りとして扱わない。
@@ -2224,7 +2240,9 @@ function normalizeFrontmatter(data, slug) {
     // 未指定ならlib/categoryMascot.jsの既定コメントから自動で選ばれる。
     mascotComment: data.mascotComment || "",
     // 記事ページ上部の要約表示用(任意)。記事の内容に応じて手動設定する。
-    summaryPoints: Array.isArray(data.summaryPoints) ? data.summaryPoints : [],
+    summaryPoints: Array.isArray(data.summaryPoints)
+      ? data.summaryPoints.map((point) => (typeof point === "string" ? stripCitationMarks(point) : point))
+      : [],
     targetReader: data.targetReader || "",
     comparisonCriteria: Array.isArray(data.comparisonCriteria) ? data.comparisonCriteria : [],
     // 金融免責表示のopt-outフラグ。既定は全記事表示で、"none"の場合のみ非表示にする
@@ -2274,7 +2292,7 @@ function estimateReadTimeMinutes(html) {
 // Markdown記法(リンク・見出し記号等)を取り除いたプレーンテキストを作る。
 // 一覧用の抜粋(excerpt)・検索用の全文インデックス(searchText)の両方で使う共通処理。
 function buildPlainText(content) {
-  return stripTags(stripHtmlComments(content))
+  return stripTags(stripHtmlComments(stripCitationMarks(content)))
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/[#*`>\-\[\]!]/g, "")
     .trim();

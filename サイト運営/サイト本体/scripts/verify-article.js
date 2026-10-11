@@ -1370,7 +1370,7 @@ function checkItem22(ctx) {
 // という2つの抜け道を検出できないため、これを補う3項目を追加する。
 // ---------------------------------------------------------------------------
 
-const CONTINUOUS_TEXT_MAX_CHARS = 300; // 2026-08-13、400字でも詰まりが体感で解消されないとの実機判定によりユーザー指示で300字へ再改訂
+const CONTINUOUS_TEXT_MAX_CHARS = 400; // 2026-10-11、ルール最新版の決まり(上限400字。導入は数えない。出典の印は字数に数えない)に合わせて300字から400字へ戻した
 
 // lib/posts.jsのEND_OF_SECTION_CHART_TYPES(embedChartsでセクション末尾に描画する
 // chart type)と同じ値を、verify-article.js側でも保持する(このスクリプトは
@@ -1547,12 +1547,15 @@ function checkItem23(ctx) {
     }
     if (type === "blank" || type === "hr") return;
 
+    // 導入(最初のH2/H3見出しより前)は数えない(2026-10-11、ルール最新版の決まり)
+    if (currentHeadingText === null) return;
+
     // type === "text" または "list"(箇条書きも地の文としてカウントする)
     if (runStartLine === null) {
       runStartLine = lineNo;
       runStartHeading = currentHeadingText;
     }
-    runChars += zenkakuLength(stripMarkdownLinkSyntax(line));
+    runChars += zenkakuLength(stripMarkdownLinkSyntax(line).replace(/%%出典[:：][^%\n]*?%%/g, ""));
     if (runChars >= CONTINUOUS_TEXT_MAX_CHARS && !flaggedForCurrentRun) {
       violations.push({
         heading: runStartHeading,
@@ -2364,6 +2367,19 @@ function main() {
     checkItem34(ctx), // 2026-08-14新設、ブロッキング(crossSection leaderラベル同士の衝突検出。項目33はscripts/verify-declared-vs-rendered.jsの独立スクリプトのためここには存在しない)
     checkItem36(ctx), // 2026-08-17新設(計測モード)→2026-08-18ブロッキング化。tip/ポイント系コールアウトの見出し先頭配置検出。項目35はscripts/verify-rendered-layout.jsの独立スクリプトのためここには存在しない
   ];
+  // ルール最新版で廃止された項目(2026-10-11、依頼者の決定)。番号は残し、判定の対象から外す
+  // (result: "N/A"。overall判定に含めない)。他の項目は変えない。
+  const RETIRED_ITEM_IDS = new Set([3, 4, 6, 8, 22, 24]);
+  items.forEach((it, i) => {
+    if (RETIRED_ITEM_IDS.has(it.id)) {
+      items[i] = {
+        id: it.id,
+        name: it.name,
+        result: "N/A",
+        note: "ルール最新版で廃止された項目のため、判定の対象外(番号は残す)。",
+      };
+    }
+  });
   const blockingItems = items.filter((it) => it.result !== "N/A");
   const overall = blockingItems.every((it) => it.result === "Yes") ? "Yes" : "No";
 
