@@ -8,7 +8,7 @@
 - コード管理: GitHub
 - ホスティング: Vercel(無料枠でデプロイ。Gitへのpushで自動デプロイされる)
 - ドメイン: 当面はVercelが発行する `*.vercel.app` を使用し、後日独自ドメインを購入してVercelに接続する
-- 記事データ: 当面はMarkdownファイル(frontmatterに `title` / `category` / `tags` / `affiliateLinks` 等を持たせる)で管理し、`サイト運営\記事データ\確定稿\` から本サイトのcontentディレクトリへ配置する
+- 記事データ: 当面はMarkdownファイル(frontmatterに `title` / `category` / `tags` / `affiliateLinks` 等を持たせる)で管理し、`サイト運営\記事データ\公開済み\` から本サイトのcontentディレクトリへ配置する(記事の置き場は作成中 → 公開待ち → 公開済みの3種類。サイトに出るのは公開済みだけ。詳細は `.claude/skills/run-article-production/SKILL.md` の「記事の状態と置き場」)
 - データベース: 記事数・機能が増え、Markdown管理では厳しくなった段階で導入(例: Vercel Postgres等)。導入時期・方式は`site-engineer`が提案する
 
 ## サイト構成(サイトマップ)
@@ -36,7 +36,7 @@ Webサイト
 
 - 記事コンテンツそのもの(執筆・編集・公開判定・法務チェック)は `.claude\agents` 配下の各エージェントが担当する
 - サイトの機能・画面・管理者ダッシュボード等の実装は `site-engineer` エージェントが担当する
-- 記事の確定稿をサイトへ反映する作業(Git commit・push)は `publisher` エージェントが担当する
+- 記事(公開済み)の修正をサイトへ反映する作業(Git commit・push)は `publisher` エージェントが担当する
 
 ## アクセス解析の導入基盤(GA4 / GSC)
 
@@ -106,10 +106,10 @@ Webサイト
 | --- | --- |
 | `npm run queue -- --weekly-min 2 --weekly-max 3` | `記事データ/公開待ち` の未割当記事に公開予定日時(`publishAt`)を採番。ファイル名の日付プレフィックスと `date` も公開予定日に揃える。`--dry-run` で確認のみ、`--start YYYY-MM-DD` で開始日指定 |
 | `npm run queue:status` | 在庫本数・今後7日間の公開予定(休載日含む)・在庫枯渇予定日を表示。`-- --days 14` で期間変更 |
-| `npm run queue:release` | 公開時刻の到来した記事を `確定稿/` へ移動(GitHub Actions が30分おきに自動実行) |
+| `npm run queue:release` | 公開時刻の到来した記事を `公開待ち/` から `公開済み/` へ移動(GitHub Actions が30分おきに自動実行) |
 
 - スケジュール: 公開は1日1本まで、カレンダー週ごとに2〜3日(乱数)公開。公開曜日は火・金を軸に、3日目は月・土から選ぶ。時刻は7〜22時(乱数)。休載は週4〜5日になる
-- 水曜はキューが使わない。週1本の「編集部集計記事」を水曜に手動公開する運用のため、曜日レベルでキューと分離している(手動公開は `確定稿/` へ直接コミットする。queue系スクリプトは `公開待ち/` 配下にしか書き込まないため共存して問題ない)
-- 未公開の記事は `記事データ/公開待ち` にあり、`sync-content.js` の同期対象外のためサイト・sitemap のいずれにも出ない。`確定稿` に誤って置かれた場合も `publishAt` が未来ならスキップされる
+- 水曜はキューが使わない。週1本の「編集部集計記事」を水曜に手動公開する運用のため、曜日レベルでキューと分離している(手動で公開する場合も、公開する版を `公開待ち/` に置いて `npm run queue:release` で `公開済み/` へ移す。`公開済み/` へ手で新規に置かない)
+- 未公開の記事は `記事データ/公開待ち` にあり、`sync-content.js` の同期対象外のためサイト・sitemap のいずれにも出ない。`公開済み` に誤って置かれた場合も `publishAt` が未来ならスキップされる
 - 公開の反映は `.github/workflows/publish-queue.yml` が commit・push し、Vercel の自動デプロイで行う(手動の vercel CLI は使わない)。ジョブが失敗した場合は `publish-queue` ラベル付きの Issue が自動で立つ
 - 記事の公開日(表示・sitemap・JSON-LD の `datePublished`)は、`queue:release` が動いた**実際の公開日**になる

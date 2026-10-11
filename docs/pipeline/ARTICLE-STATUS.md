@@ -1,6 +1,6 @@
 # NEVORA 公開済み記事ステータス一覧
 
-`サイト運営/記事データ/確定稿`・`公開済み` → (`npm run sync-content`) → `サイト運営/サイト本体/content/articles`
+`サイト運営/記事データ/公開済み`・`公開済み` → (`npm run sync-content`) → `サイト運営/サイト本体/content/articles`
 に存在する記事について、専用実装(lib)・使用中のchart type・画像枚数・
 `scripts/verify-article.js`による9項目検証の結果をまとめる。
 
@@ -79,5 +79,5 @@
 ## 補足・既知の注意点
 
 - 集計の前に`npm run sync-content`を実行して`content/articles/`を
-  `記事データ/確定稿`・`公開済み`と同期させる。`content/articles/`は
+  `記事データ/公開済み`・`公開済み`と同期させる。`content/articles/`は
   生成物であり直接編集しないこと(`scripts/sync-content.js`のコメント参照)。

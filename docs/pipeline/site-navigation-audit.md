@@ -15,7 +15,7 @@
 ## 2. ヘッダー/フッター/共通コンポーネントの全内部リンク生存確認
 
 - `components/Header.js`・`components/Footer.js`・`components/AdminLayout.js`・`components/Sidebar.js`・`PostCard.js` など共通コンポーネントの内部リンクが、`pages/`配下の実在ファイル・動的ルートと一致しているか。管理画面は`noindex, nofollow`設定になっているか。
-- 記事間の直リンクを持つ部品は、該当スラッグが`確定稿`/`公開済み`フォルダに実在するか。
+- 記事間の直リンクを持つ部品は、該当スラッグが`公開済み`フォルダに実在するか。
 - 外部リンク(`ArticleSources.js`の`source.url`は記事データ側で管理。`ArticleToc.js`のアンカーリンクは内部ページ内リンクのため対象外。部品内に直書きされた出典URLは`nofollow noopener noreferrer`付きか、生存を確認したか)。
 
 判定:
@@ -30,7 +30,7 @@
 
 ## 4. 旧ドメイン表記(vercel.app)の残存確認
 
-Grep範囲: `pages/`・`components/`・`lib/`・`記事データ/確定稿`・`記事データ/公開済み`・`next.config.js`・`pages/robots.txt.js`・`sitemap.xml.js`・環境変数ファイル(キー名のみ)。
+Grep範囲: `pages/`・`components/`・`lib/`・`記事データ/公開済み`・`記事データ/公開済み`・`next.config.js`・`pages/robots.txt.js`・`sitemap.xml.js`・環境変数ファイル(キー名のみ)。
 
 検出件数:
 
@@ -39,7 +39,7 @@ Grep範囲: `pages/`・`components/`・`lib/`・`記事データ/確定稿`・`�
 
 対象外の分類: 公開記事ではない調査メモ、移行作業の記録・手順書(`docs/project-state.md`(このサイトには無い。読まずに進める)・`docs/domain-migration-plan.md`・`docs/audit-report.md`(このサイトには無い。読まずに進める))、作業ログ(`サイト運営/実務/配信者/メモ/*.md`)、汎用プレースホルダー(`.env.example`の`your-site.vercel.app`)。`lib/siteLinks.js`の他のNEVORAサイトのURLは、`docs/domain-migration-plan.md`3節の「例外がないかの最終確認」のとおり、他サイト自身のドメインであり当サイトの移行とは無関係。ローカル開発用のサンプル値(`.env.local.example`)は軽微として扱う。
 
-公開記事本文(確定稿・公開済み配下)とサイト本体コード(`pages/`・`components/`・`next.config.js`・`sitemap.xml.js`・`robots.txt`)に旧ドメインのハードコードが無いか(`NEXT_PUBLIC_SITE_URL`環境変数経由で一元管理されているか)を確認する。
+公開記事本文(公開済み配下)とサイト本体コード(`pages/`・`components/`・`next.config.js`・`sitemap.xml.js`・`robots.txt`)に旧ドメインのハードコードが無いか(`NEXT_PUBLIC_SITE_URL`環境変数経由で一元管理されているか)を確認する。
 
 ## まとめ
 

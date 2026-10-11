@@ -29,11 +29,10 @@
 
 | 役割 | パス | 備考 |
 |---|---|---|
-| 編集用ソース(確定稿) | `サイト運営\記事データ\確定稿\*.md` | ライター・編集長が編集する場所 |
-| 編集用ソース(公開済み) | `サイト運営\記事データ\公開済み\*.md` | Threads投稿後に確定稿から移動される(`サイト運営\サイト本体\scripts\sync-content.js:5`)。サイト掲載は継続 |
+| 編集用ソース(公開済み) | `サイト運営\記事データ\公開済み\*.md` | ライター・編集長が編集する場所。公開キューが公開待ちから移す(`サイト運営\サイト本体\scripts\queue-release.js`)。サイトに出る記事はここだけ |
 | サイトが実際に読む場所 | `サイト運営\サイト本体\content\articles\*.md` | **手編集禁止。次回同期で上書きされる**(`scripts/sync-content.js:9` コメント) |
 
-`content/articles` は `npm run dev`(predev)・`npm run build`(prebuild)のたびに、確定稿+公開済みの内容で**まるごと削除→再コピー**される(`サイト運営\サイト本体\scripts\sync-content.js:14-33`、`package.json:7,9`)。
+`content/articles` は `npm run dev`(predev)・`npm run build`(prebuild)のたびに、公開済みの内容で**まるごと削除→再コピー**される(`サイト運営\サイト本体\scripts\sync-content.js:14-33`、`package.json:7,9`)。
 
 拡張子は **`.md` のみ**。`.mdx` は扱わない。したがってMDXコンパイラは存在せず、記事内にJSX/Reactコンポーネントを直接書く手段は無い(`サイト運営\サイト本体\lib\posts.js:1314-1318` で `remark().use(remarkGfm).use(remarkBreaks).use(remarkHtml)` を通し、結果を `dangerouslySetInnerHTML` で描画。生HTML/JSXはサニタイズで除去される。実機検証は§8参照)。
 
@@ -360,7 +359,7 @@ PHOTOプレースホルダー設計のための集中調査。§4.3と重複す�
 
 | コマンド | 内容 | 実行結果 |
 |---|---|---|
-| `npm run sync-content` | `node scripts/sync-content.js`。確定稿+公開済み→`content/articles`同期 | — |
+| `npm run sync-content` | `node scripts/sync-content.js`。公開済み→`content/articles`同期 | — |
 | `npm run dev` | `predev`で上記sync実行→`next dev` | — |
 | `npm run build` | `prebuild`で上記sync実行→`next build` | — |
 | `npm run start` | `next start` | — |
