@@ -10,7 +10,7 @@ import { MAJOR_CATEGORIES } from "./categoryMeta";
 import { encodePath } from "./urls";
 
 // npm run sync-content (predev/prebuild) によって
-// サイト運営/記事データ/確定稿 から自動コピーされるディレクトリ
+// サイト運営/記事データ/公開済み から自動コピーされるディレクトリ
 const ARTICLES_DIR = path.join(process.cwd(), "content", "articles");
 
 // renderXTocHtml/insertXToc(このファイル内、下記slug === 〇〇分岐)でcontentHtml冒頭に

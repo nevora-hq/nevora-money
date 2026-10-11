@@ -1,4 +1,4 @@
-// 公開済み・確定稿の全記事にverify-article.jsを一括実行し、
+// 公開済みの全記事にverify-article.jsを一括実行し、
 // 記事ごとのoverall・ブロッキング違反の項目番号、フォルダ別の違反記事数
 // サマリを出力する。verify-article.js自体は変更しない(1記事ずつの詳細
 // 判定ロジックは唯一の正であるverify-article.jsに委ね、本スクリプトは
@@ -17,7 +17,6 @@ const VERIFY_SCRIPT = path.join(__dirname, "verify-article.js");
 
 const FOLDERS = {
   公開済み: path.join(__dirname, "..", "..", "記事データ", "公開済み"),
-  確定稿: path.join(__dirname, "..", "..", "記事データ", "確定稿"),
 };
 
 function runOne(filePath) {

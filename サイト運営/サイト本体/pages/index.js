@@ -241,7 +241,7 @@ export default function Home({
                 <section className="home-featured-section">
                   <h2 className="home-section-title">注目記事</h2>
                   {featuredPosts.length === 0 ? (
-                    <p>まだ記事がありません。記事データを確定稿フォルダに追加してください。</p>
+                    <p>まだ記事がありません。記事データを公開済みフォルダに追加してください。</p>
                   ) : (
                     <div className="post-list post-list--simple">
                       {featuredPosts.map((post, i) => (

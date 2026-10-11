@@ -79,9 +79,9 @@ jobs:
           TZ: Asia/Tokyo
         run: |
           set -o pipefail
-          # 確定稿・公開済みの全スラッグをLFで書き出す
+          # 公開済みの全スラッグをLFで書き出す
           # (CRLFのままだとURLに%0Dが付いて全記事404になる。2026-08-24に実際に踏んだ)
-          ls ../記事データ/確定稿 ../記事データ/公開済み \
+          ls ../記事データ/公開済み \
             | grep '\.md$' | sed 's/\.md$//' | tr -d '\r' | sort -u > /tmp/slugs.txt
           total=$(wc -l < /tmp/slugs.txt)
           echo "対象 ${total} 記事"

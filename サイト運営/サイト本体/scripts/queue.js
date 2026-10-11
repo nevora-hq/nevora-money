@@ -8,7 +8,7 @@
  * ファイル名の日付プレフィックスと frontmatter の date も公開予定日に揃える
  * (未公開=まだ誰も踏んでいないURLのため、この時点でのリネームは安全)。
  *
- * 既に publishAt を持つ記事は再割当しない。確定稿・公開済みには一切触れない。
+ * 既に publishAt を持つ記事は再割当しない。公開済みには一切触れない。
  */
 const fs = require("fs");
 const path = require("path");

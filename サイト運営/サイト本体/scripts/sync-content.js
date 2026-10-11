@@ -1,18 +1,17 @@
 /**
  * 記事データ同期スクリプト
  *
- * サイト運営/記事データ/確定稿 と 公開済み の *.md を、サイト本体/content/articles/ にコピーする。
- * (公開済みはThreads投稿後に確定稿から移動されるだけで、サイト掲載自体は継続するため両方を対象とする)
+ * サイト運営/記事データ/公開済み の *.md を、サイト本体/content/articles/ にコピーする。
+ * (サイトに出る記事は公開済みだけ。公開待ち・作成中・非公開アーカイブは取り込まない)
  * next dev / next build の前に自動実行される(package.json の predev / prebuild を参照)。
  *
- * 元データ(確定稿・公開済み)を編集するのはライター・編集長・配信者の役目であり、
+ * 元データ(公開済み)を編集するのはライター・編集長・配信者の役目であり、
  * このサイト側では content/ ディレクトリを直接編集しないこと(次回同期で上書きされる)。
  */
 const fs = require("fs");
 const path = require("path");
 
 const SOURCE_DIRS = [
-  path.join(process.cwd(), "..", "記事データ", "確定稿"),
   path.join(process.cwd(), "..", "記事データ", "公開済み"),
 ];
 const DEST_DIR = path.join(process.cwd(), "content", "articles");
@@ -66,7 +65,7 @@ function main() {
       const srcPath = path.join(sourceDir, file);
       // 公開キューの安全弁: publishAtが未来の記事は同期しない。
       // 公開待ちの記事は「記事データ/公開待ち」に置かれ、そもそもSOURCE_DIRSに
-      // 含まれないため通常はここに来ないが、確定稿へ誤って置かれた場合でも
+      // 含まれないため通常はここに来ないが、公開済みへ誤って置かれた場合でも
       // サイト・sitemapに出ないようにする(scripts/queue.js参照)。
       const publishAt = readPublishAt(srcPath);
       if (publishAt && publishAt > Date.now()) {

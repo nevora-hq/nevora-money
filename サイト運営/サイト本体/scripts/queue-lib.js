@@ -1,7 +1,7 @@
 /**
  * 公開キュー共通ロジック(queue.js / queue-status.js / queue-release.js から利用)
  *
- * 対象は「記事データ/公開待ち」配下のみ。確定稿・公開済みの既存記事には
+ * 対象は「記事データ/公開待ち」配下のみ。公開済みの既存記事には
  * 一切書き込まない(URL・公開日を変えないため)。
  */
 const fs = require("fs");
@@ -9,7 +9,7 @@ const path = require("path");
 
 const DATA_DIR = path.join(process.cwd(), "..", "記事データ");
 const QUEUE_DIR = path.join(DATA_DIR, "公開待ち");
-const PUBLISHED_DIR = path.join(DATA_DIR, "確定稿");
+const PUBLISHED_DIR = path.join(DATA_DIR, "公開済み");
 
 const DATE_PREFIX_RE = /^(\d{4}-\d{2}-\d{2})_(.+)$/;
 

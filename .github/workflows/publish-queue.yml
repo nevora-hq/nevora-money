@@ -1,7 +1,7 @@
 name: publish-queue
 
 # 公開キュー(サイト運営/記事データ/公開待ち)から、公開時刻の到来した記事を
-# 確定稿へ移動してcommit・pushする。pushによりVercelの自動デプロイが走り、
+# 公開済みへ移動してcommit・pushする。pushによりVercelの自動デプロイが走り、
 # そこで初めてサイト・sitemapに記事が出る(手動のvercel CLIデプロイは使わない)。
 #
 # 実行間隔は30分。公開が発生した回だけpushするため、デプロイ回数は
@@ -37,7 +37,7 @@ jobs:
           # Node 20 は EOL 済みのため 24(Active LTS、2028-04-30まで)に更新。
           node-version: "24"
 
-      - name: 公開時刻の到来した記事を確定稿へ移動
+      - name: 公開時刻の到来した記事を公開済みへ移動
         id: release
         env:
           TZ: Asia/Tokyo
