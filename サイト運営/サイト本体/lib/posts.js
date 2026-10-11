@@ -1793,7 +1793,7 @@ function renderDiagnosisHtml(chart) {
 
   return `<div class="chart-diagnosis" data-diagnosis="${dataPayload}"><p class="chart-title">${escapeHtmlText(
     title || ""
-  )}</p><div class="chart-diagnosis-questions">${questionsHtml}</div><div class="chart-diagnosis-outcomes"><p class="chart-diagnosis-outcomes-title">診断結果タイプ一覧</p><ul class="chart-diagnosis-outcomes-list">${outcomesHtml}</ul></div>${noteHtml}</div>`;
+  )}</p><div class="chart-diagnosis-questions">${questionsHtml}</div><details class="chart-diagnosis-outcomes"><summary class="chart-diagnosis-outcomes-summary">診断結果タイプ一覧(全${outcomes.length}タイプ)を見る</summary><div class="chart-diagnosis-outcomes-body"><ul class="chart-diagnosis-outcomes-list">${outcomesHtml}</ul></div></details>${noteHtml}</div>`;
 }
 
 // 記事末の「まとめカード」(chart type: "summaryCard")。

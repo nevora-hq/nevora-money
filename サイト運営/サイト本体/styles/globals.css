@@ -3869,6 +3869,52 @@ table.admin-table td {
   text-align: left;
 }
 
+/* 診断結果タイプ一覧: 最初は閉じた折りたたみ(details/summary。JSなしで開閉できる)。
+   見た目は .article-accordion に合わせる。WorrySelfCheck の div 版には効かせない */
+details.chart-diagnosis-outcomes {
+  padding-top: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.chart-diagnosis-outcomes-summary {
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chart-diagnosis-outcomes-summary::-webkit-details-marker {
+  display: none;
+}
+
+.chart-diagnosis-outcomes-summary::after {
+  content: "▼";
+  font-size: 0.7em;
+  color: var(--color-primary);
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+details.chart-diagnosis-outcomes[open] .chart-diagnosis-outcomes-summary::after {
+  transform: rotate(180deg);
+}
+
+.chart-diagnosis-outcomes-body {
+  padding: 14px 18px 16px;
+}
+
 .chart-diagnosis-outcomes-title {
   font-weight: 700;
   font-size: 0.85rem;
