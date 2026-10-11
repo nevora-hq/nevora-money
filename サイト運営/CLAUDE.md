@@ -18,7 +18,7 @@
 
 ## 記事制作フロー
 
-新規記事の制作は、依頼者が「記事制作を実行して」と指示したときに、スキル `run-article-production` に従って `サイト運営\サイト本体\scripts\autonomy\run-local.js` を起動して行う。記事の生成・判定の起動経路はこれただ一つである(2026-09-11、project-manager を廃止)。scripts/autonomy(run-local.js)が入るまでは、スキル run-article-production の『サイトのコードに仕組みが入るまでの手順』で進める。記事は多層判定を通過すると公開待ちに置かれ、サイトは多層判定を通過した内容だけを公開する(公開ゲート)。
+新規記事の制作は、依頼者が「記事制作を実行して」と指示したときに、スキル `run-article-production` に従って `サイト運営\サイト本体\scripts\autonomy\run-local.js` を起動して行う。記事の生成・判定の起動経路はこれただ一つである(2026-09-11、project-manager を廃止)。scripts/autonomy(run-local.js)が入るまでは、スキル run-article-production の『サイトのコードに仕組みが入るまでの手順』で進める。記事は多層判定を通過すると公開待ちに置かれ、サイトは多層判定を通過した内容だけを公開する(公開ゲート)。公開待ちに置いて push したあとの公開は待たない(2026-10-11 依頼者の決定。自動処理を待たず、公開キューを手動で実行してすぐ公開する。手順は `.claude/agents/publisher.md`)。判定の流れ(指摘のア・イ・ウ、差し戻しの上限は1つの記事で合計5回〔第3層は1回まで〕など)は、スキル run-article-production の「判定の流れ」のとおり。
 
 ## ルール
 

@@ -123,6 +123,7 @@
 > 以下は本パイプラインが有効だった当時の記述で、経緯として残している。**現状(2026-09-11以降)は
 > `サイト運営/サイト本体/scripts/autonomy/run-local.js` ただ一つの経路に統合されている
 > (企画 → 執筆 → 多層判定 → 公開待ち。設計は`docs/pipeline/autonomy/DESIGN.md`)。**
+> (2026-10-11 依頼者の決定: 指摘はア〔差し戻す〕・イ〔まとめて直す〕・ウ〔差し戻さない〕に分ける。差し戻したあとは直した所に関係する判定だけをやり直し、上限は1つの記事で合計5回〔第3層は1回まで〕。公開待ちに置いて push したあとは、自動処理を待たず公開キューを手動で実行してすぐ公開する。詳細は `.claude/skills/run-article-production/SKILL.md` の「判定の流れ」と `docs/pipeline/JUDGE-ITEMS.md`。)
 
 `.claude/agents/writer.md`・`.claude/agents/editor-in-chief.md`等、
 プロジェクト全体の既存エージェント群は**ジャンル汎用**(`[対象ジャンル]`プレースホルダー方式、

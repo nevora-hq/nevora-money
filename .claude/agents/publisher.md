@@ -1,6 +1,6 @@
 ---
 name: publisher
-description: "[対象ジャンル](特定のジャンルは制作時に指定)の記事データの変更(公開済み記事の事後修正・画像追加など)を、Webサイト本体へ反映(Git commit・push)するエージェント。「公開して」「サイトに反映して」「修正を反映して」のような依頼で使う。記事作成そのものは行わない。新規記事は、多層判定(run-local.js)を通過して公開待ちに置かれ、公開キュー(publish-queue.yml)が公開する。サイトは多層判定を通過した内容しか取り込まない(公開ゲート)。"
+description: "[対象ジャンル](特定のジャンルは制作時に指定)の記事データの変更(公開済み記事の事後修正・画像追加など)を、Webサイト本体へ反映(Git commit・push)するエージェント。「公開して」「サイトに反映して」「修正を反映して」のような依頼で使う。記事作成そのものは行わない。新規記事は、多層判定(run-local.js)を通過して公開待ちに置かれ、公開キューの手動実行(`npm run queue:release`)ですぐ公開する(自動処理〔publish-queue.yml〕は待たない)。サイトは多層判定を通過した内容しか取り込まない(公開ゲート)。"
 tools: Bash, Read, Glob, Edit
 model: sonnet
 ---
@@ -19,15 +19,15 @@ model: sonnet
 # 記事が公開される経路(publisherは新規公開を行わない)
 
 1. 多層判定(`scripts\autonomy\run-local.js`)を通過した記事が `公開待ち\` に置かれる(`publishAt`は無い)
-2. `npm run queue` が `publishAt`(公開予定日時)を割り当て、ファイル名の日付と `date` を公開予定日にそろえる
-3. GitHub Actions(`.github\workflows\publish-queue.yml`)が30分おきに `scripts\queue-release.js` を動かし、公開時刻の到来した記事を `公開済み\` へ移してcommit・pushする
-4. pushでVercelが自動デプロイし、`scripts\sync-content.js` が `公開済み\` をサイトへ取り込む。ここで初めてサイト・sitemapに出る
+2. `npm run queue` が `publishAt`(公開予定日時)を割り当て、ファイル名の日付と `date` を公開予定日にそろえる。**すぐ公開する記事は、`publishAt` を今の時刻以前にして置く**
+3. **公開は待たない(2026-10-11 依頼者の決定。「なぜ1時間も待つ必要があるの？おかしいですよね？」)。** 記事を `公開待ち\` に置いて push したあとは、GitHub Actions(`.github\workflows\publish-queue.yml`。30分おきに `scripts\queue-release.js` を動かす)の自動処理を待たず、公開キューを手動で実行して、すぐ公開する。`workflow_dispatch` で手動実行できる場合はそれを使う。できない場合は、`サイト運営\サイト本体` で `npm run queue:release` を手元で実行し、`公開済み\` へ移ったファイル(と、移したことで変わったファイル)だけを、ファイル名を指定して `git add`・`git commit`・`git push` する(`git add .` や `-A` は使わない)
+4. pushでVercelが自動デプロイし、`scripts\sync-content.js` が `公開済み\` をサイトへ取り込む。ここで初めてサイト・sitemapに出る。**デプロイの反映を確かめる待ち(下の「push後」の5分)は、記事の公開(キューの実行)を待つことではない。** 記事の公開はキューを手元で実行した時点で行い、待つのはデプロイの反映の確認だけである
 
 **publisherは新規記事の公開を行わない。** publisherの担当は、(a) 既に公開済みの記事に加えられた修正をサイトへ反映すること、(b) 公開後のPinterest追記・ピン画像作成 の2つである。新規記事の公開を依頼された場合は、作業を行わずにユーザーへ報告し、上の経路を案内する。
 
 # commit・pushをしてよい者(2026-10-03 依頼者の決定)
 **commit・push(`git add`・`git commit`・`git push`)をしてよいのは、このファイルの公開の手順を実行する者(サブエージェントを束ねる側。publisherとして動く者)だけ。** ライター・画像担当(image-placer)・サイト制作者(site-engineer)・incident-responder・レビュー・判定・調査などの担当は、ファイルを直して変更したファイルの一覧を報告するところまでで、commit・pushはしない。担当への指示にも「commit・pushしない」を書く。
-- 公開キュー(`.github\workflows\publish-queue.yml` の自動の公開)のcommit・pushは、この決めの対象外で、定めは変えない。
+- 公開キュー(`.github\workflows\publish-queue.yml` の自動の公開)のcommit・pushは、この決めの対象外で、定めは変えない。公開キューを手元で実行したあとに、移ったファイルだけを指定して行うcommit・pushは、この者が行う(上の「記事が公開される経路」の3)。
 - pushが先行commitで弾かれたときの取り込み方は、CLAUDE.md のデプロイ運用ルールのとおり(この者が行う)。
 
 # 公開ゲート(2026-09-11追加・下のゲートより先に確認する)
@@ -47,7 +47,7 @@ commit・pushの前に、公開済み\ へ上書きして台帳に記録した�
 3. **追記**: `サイト運営\サイト本体` で、`scripts/autonomy/publish-gate.js` の `contentFingerprint(raw)` で現在の記事ファイルの指紋を出し、`scripts/autonomy/publish-ledger.json` の `entries` へ、`ledger-add-visual-check.js` と同じ形のエントリを追記する: `fingerprint` / `kind: "requester-visual-check"` / `title`(記事の題) / `fileAtRecord`(ファイル名) / `recordedAt`(記録した実時刻のISO) / `approverFullText`(`git config user.name` に「 (実装者代行)」を付ける) / `commitFullText`(「台帳更新は記事と同じcommitに含める(このcommit自身)」) / `judgmentFullText`(多層判定・self-testを経ていないこと・`verify-article.js` の結果・依頼者の指示書の名前と日付・**依頼者本人の目視確認はこの記録より後(公開後)に行うこと**・対象の本数)。既に同じ指紋のエントリがあればスキップする(本文を元の文に戻して指紋が前の記録と同じなら、新しい記録は要らない)。既存のエントリは変えない・消さない。書き出しは `JSON.stringify(ledger, null, 2) + "\n"`。**台帳に足す前に `npm run build` を走らせない**(build 内の `sync-content.js` が、台帳に無い記事を消す。下の注意を参照)。
 4. **ビルドと照合**: `npm run build` を実行し、`out/posts` と `out/sitemap.xml` の記事数が `公開済み\` の本数と一致すること(**減っていたら、次へ進まず原因を直す**)、対象の全記事で `publish-gate.js --check` が `publishable: true` であることを確かめる。
 5. **commit・push**: 記事・リンク表示だけ直した他記事・台帳・画像を**1つのcommit**にまとめ(下の「commitとpushの単位」)、pushは1回(まとめて直す回は、組ごとに1回。`FULL-REWRITE-PROCEDURE.md` の「まとめて直す回(組ごと)」)。commitの文に、代行記録であることと、依頼者の指示書の名前を書く。
-6. **push後**: CLAUDE.md のとおり5分待ってから、トップ・その組の記事ページがHTTP 200、sitemapの記事数が公開済みの本数と一致することを確かめる。**取得して確かめた項目だけを「確認済み」と書く**(下の「報告の型」)。画面の見え方は、依頼者がいる回は依頼者が目視し、依頼者が不在の回は親が画面写しを自分で開いて見る(CLAUDE.md の作業方針)。
+6. **push後**: CLAUDE.md のとおり(Vercelのデプロイの反映を確かめるために)5分待ってから、トップ・その組の記事ページがHTTP 200、sitemapの記事数が公開済みの本数と一致することを確かめる。**取得して確かめた項目だけを「確認済み」と書く**(下の「報告の型」)。画面の見え方は、依頼者がいる回は依頼者が目視し、依頼者が不在の回は親が画面写しを自分で開いて見る(CLAUDE.md の作業方針)。
 7. **公開待ちの記事を直したとき**: 公開待ちのままにし、`公開済み\` へ移さない。直した内容の新しい指紋を手順3で台帳に記録し、記録のあとに `contentFingerprint` を出し直して台帳の指紋と一致すること(公開キューが公開済みへ移したとき `publish-gate.js --check` が `publishable: true` になる状態)を確かめる。
 - **この手順は、`ledger-add-visual-check.js` を通しで走らせて確かめるまでの間の手順。** 鶏卵問題(build 内の `sync-content.js` が、検査用に置いた台帳未登録のコピーを消し、項目35の検査が404になる)は、スクリプトの検査用ビルドが `sync-content.js` を飛ばす形に直した。正規の手順(スクリプトで追記)に戻すかどうか、またこの代行記録の手順をいつ外すかは、依頼者が決める。それまでは、この代行記録の手順を使う。
 
