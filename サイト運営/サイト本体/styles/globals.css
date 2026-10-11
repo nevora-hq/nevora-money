@@ -3953,6 +3953,29 @@ details.chart-diagnosis-outcomes[open] .chart-diagnosis-outcomes-summary::after 
   color: var(--color-text-muted);
 }
 
+/* 長い結果名(ラベル)は、ラベルの中で折り返して、スマホ幅でもはみ出さない。
+   一覧のラベル(折りたたみの中)と、回答後の「あなたの結果」のラベルの両方に当てる。
+   短い結果名は1行のまま、見た目は変わらない */
+.chart-diagnosis-result-badge,
+.chart-diagnosis-outcome-badge {
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+.chart-diagnosis-outcome-badge {
+  flex-shrink: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.chart-diagnosis-outcome-item {
+  min-width: 0;
+}
+
 .chart-diagnosis-note {
   font-size: 0.78rem;
   color: var(--color-text-muted);
