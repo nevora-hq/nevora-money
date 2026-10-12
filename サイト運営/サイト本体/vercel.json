@@ -1,8 +1,4 @@
 {
-  "framework": null,
-  "buildCommand": "npm run build",
-  "outputDirectory": "out",
-  "cleanUrls": true,
   "redirects": [
     {
       "source": "/posts/2026-08-25_%E3%83%89%E3%83%A9%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%AF%E6%A0%B9%E3%82%82%E3%81%A8%E3%81%8B%E3%82%89%E4%B9%BE%E3%81%8B%E3%81%99",
