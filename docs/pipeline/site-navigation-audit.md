@@ -14,7 +14,7 @@
 
 ## 2. ヘッダー/フッター/共通コンポーネントの全内部リンク生存確認
 
-- `components/Header.js`・`components/Footer.js`・`components/AdminLayout.js`・`components/Sidebar.js`・`PostCard.js` など共通コンポーネントの内部リンクが、`pages/`配下の実在ファイル・動的ルートと一致しているか。管理画面は`noindex, nofollow`設定になっているか。
+- `components/Header.js`・`components/Footer.js`・`components/Sidebar.js`・`PostCard.js` など共通コンポーネントの内部リンクが、`pages/`配下の実在ファイル・動的ルートと一致しているか。
 - 記事間の直リンクを持つ部品は、該当スラッグが`公開済み`フォルダに実在するか。
 - 外部リンク(`ArticleSources.js`の`source.url`は記事データ側で管理。`ArticleToc.js`のアンカーリンクは内部ページ内リンクのため対象外。部品内に直書きされた出典URLは`nofollow noopener noreferrer`付きか、生存を確認したか)。
 

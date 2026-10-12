@@ -115,8 +115,6 @@ await api("GET", "/v9/projects/nevora-money/domains");
 ```js
 for (const v of [
   { key: "NEXT_PUBLIC_SITE_URL", value: "https://nevora-money.vercel.app", type: "plain" },
-  { key: "ADMIN_BASIC_AUTH_USER", value: USER, type: "encrypted" },
-  { key: "ADMIN_BASIC_AUTH_PASSWORD", value: PASS, type: "encrypted" },
 ]) {
   await api("POST", "/v10/projects/nevora-money/env",
     { ...v, target: ["production", "preview", "development"] });
@@ -124,10 +122,6 @@ for (const v of [
 ```
 
 - `NEXT_PUBLIC_SITE_URL` は **3で確認した実際のドメイン**に合わせる
-- `ADMIN_BASIC_AUTH_*` は未設定だと `middleware.js` が `/admin` で500を返すので必ず設定する。
-  値は `crypto.randomBytes(24).toString("base64url")` 等で生成し、**チャットに出さず**
-  git管理外の場所へ直接書き出す(このリポジトリでは `.gitignore` の1行目が `memory/` なので
-  `memory/vercel-basic-auth.txt`。**別リポジトリでは `git check-ignore -v <path>` で除外を必ず確認する**)
 - `NEXT_PUBLIC_ALLOW_INDEX` は**公開するまで設定しない**(未設定=noindex。`docs/rollout-noindex-and-image-convention.md` A節)
 
 設定後に `GET /v9/projects/<name>/env` で key・target・type を照合する(値は返さなくてよい)。
@@ -158,7 +152,6 @@ const d = await api("GET", "/v6/deployments?projectId=nevora-money&limit=3");
 ```bash
 U=https://nevora-money.vercel.app
 curl -s -o /dev/null -w '%{http_code}\n' $U/            # 200
-curl -s -o /dev/null -w '%{http_code}\n' $U/admin       # 401(Basic認証が効いている)
 curl -s $U/robots.txt                                   # SNS UA例外 + Disallow: /
 curl -s $U/ | grep 'name="robots"'                      # noindex, nofollow
 curl -s -A 'Twitterbot/1.0' $U/ | grep 'og:image'       # OGPが返る

@@ -21,7 +21,6 @@ model: sonnet
     compare.js               … 比較ページ
     ranking.js                … ランキングページ
     search.js                  … 検索機能
-    admin/                     … 記事管理/広告管理/アクセス解析/SEO管理/AI自動更新
   content/articles/          … 記事Markdown(.gitignore対象・ビルド時に記事データから配置される)
   lib/posts.js                … 記事の一覧・カテゴリ・次の記事
   lib/posts.js         … 記事ページの描画(getPostBySlug・図表・折りたたみ。このサイトでは上の lib/posts.js に同居)
@@ -43,7 +42,6 @@ model: sonnet
   - 比較ページ: 商品・サービスの比較表示(アフィリエイト訴求)
   - ランキングページ: おすすめ記事・商品のランキング表示
   - 検索機能: 記事タイトル・本文・タグからの検索
-  - 管理者ダッシュボード: 記事管理(公開・非公開切替等)/広告管理(アフィリエイトリンク・広告枠管理)/アクセス解析(PV・検索順位等の可視化)/SEO管理(メタ情報・構造化データ)/AI自動更新(エージェントによる更新履歴・実行管理)
   - データベース: 記事メタデータや広告・アクセスログの永続化が必要になった際の設計・移行
 - **既存機能(重複実装しないこと)**: 以下はすでに実装済み。追加実装の前に既存コードを確認する
   - サムネイル画像: frontmatterの`thumbnail`(`/public/images/articles/*.webp`)。`components/PostCard.js`(一覧カード)・`pages/posts/[slug].js`(記事上部ヒーロー画像)・`components/Layout.js`(OGP `og:image`/`twitter:image`)で使用

@@ -158,7 +158,6 @@ remarkは未知の記法をプレーンテキストとして通すため、`rema
 | `ImageSlider` | `components/ImageSlider.js:4` | `slides=[]` | 画像スライダー |
 | `SkinTypeQuiz` | `components/SkinTypeQuiz.js:113`(このサイトには無い。読まずに進める) | なし | 肌質診断クイズ(診断ページ用) |
 | `SkinTypeArticleCards` / `SkinTypeArticleCarousel` | 同名ファイル | `posts=[]` | 肌タイプ関連記事の一覧・カルーセル |
-| `AdminLayout` | `components/AdminLayout.js:14` | `children,title` | 管理ダッシュボード用外枠 |
 | `DrySkinSelfCheck` | `components/DrySkinSelfCheck.js:73`(このサイトには無い。読まずに進める) | なし | **特定の1記事専用**のインタラクティブ診断。`pages/posts/[slug].js:55-56,258-261`で本文HTMLを見出しテキストで前後分割し、その間に直接挿入するハードコードされたハック |
 | `SeasonalSkinChangeArticle` | `components/articles/SeasonalSkinChangeArticle.js:374`(このサイトには無い。読まずに進める) | `post` | **特定の1記事専用**の本文まるごと差し替えコンポーネント。`pages/posts/[slug].js:12`の`CUSTOM_LAYOUT_SLUGS`に載る記事だけ、通常のMarkdown→HTMLパイプライン自体を迂回する |
 
