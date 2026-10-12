@@ -938,6 +938,19 @@ function checkItem15(ctx) {
       violations.push({ chartIndex: i, title: c.title || "" });
     }
   });
+  // 同じ項目で、prosCons/versusの中身が配列でない(文字列・欠落)ものも不合格にする。
+  // サイトの描画(lib/posts.js)は配列だけを出し、文字列だと枠が空になるため
+  // (2026-10-12、公開済みのiDeCo記事で空の枠が出ていて発覚)。
+  const isNonEmptyList = (v) => Array.isArray(v) && v.some((x) => String(x || "").trim());
+  charts.forEach((c, i) => {
+    const keys = c.type === "prosCons" ? ["pros", "cons"] : c.type === "versus" ? ["left", "right"] : null;
+    if (!keys) return;
+    keys.forEach((k) => {
+      if (!isNonEmptyList(c[k])) {
+        violations.push({ chartIndex: i, title: c.title || "", reason: `${c.type}の${k}が配列でない(中身が出ない)` });
+      }
+    });
+  });
 
   return {
     id: 15,
