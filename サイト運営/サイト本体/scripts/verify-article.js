@@ -1429,7 +1429,7 @@ const HIGH_VALUE_CHART_TYPES = new Set([
   "mkskorderCompatMatrix",
 ]);
 const HIGH_VALUE_NAME_PATTERN = /CrossSection|DiagnosisFlow|Silhouette|FlowDiagram/i;
-const NEUTRAL_CHART_TYPES = new Set(["stat", "compareCards", "compareScroll", "pie", "donut", "flowchart", "diagnosis"]);
+const NEUTRAL_CHART_TYPES = new Set(["stat", "compareCards", "compareScroll", "versus", "pie", "donut", "flowchart", "diagnosis"]);
 const LOW_CHART_TYPES = new Set(["prosCons", "tip", "warning", "memo", "summaryCard", "checklist", "steps"]);
 
 function classifyChartValue(chart) {
