@@ -93,8 +93,23 @@ function killPort(port) {
 const VIEWPORT_WIDTHS = process.env.NEVORA_ITEM35_WIDTHS
   ? process.env.NEVORA_ITEM35_WIDTHS.split(",").map((n) => Number(n.trim())).filter(Boolean)
   : [320, 375, 768];
-const PORT = 4319;
-const BASE_URL = `http://127.0.0.1:${PORT}`;
+// ポートは固定にしない。同じPCで別サイトの検査(同じ4319を使っていた)が同時に動くと、
+// 互いのサーバーを落とし合い、全ページが404になる(2026-10-12に実際に踏んだ)。
+// 実行のたびに空いているポートを選ぶ。
+let PORT = 0;
+let BASE_URL = "";
+
+function findFreePort() {
+  return new Promise((resolve, reject) => {
+    const srv = require("net").createServer();
+    srv.unref();
+    srv.on("error", reject);
+    srv.listen(0, "127.0.0.1", () => {
+      const { port } = srv.address();
+      srv.close(() => resolve(port));
+    });
+  });
+}
 
 function waitForServer(url, timeoutMs) {
   const start = Date.now();
@@ -517,7 +532,8 @@ async function main() {
     process.exit(1);
   }
 
-  killPort(PORT);
+  PORT = await findFreePort();
+  BASE_URL = `http://127.0.0.1:${PORT}`;
   console.log(`[item35] next start をポート${PORT}で起動します(事前に npm run build 済みであること)...`);
   const server = spawn("npx", ["next", "start", "-p", String(PORT)], {
     cwd: process.cwd(),
@@ -539,6 +555,7 @@ async function main() {
 
   const browser = await playwright.chromium.launch();
   const allFindings = [];
+  const failedPages = [];
 
   try {
     for (const slug of slugs) {
@@ -548,6 +565,7 @@ async function main() {
         const resp = await page.goto(url, { waitUntil: "networkidle", timeout: 20000 }).catch((e) => null);
         if (!resp || !resp.ok()) {
           console.error(`[item35] ページ取得失敗: ${url} (status=${resp ? resp.status() : "no response"})`);
+          failedPages.push({ slug, width });
           await page.close();
           continue;
         }
@@ -613,6 +631,12 @@ async function main() {
     ancestorClip.length +
     ancestorClipText.length +
     imageCropRisk.length;
+  // 開けなかったページが1つでもあれば、検査できていないので「検出0件」とは扱わず失敗で終える
+  // (以前は取得失敗を読み飛ばして検出0件・exit 0になり、全ページが404でも合格に見えた)。
+  if (failedPages.length > 0) {
+    console.error(`[item35] 検査できなかったページが${failedPages.length}件あります(記事×幅)。検出0件とは扱わず、失敗で終了します。`);
+    process.exit(1);
+  }
   if (strict && total > 0) {
     console.error(`[item35] --strict指定のため、検出${total}件をFailとして扱います。`);
     process.exit(1);
