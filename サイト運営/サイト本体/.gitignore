@@ -23,3 +23,7 @@ Thumbs.db
 .env*
 !.env.example
 !.env.local.example
+
+# ビルド時に自動生成(scripts/generate-seo-files.mjs)
+/public/sitemap.xml
+/public/robots.txt
