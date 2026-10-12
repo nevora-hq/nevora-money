@@ -1,17 +1,11 @@
-import { getAllPostsMeta, getAllCategories } from "../lib/posts";
-import { getWorryPageItems } from "../lib/worryTopics";
-import { getDiagnosisSlugs } from "../lib/diagnosisTopics";
+import { getAllPostsMeta, getAllCategories } from "./posts";
+import { getWorryPageItems } from "./worryTopics";
+import { getDiagnosisSlugs } from "./diagnosisTopics";
 
-// next/imageのような組み込みのsitemap機能がないPages Routerのため、
-// リクエスト時にXMLを組み立てて返す動的ページとして実装する。
-// NEXT_PUBLIC_SITE_URL未設定時は、リクエストのホスト名から絶対URLを補う
-// (プレビュー環境・本番環境のどちらでも正しいドメインのsitemapを返すため)。
-function resolveSiteUrl(req) {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  const proto = req.headers["x-forwarded-proto"] || "https";
-  const host = req.headers.host;
-  return `${proto}://${host}`;
-}
+// sitemap.xml / robots.txt の中身を組み立てる。
+// 以前は pages/sitemap.xml.js・pages/robots.txt.js の getServerSideProps(リクエスト時生成)だったが、
+// 公開ページをすべて静的にするため、ビルド時に scripts/generate-seo-files.mjs が呼んで
+// public/ に書き出す形に変えた(出力内容は同じ)。
 
 function escapeXml(text) {
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -40,8 +34,7 @@ function latestDate(posts) {
   return latest.toISOString().slice(0, 10);
 }
 
-export async function getServerSideProps({ req, res }) {
-  const siteUrl = resolveSiteUrl(req);
+export function buildSitemapXml(siteUrl) {
   const posts = getAllPostsMeta();
   const categories = getAllCategories();
   const worryItems = getWorryPageItems();
@@ -96,13 +89,46 @@ export async function getServerSideProps({ req, res }) {
     ""
   )}</urlset>`;
 
-  res.setHeader("Content-Type", "application/xml");
-  res.write(xml);
-  res.end();
-
-  return { props: {} };
+  return xml;
 }
 
-export default function Sitemap() {
-  return null;
+export function buildRobotsTxt(siteUrl) {
+  // ドメイン確定前の暫定公開ではサイト全体をクロール拒否にする。
+  // components/Layout.js のnoindexメタと同じフラグで切り替わる。
+  // 正式公開時にVercelの環境変数で NEXT_PUBLIC_ALLOW_INDEX=1 を設定すると解除される。
+  const allowIndex = process.env.NEXT_PUBLIC_ALLOW_INDEX === "1";
+
+  const body = allowIndex
+    ? `User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: ${siteUrl}/sitemap.xml
+`
+    : // 検索エンジンには拾わせないが、SNSのリンクプレビュー用クローラーだけは通す。
+      // (これらもrobots.txtに従うため、全面Disallowにするとカード画像が出なくなる)
+      `User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: LINE
+Allow: /
+
+User-agent: *
+Disallow: /
+`;
+
+  return body;
 }
