@@ -8,7 +8,7 @@
 // 乖離しているかを検証する手段が無かった。
 //
 // 本スクリプトはPlaywright(playwright-core、Chromiumは既存のms-playwright
-// キャッシュを利用)で`next start`したページを実際のブラウザに描画させ、
+// キャッシュを利用)で`out/`を静的配信したページを実際のブラウザに描画させ、
 // getBoundingClientRect()で実測した座標をもとに、
 //   (1) 親コンテナ(SVG本体・図解パネル・コールアウトボックス)からのはみ出し
 //   (2) 兄弟テキスト同士の重なり
@@ -23,68 +23,79 @@
 //   省略時はexit 0(全量opt-in診断、後日ブロッキング昇格を決裁する運用)
 //
 // 前提: 事前に`npm run build`済みであること(このスクリプト自体はbuildを実行しない。
-// verify-declared-vs-rendered.jsとは異なり、`next start`で実サーバーを起動して
+// verify-declared-vs-rendered.jsとは異なり、`out/`を静的サーバーで配信して
 // 実ブラウザから見るため、prebuild(sync-content)の反映有無は呼び出し側で
 // `npm run build`を先に実行しておくことで保証する)。
 
-const { spawn, execSync } = require("child_process");
 const path = require("path");
 
-// Windowsでは`spawn(..., {shell:true})`で起動した子プロセスに対する`.kill()`は
-// シェル(cmd.exe)だけを止め、その配下で実際にポートをlistenしているnode/next
-// プロセスは残り続ける(2026-08-16、これが原因で「ソースを修正してnpm run buildを
-// 再実行しても、item35が古いビルド内容のまま検査してしまう」という重大な不具合を
-// 自己発見した。stale serverが前回ポートを掴んだままだと、新しいnext startの
-// bindが暗黙に失敗し古いプロセスが応答し続けるため、検証結果が信用できなくなる)。
-// このため、起動前に対象ポートを掴んでいるプロセスを`taskkill /F /T`で確実に
-// 終了させ、終了後もプロセスをexecSyncで確実にkillする。
-// netstat/findstr/taskkillはWindows専用のため、Linux(GitHub Actionsの
-// ubuntu-latest)ではそのまま実行すると`findstr: not found`が繰り返し出る
-// (2026-08-25、CI実行#3のログで判明)。処理自体は「残留プロセスがあれば
-// 落とす」保険で、CIでは毎回まっさらなため実害は無かったが、ログが汚れて
-// 本来の検出が埋もれるためプラットフォーム別に分岐する。
-function killPort(port) {
-  const pids = new Set();
+// `next.config.js`が`output: "export"`のため`next start`は使えない(起動時に
+// 「"next start" does not work with "output: export"」で落ちる。2026-10に
+// item35-weeklyで発生)。ビルド成果物の`out/`を、このプロセス内のHTTPサーバーで
+// 配信する。子プロセスを作らないので、`server.close()`だけで確実に止まり、
+// ポートの掴みっぱなし(旧killPort)やshell:true(DEP0190)の問題も起きない。
+const OUT_DIR = path.join(process.cwd(), "out");
+const MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".map": "application/json",
+};
+
+function resolveStaticFile(urlPath) {
+  let rel;
   try {
-    if (process.platform === "win32") {
-      const out = execSync(`netstat -ano | findstr :${port}`, { encoding: "utf8" });
-      out.split("\n").forEach((line) => {
-        const m = line.trim().match(/LISTENING\s+(\d+)\s*$/);
-        if (m) pids.add(m[1]);
-      });
-    } else {
-      // lsofが無い環境もあるため、無ければssにフォールバックする
-      let out = "";
-      try {
-        out = execSync(`lsof -ti tcp:${port} -sTCP:LISTEN`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
-      } catch (e) {
-        try {
-          out = execSync(`ss -lptnH "sport = :${port}"`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
-        } catch (e2) {
-          out = "";
-        }
-      }
-      out.split("\n").forEach((line) => {
-        const t = line.trim();
-        if (/^\d+$/.test(t)) pids.add(t);
-        const m = t.match(/pid=(\d+)/);
-        if (m) pids.add(m[1]);
-      });
-    }
+    rel = decodeURIComponent(urlPath.split("?")[0].split("#")[0]);
   } catch (e) {
-    // ヒットしない(該当プロセス無し)場合は非ゼロ終了になるだけなので無視
+    return null;
   }
-  pids.forEach((pid) => {
+  const base = path.normalize(path.join(OUT_DIR, rel));
+  if (base !== OUT_DIR && !base.startsWith(OUT_DIR + path.sep)) return null;
+  const fs = require("fs");
+  const candidates = [base, base + ".html", path.join(base, "index.html")];
+  for (const c of candidates) {
     try {
-      if (process.platform === "win32") {
-        execSync(`taskkill /PID ${pid} /T /F`, { stdio: "ignore" });
-      } else {
-        process.kill(Number(pid), "SIGKILL");
-      }
-      console.log(`[item35] ポート${port}を掴んでいた残留プロセス(PID ${pid})を終了しました。`);
+      if (fs.statSync(c).isFile()) return c;
     } catch (e) {
-      // 既に終了している等は無視
+      // 次の候補へ
     }
+  }
+  return null;
+}
+
+function startStaticServer(port) {
+  const fs = require("fs");
+  const server = require("http").createServer((req, res) => {
+    const file = resolveStaticFile(req.url);
+    const target = file || path.join(OUT_DIR, "404.html");
+    fs.readFile(target, (err, data) => {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+        res.end("Not Found");
+        return;
+      }
+      res.writeHead(file ? 200 : 404, {
+        "Content-Type": MIME[path.extname(target).toLowerCase()] || "application/octet-stream",
+      });
+      res.end(data);
+    });
+  });
+  return new Promise((resolve, reject) => {
+    server.on("error", reject);
+    server.listen(port, "127.0.0.1", () => resolve(server));
   });
 }
 
@@ -534,22 +545,18 @@ async function main() {
 
   PORT = await findFreePort();
   BASE_URL = `http://127.0.0.1:${PORT}`;
-  console.log(`[item35] next start をポート${PORT}で起動します(事前に npm run build 済みであること)...`);
-  const server = spawn("npx", ["next", "start", "-p", String(PORT)], {
-    cwd: process.cwd(),
-    shell: true,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  let serverOutput = "";
-  server.stdout.on("data", (d) => (serverOutput += d.toString()));
-  server.stderr.on("data", (d) => (serverOutput += d.toString()));
-
+  if (!require("fs").existsSync(path.join(OUT_DIR, "index.html"))) {
+    console.error("[item35] out/index.html がありません。先に npm run build を実行してください(output: export の成果物は out/ に出力されます)。");
+    process.exit(1);
+  }
+  console.log(`[item35] out/ を静的サーバーでポート${PORT}に配信します(事前に npm run build 済みであること)...`);
+  let server;
   try {
+    server = await startStaticServer(PORT);
     await waitForServer(BASE_URL, 30000);
   } catch (e) {
-    console.error("[item35] next start の起動に失敗しました。");
-    console.error(serverOutput.slice(-2000));
-    killPort(PORT);
+    console.error("[item35] out/ の静的サーバーの起動に失敗しました。", e.message);
+    if (server) server.close();
     process.exit(1);
   }
 
@@ -576,7 +583,7 @@ async function main() {
     }
   } finally {
     await browser.close();
-    killPort(PORT);
+    server.close();
   }
 
   const overflow = allFindings.filter((f) => f.type === "overflow");

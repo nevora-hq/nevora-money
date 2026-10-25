@@ -72,6 +72,15 @@ jobs:
           TZ: Asia/Tokyo
         run: npm run build
 
+      - name: ビルド成果物 out/ の確認
+        working-directory: サイト運営/サイト本体
+        run: |
+          if [ ! -f out/index.html ]; then
+            echo "::error::out/index.html がありません。output: export のビルドが out/ を生成していません。"
+            exit 1
+          fi
+          echo "out/ を確認しました(HTML $(find out -name '*.html' | wc -l) 件)"
+
       - name: item35を全記事へ--strictで実行
         id: verify
         working-directory: サイト運営/サイト本体
