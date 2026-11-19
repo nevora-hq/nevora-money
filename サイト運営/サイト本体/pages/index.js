@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Head from "next/head";
 import Layout from "../components/Layout";
 import PostCard from "../components/PostCard";
@@ -8,12 +8,51 @@ import ImageSlider from "../components/ImageSlider";
 import Sidebar from "../components/Sidebar";
 import NewPostsCarousel from "../components/NewPostsCarousel";
 import SectionBand from "../components/SectionBand";
+import CategoryGenreNav from "../components/CategoryGenreNav";
+import { resolveGenres } from "../lib/categoryGenres";
 import { getAllPostsMeta, getAllMajorCategories } from "../lib/posts";
 import { getCategoryMeta } from "../lib/categoryMeta";
 import { getCategoryMascot, COINMIN } from "../lib/categoryMascot";
 import { getPublishedWorryGroups, getWorryHref } from "../lib/worryTopics";
 import { publicFileExists, responsiveImageExists } from "../lib/siteImages";
 import Link from "next/link";
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// 帯(.home-stripe[data-bg-word])の背景の英単語を、本文の半分の速さで縦に流す。
+// 単語は ::before(content: attr(data-bg-word))で描く装飾で、HTML本文には出さない。
+// prefers-reduced-motion のときは動かさない(CSS既定位置のまま)。
+function useStripeWordParallax() {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    const els = [...document.querySelectorAll(".home-stripe[data-bg-word]")];
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        const wordH = parseFloat(getComputedStyle(el, "::before").fontSize) || 120;
+        const screenY = vh / 2 + 0.5 * (r.top + r.height / 2 - vh / 2);
+        const y = screenY - r.top - wordH / 2;
+        const clamped = Math.min(Math.max(0, r.height - wordH), Math.max(0, y));
+        el.style.setProperty("--bg-y", `${clamped.toFixed(1)}px`);
+      });
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+}
 
 // 「人気カテゴリー」として常時表示する3カテゴリ(残りはアコーディオンで展開)。
 const PINNED_CATEGORY_NAMES = ["投資", "税金・節税", "家計・節約"];
@@ -102,6 +141,8 @@ export default function Home({
   hasBand01,
   hasBand02,
 }) {
+  useStripeWordParallax();
+
   return (
     <Layout
       title="お金の総合ガイド｜NEVORA｜投資・FX・税金・節約のお金情報"
@@ -183,6 +224,7 @@ export default function Home({
 
             <section
               className="home-stripe home-stripe--tint worry-finder-section"
+              data-bg-word="Worry"
               aria-labelledby="worry-finder-title"
             >
               <div className="container container--wide">
@@ -210,7 +252,7 @@ export default function Home({
           </>
         )}
 
-        <section className="home-stripe home-stripe--cream">
+        <section className="home-stripe home-stripe--cream" data-bg-word="Category">
           <div className="container container--wide">
             {categorySummaries.length > 0 && (
               <CategorySummarySection categorySummaries={categorySummaries} />
@@ -234,7 +276,7 @@ export default function Home({
           />
         )}
 
-        <section className="home-stripe home-stripe--tint">
+        <section className="home-stripe home-stripe--tint" data-bg-word="Featured">
           <div className="container container--wide">
             <div className="home-layout">
               <div className="home-main">
@@ -279,9 +321,57 @@ export default function Home({
 // HTMLは常に全12カテゴリ分を出力するためクロール性は維持する。
 function CategorySummarySection({ categorySummaries }) {
   const [expanded, setExpanded] = useState(false);
+  // ジャンルで絞り込み(null=すべて)。初回表示ではアニメーションさせない。
+  const [genreId, setGenreId] = useState(null);
+  const [animated, setAnimated] = useState(false);
+  const bodyRef = useRef(null);
+  const prevHeightRef = useRef(null);
 
   const pinned = categorySummaries.filter((c) => PINNED_CATEGORY_NAMES.includes(c.name));
   const rest = categorySummaries.filter((c) => !PINNED_CATEGORY_NAMES.includes(c.name));
+
+  // ジャンルはカテゴリが6件以上あるときだけ出す(少ないサイトでは円形ナビが過剰)。
+  const genres = resolveGenres(categorySummaries.map((c) => c.name));
+  const showGenreNav = categorySummaries.length >= 6 && genres.length >= 3;
+  const activeGenre = genreId ? genres.find((g) => g.id === genreId) : null;
+  // 定義にあっても実在しないカテゴリ名は filter(Boolean) で落とす
+  const filtered = activeGenre
+    ? activeGenre.categories
+        .map((name) => categorySummaries.find((c) => c.name === name))
+        .filter(Boolean)
+    : null;
+
+  const handleSelectGenre = (id) => {
+    if (id === genreId) return;
+    // 切り替え前の高さを控える(切り替え後に旧→新へなめらかに変える)
+    prevHeightRef.current = bodyRef.current ? bodyRef.current.offsetHeight : null;
+    setAnimated(true);
+    setGenreId(id);
+  };
+
+  useIsomorphicLayoutEffect(() => {
+    const el = bodyRef.current;
+    const from = prevHeightRef.current;
+    prevHeightRef.current = null;
+    if (!el || from === null) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    const to = el.offsetHeight;
+    if (from === to) return undefined;
+    el.style.height = `${from}px`;
+    el.style.overflow = "hidden";
+    el.getBoundingClientRect(); // 旧い高さを確定させる
+    el.style.transition = "height 300ms ease";
+    el.style.height = `${to}px`;
+    const done = () => {
+      el.style.height = "";
+      el.style.overflow = "";
+      el.style.transition = "";
+      el.removeEventListener("transitionend", done);
+    };
+    el.addEventListener("transitionend", done);
+    const timer = setTimeout(done, 400);
+    return () => clearTimeout(timer);
+  }, [genreId]);
 
   // 「すべて見る」はJS無効環境では/categoryへの通常リンクとして機能させ、
   // JS有効時はpreventDefaultしてページ内展開に切り替える(no-JSフォールバック)。
@@ -297,39 +387,61 @@ function CategorySummarySection({ categorySummaries }) {
         気になるテーマから、関連記事をまとめてチェックできます。
       </p>
 
-      {/* 1024px以上では .category-summary-grids が唯一のグリッドになり、
-          中の2つのグリッドとアコーディオンは display:contents で透過して
-          12枚が同一グリッドの要素になる(=行ごとに高さが揃う)。
-          1024px未満では従来どおり「人気3件+アコーディオン9件」として機能する。 */}
-      <p className="category-summary-pinned-label">人気カテゴリー</p>
-      <div className="category-summary-grids">
-        <div className="category-summary-grid">
-          {pinned.map((cat, i) => (
-            <CategorySummaryCard key={cat.name} cat={cat} index={i} popular />
-          ))}
-        </div>
+      {showGenreNav && (
+        <CategoryGenreNav genres={genres} selected={genreId} onSelect={handleSelectGenre} />
+      )}
 
-        <div
-          id="category-summary-more-list"
-          className={`category-summary-collapsible${expanded ? " is-expanded" : ""}`}
-        >
-          <div className="category-summary-grid category-summary-grid--more">
-            {rest.map((cat, i) => (
-              <CategorySummaryCard key={cat.name} cat={cat} index={i} />
-            ))}
+      <div ref={bodyRef} className="category-summary-body">
+        {filtered ? (
+          <div
+            key={genreId}
+            className={`category-summary-swap${animated ? " is-animated" : ""}`}
+          >
+            <div className="category-summary-filtered">
+              {filtered.map((cat, i) => (
+                <CategorySummaryCard key={cat.name} cat={cat} index={i} />
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        ) : (
+          <div key="all" className={`category-summary-swap${animated ? " is-animated" : ""}`}>
+            {/* 1024px以上では .category-summary-grids が唯一のグリッドになり、
+                中の2つのグリッドとアコーディオンは display:contents で透過して
+                全カテゴリが同一グリッドの要素になる(=行ごとに高さが揃う)。
+                1024px未満では従来どおり「人気3件+アコーディオン」として機能する。
+                HTMLは常に全カテゴリ分を出力するためクロール性は維持する。 */}
+            <p className="category-summary-pinned-label">人気カテゴリー</p>
+            <div className="category-summary-grids">
+              <div className="category-summary-grid">
+                {pinned.map((cat, i) => (
+                  <CategorySummaryCard key={cat.name} cat={cat} index={i} popular />
+                ))}
+              </div>
 
-      <Link
-        href="/category"
-        className="category-summary-toggle"
-        aria-expanded={expanded}
-        aria-controls="category-summary-more-list"
-        onClick={handleToggleClick}
-      >
-        {expanded ? "− カテゴリーを閉じる" : "＋ すべてのカテゴリーを見る"}
-      </Link>
+              <div
+                id="category-summary-more-list"
+                className={`category-summary-collapsible${expanded ? " is-expanded" : ""}`}
+              >
+                <div className="category-summary-grid category-summary-grid--more">
+                  {rest.map((cat, i) => (
+                    <CategorySummaryCard key={cat.name} cat={cat} index={i} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Link
+              href="/category"
+              className="category-summary-toggle"
+              aria-expanded={expanded}
+              aria-controls="category-summary-more-list"
+              onClick={handleToggleClick}
+            >
+              {expanded ? "− カテゴリーを閉じる" : "＋ すべてのカテゴリーを見る"}
+            </Link>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

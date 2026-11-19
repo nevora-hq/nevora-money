@@ -1,4 +1,6 @@
 import Layout from "../../components/Layout";
+import { responsiveImageExists } from "../../lib/siteImages";
+import PageHero from "../../components/PageHero";
 import DiagnosisQuiz from "../../components/DiagnosisQuiz";
 import { getAllMajorCategories } from "../../lib/posts";
 import { getDiagnosisSlugs, getDiagnosis } from "../../lib/diagnosisTopics";
@@ -20,11 +22,12 @@ export async function getStaticProps({ params }) {
       slug: params.slug,
       diagnosis,
       categories: getAllMajorCategories(),
+      hasBand: responsiveImageExists("/images/band/band-02"),
     },
   };
 }
 
-export default function DiagnosisPage({ slug, diagnosis, categories }) {
+export default function DiagnosisPage({ slug, diagnosis, categories, hasBand }) {
   return (
     <Layout
       title={diagnosis.title}
@@ -32,8 +35,15 @@ export default function DiagnosisPage({ slug, diagnosis, categories }) {
       categories={categories}
       canonicalPath={`/diagnosis/${slug}`}
       panel
+      hero={
+        <PageHero
+          eyebrow="Diagnosis"
+          title={diagnosis.heading}
+          base="/images/band/band-02"
+          hasImage={hasBand}
+        />
+      }
     >
-      <h1 className="page-title">{diagnosis.heading}</h1>
       {diagnosis.note && <p className="page-note">{diagnosis.note}</p>}
       <DiagnosisQuiz
         questions={diagnosis.questions}

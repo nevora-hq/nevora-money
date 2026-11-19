@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Layout from "../../components/Layout";
+import { responsiveImageExists } from "../../lib/siteImages";
+import PageHero from "../../components/PageHero";
 import PostCard from "../../components/PostCard";
 import FaqAccordion from "../../components/FaqAccordion";
 import WorrySelfCheck from "../../components/WorrySelfCheck";
@@ -58,6 +60,7 @@ export async function getStaticProps({ params }) {
       categoryImage: categoryImage || "",
       relatedWorries,
       ctaHref,
+      hasBand: responsiveImageExists("/images/band/band-02"),
     },
   };
 }
@@ -85,12 +88,21 @@ export default function WorryPage({
   categoryImage,
   relatedWorries,
   ctaHref,
+  hasBand,
 }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
 
   return (
     <Layout
       panel
+      hero={
+        <PageHero
+          eyebrow="Worry"
+          title={`${label}に悩んでいる方へ`}
+          base="/images/band/band-02"
+          hasImage={hasBand}
+        />
+      }
       title={content.title}
       description={content.description}
       canonicalPath={`/worry/${slug}`}
@@ -106,8 +118,7 @@ export default function WorryPage({
         <span className="current">{label}</span>
       </nav>
 
-      {/* 2. H1 + intro */}
-      <h1 className="page-title">{label}に悩んでいる方へ</h1>
+      {/* 2. intro(H1は冒頭の PageHero) */}
       <p className="home-section-lead">{content.intro}</p>
 
       {/* 3. まずは結論(keyPoints) */}

@@ -16,6 +16,7 @@ import { hasWorryContent } from "./worryContent";
 export const WORRY_GROUPS = [
   {
     heading: "ふやす",
+    en: "Grow",
     items: [
       { slug: "start-investing", label: "投資の始め方", primaryCategory: "投資" },
       { slug: "nisa", label: "新NISA", primaryCategory: "投資" },
@@ -25,6 +26,7 @@ export const WORRY_GROUPS = [
   },
   {
     heading: "まもる",
+    en: "Protect",
     items: [
       { slug: "tax-return", label: "確定申告", primaryCategory: "税金・節税" },
       { slug: "deduction", label: "控除・節税", primaryCategory: "税金・節税" },
@@ -34,6 +36,7 @@ export const WORRY_GROUPS = [
   },
   {
     heading: "ととのえる",
+    en: "Organize",
     items: [
       { slug: "fixed-cost", label: "固定費の削減", primaryCategory: "家計・節約" },
       { slug: "saving", label: "貯蓄・家計管理", primaryCategory: "家計・節約" },
@@ -62,6 +65,7 @@ export function getPublishedWorryItems() {
 export function getPublishedWorryGroups() {
   return WORRY_GROUPS.map((group) => ({
     heading: group.heading,
+    en: group.en || "",
     items: group.items.filter((item) => hasWorryContent(item.slug)),
   })).filter((group) => group.items.length > 0);
 }

@@ -94,6 +94,9 @@ export default function DiagnosisQuiz({ questions = [], results = {}, defaultTyp
       <p className="skin-quiz-progress">
         質問 {step + 1} / {questions.length}
       </p>
+      <div className="skin-quiz-bar" aria-hidden="true">
+        <span style={{ width: `${((step + 1) / questions.length) * 100}%` }} />
+      </div>
       <h2 className="skin-quiz-question">{question.text}</h2>
       <div className="skin-quiz-choices">
         {question.choices.map((choice, i) => (

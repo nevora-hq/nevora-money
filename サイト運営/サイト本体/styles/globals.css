@@ -4689,3 +4689,468 @@ details.chart-diagnosis-outcomes[open] .chart-diagnosis-outcomes-summary::after 
     min-height: calc(3 * 1.7em);
   }
 }
+
+/* ============================================================
+   2026-11-19 デザイン移植(NEVORA美容サイトの改修を、このサイトの配色・データに合わせて移植)
+   1) カテゴリの円形ナビ(.genre-*)  2) 帯の背景の英単語(data-bg-word)
+   3) 下層ページの写真ヒーロー(.page-hero)  4) 下層ページの面・カードの統一
+   ============================================================ */
+
+/* ---- 1) カテゴリの円形ナビ ----
+   円の位置・大きさは components/CategoryGenreNav.js がジャンル数nから計算してstyleで渡す。 */
+.genre-nav {
+  margin: 0 auto 32px;
+}
+
+.genre-nav-ring {
+  position: relative;
+  width: min(520px, 100%);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+.genre-circle {
+  position: absolute;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--g-line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--g-soft) 45%, transparent);
+  color: var(--color-text);
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.genre-circle:hover {
+  background: color-mix(in srgb, var(--g-soft) 75%, transparent);
+}
+
+.genre-circle.is-active {
+  background: var(--g-soft);
+  border-width: 2px;
+  z-index: 1;
+}
+
+.genre-circle:focus-visible,
+.genre-hub:focus-visible,
+.genre-chip:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+  z-index: 3;
+}
+
+/* 中身は円の中心から外側へ少しずらし、重なり部分に文字がかからないようにする */
+.genre-circle-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 52%;
+  transform: translate(var(--ox, 0), var(--oy, 0));
+  color: var(--color-text);
+}
+
+.genre-circle-icon {
+  color: var(--color-primary-dark);
+}
+
+.genre-circle-label {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--color-primary-dark);
+}
+
+.genre-circle-count {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.genre-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 21%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary-dark);
+  background: var(--color-primary-dark);
+  color: #fff;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.genre-hub.is-active {
+  box-shadow: 0 0 0 5px rgba(8, 71, 100, 0.16);
+}
+
+.genre-hub-logo {
+  width: 36%;
+  height: auto;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.genre-hub-name {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* ジャンルが7つ以上のとき(円ではなくチップ) */
+.genre-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.genre-chip {
+  padding: 8px 16px;
+  border: 1px solid var(--g-line, var(--color-primary));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--g-soft, var(--color-primary-light)) 45%, #fff);
+  color: var(--color-primary-dark);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.genre-chip.is-active {
+  background: var(--g-soft, var(--color-primary-light));
+  border-width: 2px;
+}
+
+.genre-chip-count {
+  margin-left: 6px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* 絞り込み時の一覧。カードが1枚でも1カラム幅のまま(横に伸ばさない) */
+.category-summary-swap.is-animated {
+  animation: category-swap-in 300ms ease both;
+}
+
+@keyframes category-swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.category-summary-filtered {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .category-summary-filtered {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .category-summary-filtered {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .genre-nav-ring {
+    width: min(100%, 400px);
+  }
+  .genre-circle-body {
+    width: 56%;
+    gap: 3px;
+  }
+  .genre-circle-label {
+    font-size: 0.78rem;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .genre-circle-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .genre-circle-count {
+    display: none;
+  }
+  .genre-hub-name {
+    font-size: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* ---- 2) 帯の背景に敷く大きな英単語(スクロール連動の視差は pages/index.js) ----
+   overflow: clip はスクロール容器を作らないので、帯内の position: sticky(サイドバー)に影響しない */
+.home-stripe[data-bg-word] {
+  overflow: clip;
+}
+
+.home-stripe[data-bg-word]::before {
+  content: attr(data-bg-word);
+  position: absolute;
+  right: -1%;
+  top: 0;
+  transform: translateY(var(--bg-y, 0px));
+  will-change: transform;
+  z-index: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(72px, 15vw, 260px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: rgba(11, 92, 138, 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+
+.home-stripe--cream[data-bg-word]::before {
+  color: rgba(138, 106, 69, 0.09);
+}
+
+.home-stripe[data-bg-word] > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- 3) 下層ページの写真ヒーロー ---- */
+.page-hero .section-band-img {
+  height: clamp(190px, 20vw, 300px);
+}
+
+.page-hero.section-band--no-image {
+  min-height: clamp(190px, 20vw, 300px);
+  background: linear-gradient(100deg, var(--color-primary-dark), var(--color-primary));
+}
+
+.page-hero-eyebrow {
+  margin: 0 0 6px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #eaf2f7;
+}
+
+.page-hero-title {
+  margin: 0 0 8px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: clamp(1.35rem, 1rem + 1.6vw, 2.05rem);
+  line-height: 1.4;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.page-hero-lead {
+  margin: 0;
+  max-width: 26em;
+  font-size: clamp(0.8rem, 0.76rem + 0.2vw, 0.92rem);
+  line-height: 1.7;
+  color: #eaf2f7;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ヒーローがあるページは main の上余白を消し、直下の面を少し重ねて奥行きを出す */
+main:has(> .page-hero) {
+  padding-top: 0;
+}
+
+.page-hero + .container > .page-panel {
+  margin-top: -28px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .page-hero + .container > .page-panel {
+    margin-top: -16px;
+  }
+}
+
+/* ---- 4) 下層ページの面・カードの統一 ---- */
+/* パネル内のセクションは薄い区切り線で分ける(最初のセクションだけ線なし) */
+.page-panel > .article-section {
+  margin: 0;
+  padding: 28px 0 8px;
+  border-top: 1px solid var(--color-primary-light);
+  border-radius: 0;
+}
+
+.page-panel > .article-section:first-of-type {
+  border-top: 0;
+}
+
+/* ハブ型一覧: 左に色線、見出し(明朝)+英語の小さな添え字。グループごとに --wg を持つ */
+.worry-hub-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding-left: 14px;
+  border-left: 4px solid var(--wg, var(--color-primary));
+}
+
+.worry-hub-group-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.6rem);
+  letter-spacing: 0.08em;
+  color: var(--wg, var(--color-primary-dark));
+}
+
+.worry-hub-group-en {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.worry-hub-group .worry-hub-card {
+  border-left: 4px solid var(--wg, var(--color-primary));
+}
+
+.worry-hub-group .worry-hub-card-count {
+  display: flex;
+  justify-content: space-between;
+  color: var(--wg, var(--color-primary));
+}
+
+.worry-hub-card-arrow {
+  transition: transform var(--transition);
+}
+
+.worry-hub-card:hover .worry-hub-card-arrow {
+  transform: translateX(4px);
+}
+
+/* 番号付きの原因/手順カード: CSSカウンターで 01 02 … を左に出す(HTMLに番号は書かない) */
+.worry-cause-list,
+.worry-steps-list {
+  counter-reset: worry-num;
+}
+
+.worry-cause-item,
+.worry-steps-item {
+  position: relative;
+  padding-left: 68px;
+  counter-increment: worry-num;
+}
+
+.worry-cause-item::before,
+.worry-steps-item::before {
+  content: counter(worry-num, decimal-leading-zero);
+  position: absolute;
+  left: 16px;
+  top: 10px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: rgba(11, 92, 138, 0.35);
+}
+
+/* 診断ページ: 進捗バー+丸いピルの選択肢 */
+.skin-quiz-bar {
+  height: 6px;
+  margin: 0 0 18px;
+  border-radius: 999px;
+  background: var(--color-primary-light);
+  overflow: hidden;
+}
+
+.skin-quiz-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-primary), #0d6157);
+  transition: width 300ms ease;
+}
+
+.skin-quiz-choices {
+  grid-template-columns: 1fr;
+  counter-reset: quiz-choice;
+}
+
+.skin-quiz-choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 999px;
+  padding: 12px 20px 12px 12px;
+  counter-increment: quiz-choice;
+}
+
+.skin-quiz-choice::before {
+  content: counter(quiz-choice);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary-dark);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.skin-quiz-choice:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-stripe[data-bg-word]::before,
+  .category-summary-swap.is-animated,
+  .skin-quiz-bar > span,
+  .skin-quiz-choice,
+  .genre-circle,
+  .worry-hub-card-arrow {
+    animation: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
+/* 視差を減らす設定では FadeInCard が静止描画に切り替わるが、サーバー描画の inline style(opacity:0)が
+   ハイドレーション後も残りカードが見えなくなるため、その初期状態を打ち消す(2026-11-19) */
+@media (prefers-reduced-motion: reduce) {
+  main [style*="opacity:0;"],
+  main [style*="opacity: 0;"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
