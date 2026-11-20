@@ -26,8 +26,11 @@ export default function Sidebar({ popularPosts = [], categories = [] }) {
         </ol>
       </div>
 
-      <div className="sidebar-widget">
-        <h2 className="sidebar-widget-title">カテゴリ</h2>
+      <details className="sidebar-widget sidebar-accordion">
+        <summary>
+          <h2 className="sidebar-widget-title">カテゴリ</h2>
+          <span className="sidebar-accordion-chevron" aria-hidden="true" />
+        </summary>
         <ul className="sidebar-category-list">
           {categories.map((c) => (
             <li key={c.name}>
@@ -38,7 +41,7 @@ export default function Sidebar({ popularPosts = [], categories = [] }) {
             </li>
           ))}
         </ul>
-      </div>
+      </details>
 
       {/* 広告枠(AdSense等)は審査通過・掲載準備が整い次第この位置に設置する */}
     </aside>
