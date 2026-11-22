@@ -93,8 +93,6 @@ export default function PostPage({ post, related, nextPost }) {
           <a href="/">トップ</a>
           <span className="sep">/</span>
           <a href={`/category/${encodeURIComponent(post.category)}`}>{post.category}</a>
-          <span className="sep">/</span>
-          <span className="current">{post.title}</span>
         </nav>
 
         <div className="article-header">
