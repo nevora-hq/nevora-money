@@ -74,8 +74,8 @@ Webサイト
 
 `NEXT_PUBLIC_SITE_URL` が未設定だと `components/Layout.js` の実装上、canonical・og:url・構造化データのタグ自体が出力されず、ローカルでは正しいURLが出ているか確認できない(本番Vercelの環境変数に設定済みかは(未確定))。ローカルで検証する場合は以下の手順で設定する。
 
-1. `.env.local.example` の内容(`NEXT_PUBLIC_SITE_URL=https://nevora-money.vercel.app`)を `.env.local` に追記する(無ければ `.env.local.example` をコピーしてもよい)
-2. `npm run build` を実行し、`.next/server/pages/worry/[slug].html` 等の出力HTML内で `<link rel="canonical" ...>` と `<meta property="og:url" ...>` が英語slugのURL(例: `https://nevora-money.vercel.app/worry/<英語slug>`)になっていることを確認する
+1. `.env.local.example` の内容(`NEXT_PUBLIC_SITE_URL=https://money.nevora.jp`)を `.env.local` に追記する(無ければ `.env.local.example` をコピーしてもよい)
+2. `npm run build` を実行し、`.next/server/pages/worry/[slug].html` 等の出力HTML内で `<link rel="canonical" ...>` と `<meta property="og:url" ...>` が英語slugのURL(例: `https://money.nevora.jp/worry/<英語slug>`)になっていることを確認する
 
 ## お問い合わせフォーム
 

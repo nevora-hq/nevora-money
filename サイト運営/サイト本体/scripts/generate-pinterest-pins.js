@@ -28,7 +28,7 @@ const matter = require("gray-matter");
 
 const PORT = 4321;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
-const SITE_URL = "https://nevora-money.vercel.app";
+const SITE_URL = "https://money.nevora.jp";
 const ARTICLES_DIR = path.join(__dirname, "..", "content", "articles");
 // リポジトリ直下(サイト運営/サイト本体 から2つ上)に出力する。
 const OUT_DIR = path.join(__dirname, "..", "..", "..", "pinterest-pins-お金");
@@ -511,7 +511,7 @@ async function main() {
           title: String(fm.pinTitle || fm.title || ""),
           figureIndex: Number.isInteger(fm.pinFigure) ? fm.pinFigure - 1 : null,
           siteName: "NEVORA|お金の総合ガイド",
-          domain: "nevora-money.vercel.app",
+          domain: "money.nevora.jp",
           mascotSrc: `/images/mascot/${mascot.file}-normal.svg`,
           category,
         });
