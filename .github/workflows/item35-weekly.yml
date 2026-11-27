@@ -31,7 +31,7 @@ jobs:
       # 未設定だと components/Layout.js が canonical/OGP を出力しなくなる。
       # 公開URLであり秘密情報ではないので直書きしてよい。
       # ローカルでは .env.local から読まれるが、同ファイルはgit管理外のためCIには無い。
-      NEXT_PUBLIC_SITE_URL: https://nevora-money.vercel.app
+      NEXT_PUBLIC_SITE_URL: https://money.nevora.jp
     steps:
       # 2026-09-07: 各アクションを node24 ランタイムの最新メジャー(v7系)へ更新した。
       # v4系は Node.js 20 で動作しており実行時に deprecation 警告が出ていた

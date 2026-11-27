@@ -3,7 +3,7 @@
 対象: `サイト運営/サイト本体/`
 方針: 検出・一覧化のみ。コード編集は行わない。
 
-お金サイトの本番URLは `https://nevora-money.vercel.app`、独自ドメインは【未確定: 独自ドメイン】、診断ページの slug は【未確定: お金サイトの診断ページ slug】。確認の観点(§1〜§4)をそのまま使う。
+お金サイトの本番URLは `https://money.nevora.jp`、独自ドメインは【未確定: 独自ドメイン】、診断ページの slug は【未確定: お金サイトの診断ページ slug】。確認の観点(§1〜§4)をそのまま使う。
 
 ## 1. ユーザー動線チェック(index → posts/[slug] → about → contact)
 
@@ -37,7 +37,7 @@ Grep範囲: `pages/`・`components/`・`lib/`・`記事データ/公開済み`�
 | ファイル | 内容 | 判定 |
 |---|---|---|
 
-対象外の分類: 公開記事ではない調査メモ、移行作業の記録・手順書(`docs/project-state.md`(このサイトには無い。読まずに進める)・`docs/domain-migration-plan.md`・`docs/audit-report.md`(このサイトには無い。読まずに進める))、作業ログ(`サイト運営/実務/配信者/メモ/*.md`)、汎用プレースホルダー(`.env.example`の`your-site.vercel.app`)。`lib/siteLinks.js`の他のNEVORAサイトのURLは、`docs/domain-migration-plan.md`3節の「例外がないかの最終確認」のとおり、他サイト自身のドメインであり当サイトの移行とは無関係。ローカル開発用のサンプル値(`.env.local.example`)は軽微として扱う。
+対象外の分類: 公開記事ではない調査メモ、移行作業の記録・手順書(`docs/project-state.md`(このサイトには無い。読まずに進める)・`(削除済みの移行計画書)`・`docs/audit-report.md`(このサイトには無い。読まずに進める))、作業ログ(`サイト運営/実務/配信者/メモ/*.md`)、汎用プレースホルダー(`.env.example`の`your-site.vercel.app`)。`lib/siteLinks.js`の他のNEVORAサイトのURLは、`(削除済みの移行計画書)`3節の「例外がないかの最終確認」のとおり、他サイト自身のドメインであり当サイトの移行とは無関係。ローカル開発用のサンプル値(`.env.local.example`)は軽微として扱う。
 
 公開記事本文(公開済み配下)とサイト本体コード(`pages/`・`components/`・`next.config.js`・`sitemap.xml.js`・`robots.txt`)に旧ドメインのハードコードが無いか(`NEXT_PUBLIC_SITE_URL`環境変数経由で一元管理されているか)を確認する。
 

@@ -114,7 +114,7 @@ await api("GET", "/v9/projects/nevora-money/domains");
 
 ```js
 for (const v of [
-  { key: "NEXT_PUBLIC_SITE_URL", value: "https://nevora-money.vercel.app", type: "plain" },
+  { key: "NEXT_PUBLIC_SITE_URL", value: "https://money.nevora.jp", type: "plain" },
 ]) {
   await api("POST", "/v10/projects/nevora-money/env",
     { ...v, target: ["production", "preview", "development"] });
@@ -150,7 +150,7 @@ const d = await api("GET", "/v6/deployments?projectId=nevora-money&limit=3");
 `docs/rollout-noindex-and-image-convention.md` A-5 の確認に加えて、最低限これだけは見る。
 
 ```bash
-U=https://nevora-money.vercel.app
+U=https://money.nevora.jp
 curl -s -o /dev/null -w '%{http_code}\n' $U/            # 200
 curl -s $U/robots.txt                                   # SNS UA例外 + Disallow: /
 curl -s $U/ | grep 'name="robots"'                      # noindex, nofollow
