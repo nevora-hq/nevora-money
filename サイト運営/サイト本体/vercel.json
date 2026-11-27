@@ -1,10 +1,16 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "nevora-money.vercel.app" }],
-      "destination": "https://money.nevora.jp/:path*",
-      "permanent": true
+      "destination": "/_gone_"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "nevora-money.vercel.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]
 }
